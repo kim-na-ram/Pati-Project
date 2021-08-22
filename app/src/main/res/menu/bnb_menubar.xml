@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/myProfile"
+        android:checked="true"
+        android:enabled="true"
+        android:icon="@drawable/bottomnavigation_profile_100"
+        android:title="내 프로필"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/searchParty"
+        android:enabled="true"
+        android:icon="@drawable/bottomnavigation_party_100"
+        android:title="파티 찾기"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/chatting"
+        android:enabled="true"
+        android:icon="@drawable/bottomnavigation_chatting_100"
+        android:title="채팅"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/searchScores"
+        android:enabled="true"
+        android:icon="@drawable/bottomnavigation_scores_100"
+        android:title="전적 검색"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/setting"
+        android:enabled="true"
+        android:icon="@drawable/bottomnavigation_setting_100"
+        android:title="설정"
+        app:showAsAction="always" />
+</menu>
