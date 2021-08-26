@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import android.os.Bundle as Bundle
 
 class Fragment_Myprofile : Fragment() {
@@ -51,8 +52,8 @@ class Fragment_Myprofile : Fragment() {
     private lateinit var tv_gameNames_Cyphers : TextView
     private lateinit var tv_gameNames_StarCraft : TextView
     private lateinit var tv_gameNames_DungeonandFighter : TextView
-    private lateinit var tv_gameNames_DeadbyDaylight : TextView
-    private lateinit var tv_gameNames_StardewValley : TextView
+//    private lateinit var tv_gameNames_DeadbyDaylight : TextView
+//    private lateinit var tv_gameNames_StardewValley : TextView
 
     // modify button
     private lateinit var btn_modifyUserInfo : Button
@@ -74,7 +75,10 @@ class Fragment_Myprofile : Fragment() {
 
         btn_modifyUserInfo.setOnClickListener {
             // TODO 버튼 클릭 시 정보 수정 화면으로 이동
-
+            childFragmentManager.beginTransaction()
+                .replace(R.id.fl_modifyUserInfo, Fragment_ModifyUserInfo)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
         }
 
         return view
@@ -82,6 +86,7 @@ class Fragment_Myprofile : Fragment() {
     }
 
     private fun initViews(view: View) {
+
         // user simple profile
         iv_userPicture = view.findViewById(R.id.iv_userPicture)
         tv_userNickName = view.findViewById(R.id.tv_userNickName)
@@ -110,8 +115,8 @@ class Fragment_Myprofile : Fragment() {
         tv_gameNames_Cyphers = view.findViewById(R.id.tv_gameNames_Cyphers)
         tv_gameNames_StarCraft = view.findViewById(R.id.tv_gameNames_StarCraft)
         tv_gameNames_DungeonandFighter = view.findViewById(R.id.tv_gameNames_DungeonandFighter)
-        tv_gameNames_DeadbyDaylight = view.findViewById(R.id.tv_gameNames_DeadbyDaylight)
-        tv_gameNames_StardewValley = view.findViewById(R.id.tv_gameNames_StardewValley)
+//        tv_gameNames_DeadbyDaylight = view.findViewById(R.id.tv_gameNames_DeadbyDaylight)
+//        tv_gameNames_StardewValley = view.findViewById(R.id.tv_gameNames_StardewValley)
 
         // modify button
         btn_modifyUserInfo = view.findViewById(R.id.btn_modifyUserInfo)
@@ -149,9 +154,9 @@ class Fragment_Myprofile : Fragment() {
             Games(tv_gameNames_MapleStory, false),
             Games(tv_gameNames_Cyphers, true),
             Games(tv_gameNames_StarCraft, false),
-            Games(tv_gameNames_DungeonandFighter, false),
-            Games(tv_gameNames_DeadbyDaylight, true),
-            Games(tv_gameNames_StardewValley, true)
+            Games(tv_gameNames_DungeonandFighter, false)
+//            Games(tv_gameNames_DeadbyDaylight, true),
+//            Games(tv_gameNames_StardewValley, true)
         )
         setTextView(ListofGames)
         

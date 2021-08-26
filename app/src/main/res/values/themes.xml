@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.PartyProject" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.PartyProject" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/color_inactivated_blue</item>
         <item name="colorPrimaryVariant">@color/color_inactivated_blue</item>
@@ -16,4 +16,13 @@
 
         <item name="fontFamily">@font/nanumsqarebold</item>
     </style>
+
+    <style name="Theme.PartyProject.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.PartyProject.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.PartyProject.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

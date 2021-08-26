@@ -4,20 +4,27 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/button_rounded.xml" value="0.2765625" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/button_rounded_special.xml" value="0.15" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/edittext_rounded_background_white.xml" value="0.15052083333333333" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/textview_rounded_activated.xml" value="0.2765625" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/textview_rounded_inactivated.xml" value="0.2765625" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/font/font.xml" value="0.1" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/FragmentMyprofileBinding.xml" value="0.1" />
-        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_login.xml" value="0.1" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_splash.xml" value="0.2" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/change_preference_category_color.xml" value="0.13385416666666666" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/change_preference_color.xml" value="0.13385416666666666" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_chatting.xml" value="0.13489583333333333" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_modifyuserinfo.xml" value="0.1" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_my_profile.xml" value="0.13489583333333333" />
-        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_myprofile.xml" value="0.4605873261205564" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_myprofile.xml" value="0.128" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_myprofile2.xml" value="0.16" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_searchparty.xml" value="0.4" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_searchscores.xml" value="0.1" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_setting.xml" value="0.1" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/menu/bnb_menubar.xml" value="0.1" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/xml/preferences.xml" value="0.536" />
       </map>
     </option>
   </component>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="edittext_userinfo_width">240dp</dimen>
+    <dimen name="edittext_userinfo_height">40dp</dimen>
+    <dimen name="edittext_userinfo_text_size">18sp</dimen>
+
+    <dimen name="button_width">100dp</dimen>
+    <dimen name="button_height">40dp</dimen>
+    <dimen name="button_text_size">15sp</dimen>
+
+    <dimen name="toolbar_size">60dp</dimen>
+    <dimen name="toolbar_text_size">35sp</dimen>
+</resources>

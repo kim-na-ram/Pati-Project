@@ -14,5 +14,6 @@ class Fragment_Setting : Fragment() {
     ): View? {
         //return super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.fragment_setting, container, false)
+
     }
 }

@@ -2,13 +2,17 @@ package com.naram.party_project
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Transformations.map
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
+
+    private val toolbar : Toolbar by lazy {
+        findViewById(R.id.toolbar)
+    }
 
     private val bnb_menuBar: BottomNavigationView by lazy {
         findViewById(R.id.bnb_menuBar)
@@ -54,30 +58,28 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        checkUserInfo()
         initViews()
         initNavigaionBar()
     }
 
-    private fun initViews() {
-        vp_showView.run {
-            adapter = pagerAdapter
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    val navigation = when (position) {
-                        0 -> R.id.myProfile
-                        1 -> R.id.searchParty
-                        2 -> R.id.chatting
-                        3 -> R.id.searchScores
-                        4 -> R.id.setting
-                        else -> R.id.myProfile
-                    }
+    private fun checkUserInfo() {
+        val auth = FirebaseAuth.getInstance()
+        val user = auth?.currentUser
 
-                    if (bnb_menuBar.selectedItemId != navigation) {
-                        bnb_menuBar.selectedItemId = navigation
-                    }
-                }
-            })
-        }
+        // user의 email에 따라 정보를 불러오기
+        val userID = user?.email.toString()
+
+    }
+
+    private fun initViews() {
+
+        setSupportActionBar(toolbar)
+        val ab = supportActionBar!!
+        ab.setDisplayShowTitleEnabled(false)
+
+        setViewpager()
+
     }
 
     private fun initNavigaionBar() {
@@ -101,6 +103,30 @@ class MainActivity : AppCompatActivity() {
             }
             selectedItemId = R.id.myProfile
         }
+    }
+
+    private fun setViewpager() {
+
+        vp_showView.run {
+            adapter = pagerAdapter
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    val navigation = when (position) {
+                        0 -> R.id.myProfile
+                        1 -> R.id.searchParty
+                        2 -> R.id.chatting
+                        3 -> R.id.searchScores
+                        4 -> R.id.setting
+                        else -> R.id.myProfile
+                    }
+
+                    if (bnb_menuBar.selectedItemId != navigation) {
+                        bnb_menuBar.selectedItemId = navigation
+                    }
+                }
+            })
+        }
+
     }
 
 }
