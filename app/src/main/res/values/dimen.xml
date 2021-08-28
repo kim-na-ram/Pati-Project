@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="edittext_userinfo_width">240dp</dimen>
+    <dimen name="edittext_userinfo_width">280dp</dimen>
     <dimen name="edittext_userinfo_height">40dp</dimen>
     <dimen name="edittext_userinfo_text_size">18sp</dimen>
 
+    <dimen name="edittext_short_userinfo_width">140dp</dimen>
+    <dimen name="edittext_short_userinfo_height">40dp</dimen>
+    <dimen name="edittext_short_userinfo_text_size">18sp</dimen>
+
     <dimen name="button_width">100dp</dimen>
     <dimen name="button_height">40dp</dimen>
-    <dimen name="button_text_size">15sp</dimen>
+    <dimen name="button_text_size">17sp</dimen>
+
+    <dimen name="gametendency_margin_vertical">5dp</dimen>
+    <dimen name="gametendency_margin_end">8dp</dimen>
+    <dimen name="gametendency_padding_horizontal">10dp</dimen>
+    <dimen name="gametendency_padding_vertical">4dp</dimen>
 
     <dimen name="toolbar_size">60dp</dimen>
     <dimen name="toolbar_text_size">35sp</dimen>

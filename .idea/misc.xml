@@ -6,12 +6,18 @@
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/button_rounded.xml" value="0.2765625" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/button_rounded_special.xml" value="0.15" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/edittext_rounded_background_white.xml" value="0.15052083333333333" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/imageview_rounded_user_picture.xml" value="0.2765625" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/radiobutton_selected_custom.xml" value="0.2765625" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/textview_rounded_activated.xml" value="0.2765625" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/textview_rounded_inactivated.xml" value="0.2765625" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/font/font.xml" value="0.1" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/FragmentMyprofileBinding.xml" value="0.1" />
-        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_login.xml" value="0.1" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_makemyprofile.xml" value="0.13385416666666666" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_makeprofile.xml" value="0.2" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_signin.xml" value="0.4" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_signup.xml" value="0.16799999999999998" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/activity_splash.xml" value="0.2" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/change_preference_category_color.xml" value="0.13385416666666666" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/change_preference_color.xml" value="0.13385416666666666" />

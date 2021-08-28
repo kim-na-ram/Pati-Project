@@ -4,5 +4,7 @@
         android:color="@color/color_inactivated_blue"
         android:dashGap="10dp"
         android:dashWidth="10dp"/>
+    <solid
+        android:color="@color/white"/>
     <corners android:radius="5dp"/>
 </shape>

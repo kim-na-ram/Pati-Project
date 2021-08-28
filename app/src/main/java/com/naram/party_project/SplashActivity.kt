@@ -1,14 +1,10 @@
 package com.naram.party_project
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 
 class SplashActivity : AppCompatActivity() {
 
@@ -24,8 +20,8 @@ class SplashActivity : AppCompatActivity() {
 
         Handler().postDelayed({
 
-            if(flag) {
-                startActivity(Intent(this, LoginActivity::class.java))
+            if(!flag) {
+                startActivity(Intent(this, SigninActivity::class.java))
             } else {
                 startActivity(Intent(this, MainActivity::class.java))
             }
@@ -37,8 +33,11 @@ class SplashActivity : AppCompatActivity() {
     private fun checkUserInfo() : Boolean {
 
         val auth = FirebaseAuth.getInstance()
-        val user = auth?.currentUser
+        if(auth != null) {
+            val user = auth.currentUser
+            return user != null
+        }
 
-        return user == null
+        return false
     }
 }

@@ -25,7 +25,7 @@ class SettingPreference : PreferenceFragmentCompat() {
             auth?.signOut()
 
             activity?.finish()
-            startActivity(Intent(activity, LoginActivity::class.java))
+            startActivity(Intent(activity, SigninActivity::class.java))
 
             true
         }
