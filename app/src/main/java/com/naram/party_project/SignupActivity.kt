@@ -4,12 +4,19 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.OutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 class SignupActivity : AppCompatActivity() {
 
@@ -17,6 +24,15 @@ class SignupActivity : AppCompatActivity() {
         private const val REQUEST_GALLERY = 1000
         private const val REQUEST_SUCCESS = 1001
     }
+
+    private val IP_ADDRESS = ""
+    private val INSERT_URL = "http://$IP_ADDRESS/userInsert.php"
+
+    private lateinit var _userPicture: String
+    private lateinit var _userEmail: String
+    private lateinit var _userPassword: String
+    private lateinit var _userNickName: String
+    private lateinit var _userGender: String
 
     private val iv_signupUserPic: ImageView by lazy {
         findViewById(R.id.iv_signupUserPic)
@@ -74,14 +90,29 @@ class SignupActivity : AppCompatActivity() {
             when (flag) {
                 true -> {
                     val auth = FirebaseAuth.getInstance()
-                    auth.createUserWithEmailAndPassword(et_signupUserEmail.TexttoString(), et_signupUserPW.TexttoString())
+                    auth.createUserWithEmailAndPassword(
+                        et_signupUserEmail.TexttoString(),
+                        et_signupUserPW.TexttoString()
+                    )
                         .addOnCompleteListener(this) { task ->
-                            if(task.isSuccessful) {
+                            if (task.isSuccessful) {
+
+                                // TODO 정보들을 user_tb에 저장
+                                val insert = InsertData()
+                                insert.execute(
+                                    INSERT_URL,
+                                    _userEmail,
+                                    _userPassword,
+                                    _userNickName,
+                                    _userGender,
+                                    _userPicture
+                                )
+
                                 startActivity(Intent(this, SigninActivity::class.java))
                             } else {
                                 Toast.makeText(this, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show()
                             }
-                    }
+                        }
                 }
                 else -> {
                     Toast.makeText(this, "닉네임, 이메일, 비밀번호, 성별은 꼭 입력해야 합니다.", Toast.LENGTH_SHORT)
@@ -167,6 +198,7 @@ class SignupActivity : AppCompatActivity() {
                 val selectedImageUri: Uri? = data?.data
 
                 if (selectedImageUri != null) {
+                    _userPicture = selectedImageUri?.toString()
                     iv_signupUserPic.setImageURI(selectedImageUri)
                 } else {
                     Toast.makeText(this, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
@@ -180,22 +212,80 @@ class SignupActivity : AppCompatActivity() {
 
     private fun editTextNullCheck(): Boolean {
 
-        val userNickName = et_signupUserName.TexttoString()
-        val userEmail = et_signupUserEmail.TexttoString()
-        val userPassword = et_signupUserPW.TexttoString()
-        var userGender : String? = null
+        _userNickName = et_signupUserName.TexttoString()
+        _userEmail = et_signupUserEmail.TexttoString()
+        _userPassword = et_signupUserPW.TexttoString()
 
         when (radio_userGender.checkedRadioButtonId) {
-            radiobutton_userFemale.id -> userGender = "female"
-            radiobutton_userMale.id -> userGender = "male"
+            radiobutton_userFemale.id -> _userGender = "F"
+            radiobutton_userMale.id -> _userGender = "M"
         }
 
-        if (userNickName.isNotEmpty() && userEmail.isNotEmpty() && userPassword.isNotEmpty()) {
-            if (!userGender.isNullOrEmpty())
+        if (_userNickName.isNotEmpty() && _userEmail.isNotEmpty() && _userPassword.isNotEmpty()) {
+            if (!_userGender.isNullOrEmpty())
                 return true
         }
 
         return false
+
+    }
+
+    /*Insert Data in mysql*/
+    private class InsertData : AsyncTask<String, Void, String>() {
+
+        override fun doInBackground(vararg params: String?): String {
+
+            val serverURL: String? = params[0]
+            val email: String? = params[1]
+            val password: String? = params[2]
+            val user_name: String? = params[3]
+            val gender: String? = params[4]
+            val picture: String? = params[5]
+
+            val postParameters = "email=$email&password=$password&user_name=$user_name&gender=$gender&picture=$picture"
+
+            try {
+                val url = URL(serverURL)
+                val httpURLConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
+
+                httpURLConnection.readTimeout = 5000
+                httpURLConnection.connectTimeout = 5000
+                httpURLConnection.requestMethod = "POST"
+                httpURLConnection.connect()
+
+                val outputStream: OutputStream = httpURLConnection.outputStream
+                outputStream.write(postParameters.toByteArray(charset("UTF-8")))
+                outputStream.flush()
+                outputStream.close()
+
+                val responseStatusCode: Int = httpURLConnection.responseCode
+
+                val inputStream: InputStream
+                inputStream = if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    httpURLConnection.inputStream
+                } else {
+                    httpURLConnection.errorStream
+                }
+
+                val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
+                val bufferedReader = BufferedReader(inputStreamReader)
+
+                val sb = StringBuilder()
+                var line: String? = null
+
+                while (bufferedReader.readLine().also({ line = it }) != null) {
+                    sb.append(line)
+                }
+
+                bufferedReader.close();
+
+                return sb.toString();
+
+            } catch (e: Exception) {
+                return "Error" + e.message
+            }
+
+        }
 
     }
 

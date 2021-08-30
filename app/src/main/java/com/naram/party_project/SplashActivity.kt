@@ -33,11 +33,8 @@ class SplashActivity : AppCompatActivity() {
     private fun checkUserInfo() : Boolean {
 
         val auth = FirebaseAuth.getInstance()
-        if(auth != null) {
-            val user = auth.currentUser
-            return user != null
-        }
+        val user = auth.currentUser
 
-        return false
+        return user != null
     }
 }
