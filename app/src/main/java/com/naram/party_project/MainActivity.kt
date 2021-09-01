@@ -2,6 +2,7 @@ package com.naram.party_project
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -61,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         checkUserInfo()
         initViews()
         initNavigaionBar()
+
     }
 
     private fun checkUserInfo() {

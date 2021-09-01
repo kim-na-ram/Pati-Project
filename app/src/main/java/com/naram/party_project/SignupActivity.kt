@@ -1,20 +1,24 @@
 package com.naram.party_project
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.OutputStream
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import com.naram.party_project.PatiConstClass.Companion.IP_ADDRESS
+import kotlinx.coroutines.*
+import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -25,14 +29,16 @@ class SignupActivity : AppCompatActivity() {
         private const val REQUEST_SUCCESS = 1001
     }
 
-    private val IP_ADDRESS = ""
     private val INSERT_URL = "http://$IP_ADDRESS/userInsert.php"
+    private val LOG_TAG = "SignupActivity"
 
-    private lateinit var _userPicture: String
+    private var _userPicture: String? = null
     private lateinit var _userEmail: String
     private lateinit var _userPassword: String
     private lateinit var _userNickName: String
     private lateinit var _userGender: String
+
+    private lateinit var bitmap: Bitmap
 
     private val iv_signupUserPic: ImageView by lazy {
         findViewById(R.id.iv_signupUserPic)
@@ -91,24 +97,18 @@ class SignupActivity : AppCompatActivity() {
                 true -> {
                     val auth = FirebaseAuth.getInstance()
                     auth.createUserWithEmailAndPassword(
-                        et_signupUserEmail.TexttoString(),
-                        et_signupUserPW.TexttoString()
+                        et_signupUserEmail.toStringFromText(),
+                        et_signupUserPW.toStringFromText()
                     )
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
 
-                                // TODO 정보들을 user_tb에 저장
-                                val insert = InsertData()
-                                insert.execute(
-                                    INSERT_URL,
-                                    _userEmail,
-                                    _userPassword,
-                                    _userNickName,
-                                    _userGender,
-                                    _userPicture
-                                )
+                                if (bitmap != null) uploadImageToCloud(bitmap)
+                                else saveUserInfoToDB()
 
-                                startActivity(Intent(this, SigninActivity::class.java))
+                                finish()
+                                startActivity(Intent(this, MakemyprofileActivity::class.java))
+//                                startActivity(Intent(this, MainActivity::class.java))
                             } else {
                                 Toast.makeText(this, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show()
                             }
@@ -198,8 +198,8 @@ class SignupActivity : AppCompatActivity() {
                 val selectedImageUri: Uri? = data?.data
 
                 if (selectedImageUri != null) {
-                    _userPicture = selectedImageUri?.toString()
                     iv_signupUserPic.setImageURI(selectedImageUri)
+                    bitmap = resize(this, selectedImageUri, 400)
                 } else {
                     Toast.makeText(this, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -210,11 +210,45 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
+    private fun resize(context: Context, uri: Uri, resize: Int): Bitmap {
+        var resizeBitmap: Bitmap? = null
+
+        val options = BitmapFactory.Options();
+        try {
+            BitmapFactory.decodeStream(context.contentResolver.openInputStream(uri), null, options)
+
+            var width = options.outWidth
+            var height = options.outHeight
+            var samplesize = 1;
+
+            while (true) {
+                if (width / 2 < resize || height / 2 < resize)
+                    break;
+                width /= 2;
+                height /= 2;
+                samplesize *= 2;
+            }
+
+            options.inSampleSize = samplesize;
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(uri),
+                null,
+                options
+            )
+            resizeBitmap = bitmap;
+
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace();
+        }
+
+        return resizeBitmap!!
+    }
+
     private fun editTextNullCheck(): Boolean {
 
-        _userNickName = et_signupUserName.TexttoString()
-        _userEmail = et_signupUserEmail.TexttoString()
-        _userPassword = et_signupUserPW.TexttoString()
+        _userNickName = et_signupUserName.toStringFromText()
+        _userEmail = et_signupUserEmail.toStringFromText()
+        _userPassword = et_signupUserPW.toStringFromText()
 
         when (radio_userGender.checkedRadioButtonId) {
             radiobutton_userFemale.id -> _userGender = "F"
@@ -230,11 +264,48 @@ class SignupActivity : AppCompatActivity() {
 
     }
 
-    /*Insert Data in mysql*/
-    private class InsertData : AsyncTask<String, Void, String>() {
+    private fun uploadImageToCloud(bitmap: Bitmap) {
+        val storage = Firebase.storage
+        var storageRef = storage.reference
+        var imagesRef = storageRef.child(_userEmail).child("profile.jpg")
 
-        override fun doInBackground(vararg params: String?): String {
+//        var bitmap: Bitmap
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//            bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, uri))
+//        } else {
+//            bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+//        }
+//
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos)
+        val data = baos.toByteArray()
 
+        var uploadTask = imagesRef.putBytes(data)
+        uploadTask.addOnFailureListener {
+            Toast.makeText(this@SignupActivity, "사진 업로드에 실패했습니다.", Toast.LENGTH_SHORT)
+                .show()
+        }.addOnSuccessListener { taskSnapshot ->
+//            _userPicture = imagesRef.toString()
+            _userPicture = "$_userEmail/profile.jpg"
+            saveUserInfoToDB()
+        }
+
+    }
+
+    private fun saveUserInfoToDB() {
+        insertData(
+            INSERT_URL,
+            _userEmail,
+            _userPassword,
+            _userNickName,
+            _userGender,
+            _userPicture
+        )
+    }
+
+    private fun insertData(vararg params: String?) = runBlocking {
+        val job = CoroutineScope(Dispatchers.Default).launch {
             val serverURL: String? = params[0]
             val email: String? = params[1]
             val password: String? = params[2]
@@ -242,11 +313,13 @@ class SignupActivity : AppCompatActivity() {
             val gender: String? = params[4]
             val picture: String? = params[5]
 
-            val postParameters = "email=$email&password=$password&user_name=$user_name&gender=$gender&picture=$picture"
+            val postParameters =
+                "email=$email&password=$password&user_name=$user_name&gender=$gender&picture=$picture"
 
             try {
                 val url = URL(serverURL)
-                val httpURLConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                val httpURLConnection: HttpURLConnection =
+                    url.openConnection() as HttpURLConnection
 
                 httpURLConnection.readTimeout = 5000
                 httpURLConnection.connectTimeout = 5000
@@ -277,19 +350,21 @@ class SignupActivity : AppCompatActivity() {
                     sb.append(line)
                 }
 
-                bufferedReader.close();
+                bufferedReader.close()
 
-                return sb.toString();
-
+                Log.d("Coroutines-Log", sb.toString())
             } catch (e: Exception) {
-                return "Error" + e.message
+                Log.d("Coroutines-Log", "Error" + e.message)
+                Toast.makeText(this@SignupActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
             }
 
         }
 
+        job.join()
+
     }
 
-    fun EditText.TexttoString(): String {
+    fun EditText.toStringFromText(): String {
         return this.text.toString()
     }
 

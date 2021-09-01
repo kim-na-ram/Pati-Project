@@ -6,26 +6,14 @@
     android:layout_height="match_parent"
     android:padding="10dp">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fl_modifyUserInfo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
-
     <ImageView
         android:id="@+id/iv_userPicture"
         android:layout_width="140dp"
-        android:layout_height="170dp"
+        android:layout_height="150dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@id/tv_kindness"
+        app:layout_constraintBottom_toTopOf="@id/tv_selfPR"
         app:layout_constraintRight_toLeftOf="@id/tv_userName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/tv_userName"
@@ -33,9 +21,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="20sp"
         android:layout_marginBottom="5dp"
-        android:fontFamily="@font/nanumsqarebold"
+        android:background="@color/color_activated_blue"
+        android:fontFamily="@font/nanumsquarebold"
         android:text="유저 이름"
-        android:textColor="@color/color_inactivated_blue"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/tv_userNickName"
         app:layout_constraintHorizontal_chainStyle="spread"
@@ -46,7 +35,7 @@
         android:id="@+id/tv_userNickName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/nanumsqareextrabold"
+        android:fontFamily="@font/nanumsquareextrabold"
         android:textColor="@color/color_activated_blue"
         android:textSize="22sp"
         app:layout_constraintBottom_toTopOf="@id/tv_inGameName"
@@ -59,9 +48,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:fontFamily="@font/nanumsqarebold"
+        android:fontFamily="@font/nanumsquarebold"
         android:text="인게임 닉네임"
-        android:textColor="@color/color_inactivated_blue"
+        android:background="@color/color_activated_blue"
+        android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/tv_gameUserName"
         app:layout_constraintStart_toStartOf="@id/tv_userName"
@@ -72,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/nanumsqareextrabold"
+        android:fontFamily="@font/nanumsquareextrabold"
         android:textColor="@color/color_activated_blue"
         android:textSize="22sp"
         app:layout_constraintStart_toStartOf="@id/tv_userName"
@@ -80,56 +70,57 @@
         tools:text="RIT" />
 
     <TextView
-        android:id="@+id/tv_kindness"
+        android:id="@+id/tv_selfPR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:fontFamily="@font/nanumsqareextrabold"
-        android:text="친절도"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/nanumsquareextrabold"
+        android:text="한줄 자기소개"
         android:textColor="@color/color_activated_blue"
         android:textSize="26sp"
-        app:layout_constraintRight_toLeftOf="@id/tv_realKindness"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
         app:layout_constraintTop_toBottomOf="@id/iv_userPicture" />
 
-    <TextView
-        android:id="@+id/tv_realKindness"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:fontFamily="@font/nanumsqareextrabold"
-        android:textColor="@color/color_activated_blue"
-        android:textSize="46sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_kindness"
-        app:layout_constraintTop_toBottomOf="@id/iv_userPicture"
-        tools:text="86.7%" />
+<!--    <TextView-->
+<!--        android:id="@+id/tv_realKindness"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:fontFamily="@font/nanumsquareextrabold"-->
+<!--        android:textColor="@color/color_activated_blue"-->
+<!--        android:textSize="46sp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintRight_toLeftOf="@id/tv_kindness"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/iv_userPicture"-->
+<!--        tools:text="86.7%" />-->
 
     <TextView
-        android:id="@+id/tv_estimatedKindness"
+        android:id="@+id/tv_realSelfPR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:fontFamily="@font/nanumsqarebold"
-        android:textColor="@color/color_inactivated_blue"
+        android:fontFamily="@font/nanumsquarebold"
+        android:background="@color/color_inactivated_blue"
+        android:padding="5dp"
+        android:textColor="@color/white"
         android:textSize="19sp"
         app:layout_constraintBottom_toTopOf="@id/tv_gameTendency"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
-        app:layout_constraintTop_toBottomOf="@id/tv_kindness"
-        tools:text="총 1235명이 판단했어요!" />
+        app:layout_constraintTop_toBottomOf="@id/tv_selfPR"
+        tools:text="사이퍼즈 탱커 경력 30년. 자신잇읍니다." />
 
     <TextView
         android:id="@+id/tv_gameTendency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:fontFamily="@font/nanumsqareextrabold"
+        android:fontFamily="@font/nanumsquareextrabold"
         android:text="게임 성향"
         android:textColor="@color/color_activated_blue"
         android:textSize="26sp"
         app:layout_constraintBottom_toTopOf="@+id/fl_showGameTendency"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
-        app:layout_constraintTop_toBottomOf="@id/tv_estimatedKindness" />
+        app:layout_constraintTop_toBottomOf="@id/tv_realSelfPR" />
 
     <com.nex3z.flowlayout.FlowLayout
         android:id="@+id/fl_showGameTendency"
@@ -144,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="승리지향"
@@ -156,7 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="승패상관 X"
@@ -168,7 +159,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="즐겜"
@@ -180,7 +171,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="빡겜"
@@ -192,7 +183,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="보이스톡 O"
@@ -204,7 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="보이스톡 X"
@@ -216,7 +207,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="여성 Only"
@@ -228,7 +219,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="남성 Only"
@@ -240,7 +231,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="성별상관 X"
@@ -253,7 +244,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:fontFamily="@font/nanumsqareextrabold"
+        android:fontFamily="@font/nanumsquareextrabold"
         android:text="이런 게임 같이 해요!"
         android:textColor="@color/color_activated_blue"
         android:textSize="26sp"
@@ -274,7 +265,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="LoL"
@@ -286,7 +277,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="오버워치"
@@ -298,7 +289,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="배틀 그라운드"
@@ -310,7 +301,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="서든어택"
@@ -322,7 +313,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="피파 온라인4"
@@ -334,7 +325,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="로스트아크"
@@ -346,7 +337,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="메이플 스토리"
@@ -358,7 +349,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="사이퍼즈"
@@ -370,7 +361,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="스타크래프트"
@@ -382,7 +373,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
             android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsqareextrabold"
+            android:fontFamily="@font/nanumsquareextrabold"
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="던전 앤 파이터"
@@ -394,7 +385,7 @@
 <!--            android:layout_height="wrap_content"-->
 <!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
 <!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
-<!--            android:fontFamily="@font/nanumsqareextrabold"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
 <!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
 <!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
 <!--            android:text="데드 바이 데이라이트"-->
@@ -406,7 +397,7 @@
 <!--            android:layout_height="wrap_content"-->
 <!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
 <!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
-<!--            android:fontFamily="@font/nanumsqareextrabold"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
 <!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
 <!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
 <!--            android:text="스타듀밸리"-->
@@ -419,8 +410,9 @@
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
         android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/button_rounded_basic"
-        android:fontFamily="@font/nanumsqareextrabold"
+        android:fontFamily="@font/nanumsquareextrabold"
         android:text="수정"
         android:textColor="@color/white"
         android:textSize="@dimen/button_text_size"

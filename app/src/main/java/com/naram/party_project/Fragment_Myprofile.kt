@@ -1,5 +1,7 @@
 package com.naram.party_project
 
+import android.content.Context
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,59 +9,40 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import android.os.Bundle as Bundle
+import androidx.room.Room
+import com.bumptech.glide.Glide
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 
 class Fragment_Myprofile : Fragment() {
 
-    class Games(_textView : TextView, _flag : Boolean) {
-        val textView : TextView
-        val flag : Boolean
+    private val TAG = "MyProfile_Fragment"
+    lateinit var mainActivity: MainActivity
 
-        init {
-            textView = _textView
-            flag = _flag
-        }
+    private lateinit var db : AppDatabase
 
-    }
+    private lateinit var currentPhotoPath: String
 
     // user simple profile
     private lateinit var iv_userPicture : ImageView
-    private lateinit var tv_userNickName : TextView
-    private lateinit var tv_gameUserName : TextView
-    private lateinit var tv_realKindness : TextView
-    private lateinit var tv_estimatedKindness : TextView
-    private var NumberofAppraiser : Int = 0
+    private lateinit var tv_userNickName: TextView
+    private lateinit var tv_gameUserName: TextView
+    private lateinit var tv_realSelfPR: TextView
+    private lateinit var tv_realKindness: TextView
+    private lateinit var tv_estimatedKindness: TextView
 
-    // user detail profile
-    private lateinit var tv_gameTendency_wantWin : TextView
-    private lateinit var tv_gameTendency_winOrlose : TextView
-    private lateinit var tv_gameTendency_onlyWin : TextView
-    private lateinit var tv_gameTendency_onlyFun : TextView
-    private lateinit var tv_gameTendency_voiceOk : TextView
-    private lateinit var tv_gameTendency_voiceNo : TextView
-    private lateinit var tv_gameTendency_onlyWomen : TextView
-    private lateinit var tv_gameTendency_onlyMen : TextView
-    private lateinit var tv_gameTendency_womenOrmen : TextView
+    private lateinit var TendencyTextViewList: List<TextView>
 
-    private lateinit var tv_gameNames_LOL : TextView
-    private lateinit var tv_gameNames_OverWatch : TextView
-    private lateinit var tv_gameNames_BattleGround : TextView
-    private lateinit var tv_gameNames_SuddenAttack : TextView
-    private lateinit var tv_gameNames_FIFAOnline4 : TextView
-    private lateinit var tv_gameNames_LostArk : TextView
-    private lateinit var tv_gameNames_MapleStory : TextView
-    private lateinit var tv_gameNames_Cyphers : TextView
-    private lateinit var tv_gameNames_StarCraft : TextView
-    private lateinit var tv_gameNames_DungeonandFighter : TextView
-//    private lateinit var tv_gameNames_DeadbyDaylight : TextView
-//    private lateinit var tv_gameNames_StardewValley : TextView
+    private lateinit var GameNameTextViewList: List<TextView>
 
     // modify button
-    private lateinit var btn_modifyUserInfo : Button
+    private lateinit var btn_modifyUserInfo: Button
 
-    private val Fragment_ModifyUserInfo by lazy {
-        Fragment_ModifyUserInfo()
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = context as MainActivity
     }
 
     override fun onCreateView(
@@ -70,99 +53,178 @@ class Fragment_Myprofile : Fragment() {
         //return super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_myprofile, container, false)
 
+        createDB()
+        getRoom()
         initViews(view)
-        getUserProfile()
 
         btn_modifyUserInfo.setOnClickListener {
             // TODO 버튼 클릭 시 정보 수정 화면으로 이동
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fl_modifyUserInfo, Fragment_ModifyUserInfo)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit()
         }
 
         return view
 
     }
 
-    private fun initViews(view: View) {
+    private fun createDB() {
+        db = Room.databaseBuilder(
+            requireContext(),
+            AppDatabase::class.java,
+            "userDB"
+        )
+            .build()
+    }
 
-        // user simple profile
+    private fun getRoom() {
+        Thread(Runnable {
+            db.userDAO().getUserInfo().forEach {
+                mainActivity.runOnUiThread {
+                    if (it.picture?.isNotEmpty() == true)
+                        it.picture?.let { s ->
+                            uploadImageFromCloud(s)
+//                            db.userDAO().updatePicture(it.email, string_uri)
+                        }
+                    else {
+                        iv_userPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
+                        iv_userPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                    }
+                    tv_userNickName.text = it.user_name
+                    tv_gameUserName.text = it.game_name
+                    tv_realSelfPR.text = it.self_pr
+
+                    val tendency = listOf(
+                        it.tendency0,
+                        it.tendency1,
+                        it.tendency2,
+                        it.tendency3
+                    )
+
+                    // Game Tendency
+                    val TendencyList = mutableListOf<Games>().apply {
+                        TendencyTextViewList.forEach { textView ->
+                            this.add(Games(textView, false))
+                            tendency.forEach { s ->
+                                if (textView.text.toString() == s) {
+                                    this.removeLast()
+                                    this.add(Games(textView, true))
+                                }
+                            }
+                        }
+                    }
+
+                    val gamenames = listOf(
+                        it.game0,
+                        it.game1,
+                        it.game2,
+                        it.game3,
+                        it.game4,
+                        it.game5,
+                        it.game6,
+                        it.game7,
+                        it.game8,
+                        it.game9
+                    )
+
+                    // Game Names
+                    val GameList = mutableListOf<Games>().apply {
+                        GameNameTextViewList.forEachIndexed { index, textView ->
+                            this.add(Games(textView, gamenames[index]))
+                        }
+                    }
+
+                    setTextView(TendencyList)
+                    setTextView(GameList)
+                }
+            }
+        }).start()
+    }
+
+    private fun initViews(view : View) {
+
+        // Simple User Info
         iv_userPicture = view.findViewById(R.id.iv_userPicture)
         tv_userNickName = view.findViewById(R.id.tv_userNickName)
         tv_gameUserName = view.findViewById(R.id.tv_gameUserName)
-        tv_realKindness = view.findViewById(R.id.tv_realKindness)
-        tv_estimatedKindness = view.findViewById(R.id.tv_estimatedKindness)
+        tv_realSelfPR = view.findViewById(R.id.tv_realSelfPR)
 
-        // user detail profile
-        tv_gameTendency_wantWin = view.findViewById(R.id.tv_gameTendency_wantWin)
-        tv_gameTendency_winOrlose = view.findViewById(R.id.tv_gameTendency_winOrlose)
-        tv_gameTendency_onlyFun = view.findViewById(R.id.tv_gameTendency_onlyFun)
-        tv_gameTendency_onlyWin = view.findViewById(R.id.tv_gameTendency_onlyWin)
-        tv_gameTendency_voiceOk = view.findViewById(R.id.tv_gameTendency_voiceOk)
-        tv_gameTendency_voiceNo = view.findViewById(R.id.tv_gameTendency_voiceNo)
-        tv_gameTendency_onlyWomen = view.findViewById(R.id.tv_gameTendency_onlyWomen)
-        tv_gameTendency_onlyMen = view.findViewById(R.id.tv_gameTendency_onlyMen)
-        tv_gameTendency_womenOrmen = view.findViewById(R.id.tv_gameTendency_womenOrmen)
+        // Detail User Info
+        TendencyTextViewList = listOf(
+            view.findViewById(R.id.tv_gameTendency_wantWin),
+            view.findViewById(R.id.tv_gameTendency_winOrlose),
+            view.findViewById(R.id.tv_gameTendency_onlyFun),
+            view.findViewById(R.id.tv_gameTendency_onlyWin),
+            view.findViewById(R.id.tv_gameTendency_voiceOk),
+            view.findViewById(R.id.tv_gameTendency_voiceNo),
+            view.findViewById(R.id.tv_gameTendency_onlyWomen),
+            view.findViewById(R.id.tv_gameTendency_onlyMen),
+            view.findViewById(R.id.tv_gameTendency_womenOrmen)
+        )
 
-        tv_gameNames_LOL = view.findViewById(R.id.tv_gameNames_LOL)
-        tv_gameNames_OverWatch = view.findViewById(R.id.tv_gameNames_OverWatch)
-        tv_gameNames_BattleGround = view.findViewById(R.id.tv_gameNames_BattleGround)
-        tv_gameNames_SuddenAttack = view.findViewById(R.id.tv_gameNames_SuddenAttack)
-        tv_gameNames_FIFAOnline4 = view.findViewById(R.id.tv_gameNames_FIFAOnline4)
-        tv_gameNames_LostArk = view.findViewById(R.id.tv_gameNames_LostArk)
-        tv_gameNames_MapleStory = view.findViewById(R.id.tv_gameNames_MapleStory)
-        tv_gameNames_Cyphers = view.findViewById(R.id.tv_gameNames_Cyphers)
-        tv_gameNames_StarCraft = view.findViewById(R.id.tv_gameNames_StarCraft)
-        tv_gameNames_DungeonandFighter = view.findViewById(R.id.tv_gameNames_DungeonandFighter)
-//        tv_gameNames_DeadbyDaylight = view.findViewById(R.id.tv_gameNames_DeadbyDaylight)
-//        tv_gameNames_StardewValley = view.findViewById(R.id.tv_gameNames_StardewValley)
+        GameNameTextViewList = listOf (
+            view.findViewById(R.id.tv_gameNames_LOL),
+            view.findViewById(R.id.tv_gameNames_OverWatch),
+            view.findViewById(R.id.tv_gameNames_BattleGround),
+            view.findViewById(R.id.tv_gameNames_SuddenAttack),
+            view.findViewById(R.id.tv_gameNames_FIFAOnline4),
+            view.findViewById(R.id.tv_gameNames_LostArk),
+            view.findViewById(R.id.tv_gameNames_MapleStory),
+            view.findViewById(R.id.tv_gameNames_Cyphers),
+            view.findViewById(R.id.tv_gameNames_StarCraft),
+            view.findViewById(R.id.tv_gameNames_DungeonandFighter)
+        )
 
-        // modify button
         btn_modifyUserInfo = view.findViewById(R.id.btn_modifyUserInfo)
+
     }
 
-    private fun getUserProfile() {
+    private fun uploadImageFromCloud(path: String) {
+        val storage = Firebase.storage
+        var storageRef = storage.reference
+        var imagesRef = storageRef.child(path)
+//
+//        val localFile = File.createTempFile("images", "jpg")
+//        var uri : Uri? = null
+//
+//        imagesRef.getFile(localFile).addOnSuccessListener {
+//            Log.d(TAG, "성공하긴 했나요")
+//            uri = localFile.toUri()
+//        }.addOnFailureListener {
+//            Toast.makeText(context, "오류가 발생했습니다", Toast.LENGTH_SHORT).show()
+//        }
+//
+//        return uri!!
 
-        iv_userPicture.setImageDrawable(resources.getDrawable(R.drawable.temp_img))
-        tv_gameUserName.text = "한우먹으러갈래요"
-        tv_userNickName.text = "RIT"
-        tv_realKindness.text = "90.7%"
-        NumberofAppraiser = 1235
-        tv_estimatedKindness.text = "총 ${NumberofAppraiser}명이 판단했어요!"
+        val flag = uploadImageFromURI(imagesRef)
 
-        val ListofTendency = listOf(
-            Games(tv_gameTendency_wantWin, true),
-            Games(tv_gameTendency_winOrlose, false),
-            Games(tv_gameTendency_onlyFun, true),
-            Games(tv_gameTendency_onlyWin, false),
-            Games(tv_gameTendency_voiceOk, true),
-            Games(tv_gameTendency_voiceNo, false),
-            Games(tv_gameTendency_onlyWomen, false),
-            Games(tv_gameTendency_onlyMen, false),
-            Games(tv_gameTendency_womenOrmen, true)
-        )
-        setTextView(ListofTendency)
-        
-        val ListofGames = listOf(
-            Games(tv_gameNames_LOL, true),
-            Games(tv_gameNames_OverWatch, true),
-            Games(tv_gameNames_BattleGround, false),
-            Games(tv_gameNames_SuddenAttack, false),
-            Games(tv_gameNames_FIFAOnline4, false),
-            Games(tv_gameNames_LostArk, false),
-            Games(tv_gameNames_MapleStory, false),
-            Games(tv_gameNames_Cyphers, true),
-            Games(tv_gameNames_StarCraft, false),
-            Games(tv_gameNames_DungeonandFighter, false)
-//            Games(tv_gameNames_DeadbyDaylight, true),
-//            Games(tv_gameNames_StardewValley, true)
-        )
-        setTextView(ListofGames)
-        
+        if (!flag) {
+            uploadImageFromDownload(imagesRef)
+        }
+
     }
 
-    private fun setTextView(list : List<Games>) {
+    private fun uploadImageFromURI(Ref: StorageReference): Boolean {
+        val result = Ref.downloadUrl.addOnSuccessListener {
+            Glide.with(this)
+                .load(it)
+                .into(iv_userPicture)
+        }
+
+        return result.isSuccessful
+
+    }
+
+    private fun uploadImageFromDownload(Ref: StorageReference) {
+        val ONE_MEGABYTE: Long = 1024 * 1024
+        Ref.getBytes(ONE_MEGABYTE).addOnSuccessListener {
+            val options = BitmapFactory.Options();
+            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size, options)
+            iv_userPicture.setImageBitmap(bitmap)
+        }.addOnFailureListener {
+            iv_userPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
+            iv_userPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        }
+    }
+
+    private fun setTextView(list: List<Games>) {
         list.forEach {
             if (it.flag) {
                 it.textView.setTextColor(resources.getColor(R.color.white))
@@ -173,4 +235,5 @@ class Fragment_Myprofile : Fragment() {
             }
         }
     }
+
 }

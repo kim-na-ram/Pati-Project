@@ -39,7 +39,7 @@
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="유저 닉네임"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/et_signupUserName"
         app:layout_constraintStart_toStartOf="@id/et_signupUserEmail"
         app:layout_constraintTop_toBottomOf="@id/iv_signupUserPic" />
@@ -66,7 +66,7 @@
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="성별"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/radio_userGender"
         app:layout_constraintTop_toTopOf="@id/tv_userName" />
 
@@ -89,7 +89,7 @@
             android:paddingStart="3dp"
             android:text="여성"
             android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
 
         <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radiobutton_userMale"
@@ -100,7 +100,7 @@
             android:paddingStart="3dp"
             android:text="남성"
             android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:textSize="17sp" />
 
     </RadioGroup>
 
@@ -111,7 +111,7 @@
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="이메일"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/et_signupUserEmail"
         app:layout_constraintStart_toStartOf="@id/et_signupUserEmail"
         app:layout_constraintTop_toBottomOf="@id/et_signupUserName" />
@@ -139,7 +139,7 @@
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="비밀번호"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/et_signupUserPW"
         app:layout_constraintStart_toStartOf="@id/et_signupUserPW"
         app:layout_constraintTop_toBottomOf="@id/et_signupUserEmail" />
