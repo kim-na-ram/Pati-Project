@@ -13,7 +13,7 @@
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@id/tv_selfPR"
         app:layout_constraintRight_toLeftOf="@id/tv_userName"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_userName"
@@ -48,9 +48,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:background="@color/color_activated_blue"
         android:fontFamily="@font/nanumsquarebold"
         android:text="인게임 닉네임"
-        android:background="@color/color_activated_blue"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/tv_gameUserName"
@@ -81,29 +81,30 @@
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
         app:layout_constraintTop_toBottomOf="@id/iv_userPicture" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/tv_realKindness"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:fontFamily="@font/nanumsquareextrabold"-->
-<!--        android:textColor="@color/color_activated_blue"-->
-<!--        android:textSize="46sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintRight_toLeftOf="@id/tv_kindness"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/iv_userPicture"-->
-<!--        tools:text="86.7%" />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/tv_realKindness"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:fontFamily="@font/nanumsquareextrabold"-->
+    <!--        android:textColor="@color/color_activated_blue"-->
+    <!--        android:textSize="46sp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintRight_toLeftOf="@id/tv_kindness"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/iv_userPicture"-->
+    <!--        tools:text="86.7%" />-->
 
     <TextView
         android:id="@+id/tv_realSelfPR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:fontFamily="@font/nanumsquarebold"
         android:background="@color/color_inactivated_blue"
+        android:fontFamily="@font/nanumsquarebold"
         android:padding="5dp"
         android:textColor="@color/white"
         android:textSize="19sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/tv_gameTendency"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
         app:layout_constraintTop_toBottomOf="@id/tv_selfPR"
@@ -379,29 +380,29 @@
             android:text="던전 앤 파이터"
             android:textSize="20dp" />
 
-<!--        <TextView-->
-<!--            android:id="@+id/tv_gameNames_DeadbyDaylight"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
-<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
-<!--            android:fontFamily="@font/nanumsquareextrabold"-->
-<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
-<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
-<!--            android:text="데드 바이 데이라이트"-->
-<!--            android:textSize="20dp" />-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/tv_gameNames_DeadbyDaylight"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+        <!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+        <!--            android:fontFamily="@font/nanumsquareextrabold"-->
+        <!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+        <!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+        <!--            android:text="데드 바이 데이라이트"-->
+        <!--            android:textSize="20dp" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/tv_gameNames_StardewValley"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
-<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
-<!--            android:fontFamily="@font/nanumsquareextrabold"-->
-<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
-<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
-<!--            android:text="스타듀밸리"-->
-<!--            android:textSize="20dp" />-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/tv_gameNames_StardewValley"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+        <!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+        <!--            android:fontFamily="@font/nanumsquareextrabold"-->
+        <!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+        <!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+        <!--            android:text="스타듀밸리"-->
+        <!--            android:textSize="20dp" />-->
 
     </com.nex3z.flowlayout.FlowLayout>
 
@@ -418,5 +419,14 @@
         android:textSize="@dimen/button_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fl_showGameNames" />
+
+    <FrameLayout
+        android:id="@+id/fl_modify_userProfile"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

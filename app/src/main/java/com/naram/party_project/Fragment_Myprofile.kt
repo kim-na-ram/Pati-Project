@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import android.os.Bundle as Bundle
 import androidx.room.Room
 import com.bumptech.glide.Glide
@@ -19,11 +20,11 @@ import com.google.firebase.storage.ktx.storage
 class Fragment_Myprofile : Fragment() {
 
     private val TAG = "MyProfile_Fragment"
-    lateinit var mainActivity: MainActivity
+    private lateinit var mainActivity: MainActivity
 
     private lateinit var db : AppDatabase
 
-    private lateinit var currentPhotoPath: String
+//    private lateinit var currentPhotoPath: String
 
     // user simple profile
     private lateinit var iv_userPicture : ImageView
@@ -34,11 +35,14 @@ class Fragment_Myprofile : Fragment() {
     private lateinit var tv_estimatedKindness: TextView
 
     private lateinit var TendencyTextViewList: List<TextView>
-
     private lateinit var GameNameTextViewList: List<TextView>
 
     // modify button
     private lateinit var btn_modifyUserInfo: Button
+
+    private val Fragment_ModifyUserInfo by lazy {
+        Fragment_ModifyUserInfo()
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -59,6 +63,9 @@ class Fragment_Myprofile : Fragment() {
 
         btn_modifyUserInfo.setOnClickListener {
             // TODO 버튼 클릭 시 정보 수정 화면으로 이동
+            val fg = Fragment_ModifyUserInfo.newInstance()
+            setChildFragment(fg)
+
         }
 
         return view
@@ -78,18 +85,24 @@ class Fragment_Myprofile : Fragment() {
         Thread(Runnable {
             db.userDAO().getUserInfo().forEach {
                 mainActivity.runOnUiThread {
-                    if (it.picture?.isNotEmpty() == true)
-                        it.picture?.let { s ->
-                            uploadImageFromCloud(s)
+
+                    iv_userPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
+                    iv_userPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
+
+                    it.picture?.let {
+                        uploadImageFromCloud(it)
 //                            db.userDAO().updatePicture(it.email, string_uri)
-                        }
-                    else {
-                        iv_userPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
-                        iv_userPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
                     }
+
                     tv_userNickName.text = it.user_name
-                    tv_gameUserName.text = it.game_name
-                    tv_realSelfPR.text = it.self_pr
+                    it.game_name?.let {
+                        tv_gameUserName.text = it
+                    }
+
+                    it.self_pr?.let {
+                        tv_realSelfPR.text = it
+                        tv_realSelfPR.visibility = View.VISIBLE
+                    }
 
                     val tendency = listOf(
                         it.tendency0,
@@ -222,6 +235,17 @@ class Fragment_Myprofile : Fragment() {
             iv_userPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
             iv_userPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
         }
+    }
+
+    private fun setChildFragment(fragment : Fragment) {
+        val fragmentTransaction : FragmentTransaction = childFragmentManager.beginTransaction()
+
+        btn_modifyUserInfo.visibility = View.GONE
+
+        fragmentTransaction.replace(R.id.fl_modify_userProfile, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+
     }
 
     private fun setTextView(list: List<Games>) {

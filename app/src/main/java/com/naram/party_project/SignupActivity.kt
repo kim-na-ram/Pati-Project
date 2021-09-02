@@ -13,6 +13,9 @@ import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -21,6 +24,7 @@ import kotlinx.coroutines.*
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
+import java.nio.charset.Charset
 
 class SignupActivity : AppCompatActivity() {
 
@@ -294,18 +298,20 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun saveUserInfoToDB() {
-        insertData(
-            INSERT_URL,
-            _userEmail,
-            _userPassword,
-            _userNickName,
-            _userGender,
-            _userPicture
-        )
+        runBlocking {
+            insertData(
+                INSERT_URL,
+                _userEmail,
+                _userPassword,
+                _userNickName,
+                _userGender,
+                _userPicture
+            )
+        }
     }
 
-    private fun insertData(vararg params: String?) = runBlocking {
-        val job = CoroutineScope(Dispatchers.Default).launch {
+    private fun insertData(vararg params: String?) {
+        CoroutineScope(Dispatchers.Default).launch {
             val serverURL: String? = params[0]
             val email: String? = params[1]
             val password: String? = params[2]
@@ -313,54 +319,69 @@ class SignupActivity : AppCompatActivity() {
             val gender: String? = params[4]
             val picture: String? = params[5]
 
-            val postParameters =
-                "email=$email&password=$password&user_name=$user_name&gender=$gender&picture=$picture"
+            val queue = Volley.newRequestQueue(this@SignupActivity)
 
-            try {
-                val url = URL(serverURL)
-                val httpURLConnection: HttpURLConnection =
-                    url.openConnection() as HttpURLConnection
-
-                httpURLConnection.readTimeout = 5000
-                httpURLConnection.connectTimeout = 5000
-                httpURLConnection.requestMethod = "POST"
-                httpURLConnection.connect()
-
-                val outputStream: OutputStream = httpURLConnection.outputStream
-                outputStream.write(postParameters.toByteArray(charset("UTF-8")))
-                outputStream.flush()
-                outputStream.close()
-
-                val responseStatusCode: Int = httpURLConnection.responseCode
-
-                val inputStream: InputStream
-                inputStream = if (responseStatusCode == HttpURLConnection.HTTP_OK) {
-                    httpURLConnection.inputStream
-                } else {
-                    httpURLConnection.errorStream
+            val requestBody = "email=$email&password=$password&user_name=$user_name&gender=$gender&picture=$picture"
+            val stringReq : StringRequest =
+                object : StringRequest(Method.POST, serverURL,
+                    Response.Listener { response ->
+                        // response
+                        var strResp = response.toString()
+                        Log.d("Coroutines-Log", strResp)
+                    },
+                    Response.ErrorListener { error ->
+                        Log.d("Coroutines-Log", "error => $error")
+                    }
+                ){
+                    override fun getBody(): ByteArray {
+                        return requestBody.toByteArray(Charset.defaultCharset())
+                    }
                 }
+            queue.add(stringReq)
 
-                val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
-                val bufferedReader = BufferedReader(inputStreamReader)
-
-                val sb = StringBuilder()
-                var line: String? = null
-
-                while (bufferedReader.readLine().also({ line = it }) != null) {
-                    sb.append(line)
-                }
-
-                bufferedReader.close()
-
-                Log.d("Coroutines-Log", sb.toString())
-            } catch (e: Exception) {
-                Log.d("Coroutines-Log", "Error" + e.message)
-                Toast.makeText(this@SignupActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-            }
+//            try {
+//                val url = URL(serverURL)
+//                val httpURLConnection: HttpURLConnection =
+//                    url.openConnection() as HttpURLConnection
+//
+//                httpURLConnection.readTimeout = 5000
+//                httpURLConnection.connectTimeout = 5000
+//                httpURLConnection.requestMethod = "POST"
+//                httpURLConnection.connect()
+//
+//                val outputStream: OutputStream = httpURLConnection.outputStream
+//                outputStream.write(postParameters.toByteArray(charset("UTF-8")))
+//                outputStream.flush()
+//                outputStream.close()
+//
+//                val responseStatusCode: Int = httpURLConnection.responseCode
+//
+//                val inputStream: InputStream
+//                inputStream = if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+//                    httpURLConnection.inputStream
+//                } else {
+//                    httpURLConnection.errorStream
+//                }
+//
+//                val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
+//                val bufferedReader = BufferedReader(inputStreamReader)
+//
+//                val sb = StringBuilder()
+//                var line: String? = null
+//
+//                while (bufferedReader.readLine().also({ line = it }) != null) {
+//                    sb.append(line)
+//                }
+//
+//                bufferedReader.close()
+//
+//                Log.d("Coroutines-Log", sb.toString())
+//            } catch (e: Exception) {
+//                Log.d("Coroutines-Log", "Error" + e.message)
+//                Toast.makeText(this@SignupActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+//            }
 
         }
-
-        job.join()
 
     }
 

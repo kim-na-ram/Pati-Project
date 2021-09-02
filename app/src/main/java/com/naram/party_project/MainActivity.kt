@@ -59,18 +59,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        checkUserInfo()
         initViews()
         initNavigaionBar()
-
-    }
-
-    private fun checkUserInfo() {
-        val auth = FirebaseAuth.getInstance()
-        val user = auth?.currentUser
-
-        // user의 email에 따라 정보를 불러오기
-        val userID = user?.email.toString()
 
     }
 
