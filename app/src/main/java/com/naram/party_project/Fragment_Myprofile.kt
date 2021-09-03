@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -17,31 +16,27 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
+import com.naram.party_project.databinding.FragmentMyprofileBinding
+
 class Fragment_Myprofile : Fragment() {
 
     private val TAG = "MyProfile_Fragment"
     private lateinit var mainActivity: MainActivity
 
-    private lateinit var db : AppDatabase
+    private lateinit var db: AppDatabase
+
+    private var _binding: FragmentMyprofileBinding? = null
+
+    private val binding get() = _binding!!
 
 //    private lateinit var currentPhotoPath: String
 
-    // user simple profile
-    private lateinit var iv_userPicture : ImageView
-    private lateinit var tv_userNickName: TextView
-    private lateinit var tv_gameUserName: TextView
-    private lateinit var tv_realSelfPR: TextView
-    private lateinit var tv_realKindness: TextView
-    private lateinit var tv_estimatedKindness: TextView
-
+    // user detail profile
     private lateinit var TendencyTextViewList: List<TextView>
     private lateinit var GameNameTextViewList: List<TextView>
 
-    // modify button
-    private lateinit var btn_modifyUserInfo: Button
-
     private val Fragment_ModifyUserInfo by lazy {
-        Fragment_ModifyUserInfo()
+        Fragment_Modifyprofile()
     }
 
     override fun onAttach(context: Context) {
@@ -54,14 +49,14 @@ class Fragment_Myprofile : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //return super.onCreateView(inflater, container, savedInstanceState)
-        val view = inflater.inflate(R.layout.fragment_myprofile, container, false)
+        _binding = FragmentMyprofileBinding.inflate(inflater, container, false)
+        val view = binding.root
 
         createDB()
+        initViews()
         getRoom()
-        initViews(view)
 
-        btn_modifyUserInfo.setOnClickListener {
+        binding.btnModifyUserInfo.setOnClickListener {
             // TODO 버튼 클릭 시 정보 수정 화면으로 이동
             val fg = Fragment_ModifyUserInfo.newInstance()
             setChildFragment(fg)
@@ -70,6 +65,11 @@ class Fragment_Myprofile : Fragment() {
 
         return view
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun createDB() {
@@ -81,27 +81,54 @@ class Fragment_Myprofile : Fragment() {
             .build()
     }
 
+    private fun initViews() {
+        TendencyTextViewList = listOf(
+            binding.tvGameTendencyWantWin,
+            binding.tvGameTendencyWinOrlose,
+            binding.tvGameTendencyOnlyFun,
+            binding.tvGameTendencyOnlyWin,
+            binding.tvGameTendencyVoiceOk,
+            binding.tvGameTendencyVoiceNo,
+            binding.tvGameTendencyOnlyWomen,
+            binding.tvGameTendencyOnlyMen,
+            binding.tvGameTendencyWomenOrmen
+        )
+
+        GameNameTextViewList = listOf(
+            binding.tvGameNamesLOL,
+            binding.tvGameNamesOverWatch,
+            binding.tvGameNamesBattleGround,
+            binding.tvGameNamesSuddenAttack,
+            binding.tvGameNamesFIFAOnline4,
+            binding.tvGameNamesLostArk,
+            binding.tvGameNamesMapleStory,
+            binding.tvGameNamesCyphers,
+            binding.tvGameNamesStarCraft,
+            binding.tvGameNamesDungeonandFighter
+        )
+    }
+
     private fun getRoom() {
         Thread(Runnable {
             db.userDAO().getUserInfo().forEach {
                 mainActivity.runOnUiThread {
 
-                    iv_userPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
-                    iv_userPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                    binding.ivUserPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
+                    binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
 
                     it.picture?.let {
                         uploadImageFromCloud(it)
 //                            db.userDAO().updatePicture(it.email, string_uri)
                     }
 
-                    tv_userNickName.text = it.user_name
+                    binding.tvUserNickName.text = it.user_name
                     it.game_name?.let {
-                        tv_gameUserName.text = it
+                        binding.tvGameUserName.text = it
                     }
 
                     it.self_pr?.let {
-                        tv_realSelfPR.text = it
-                        tv_realSelfPR.visibility = View.VISIBLE
+                        binding.tvRealSelfPR.text = it
+                        binding.tvRealSelfPR.visibility = View.VISIBLE
                     }
 
                     val tendency = listOf(
@@ -151,44 +178,6 @@ class Fragment_Myprofile : Fragment() {
         }).start()
     }
 
-    private fun initViews(view : View) {
-
-        // Simple User Info
-        iv_userPicture = view.findViewById(R.id.iv_userPicture)
-        tv_userNickName = view.findViewById(R.id.tv_userNickName)
-        tv_gameUserName = view.findViewById(R.id.tv_gameUserName)
-        tv_realSelfPR = view.findViewById(R.id.tv_realSelfPR)
-
-        // Detail User Info
-        TendencyTextViewList = listOf(
-            view.findViewById(R.id.tv_gameTendency_wantWin),
-            view.findViewById(R.id.tv_gameTendency_winOrlose),
-            view.findViewById(R.id.tv_gameTendency_onlyFun),
-            view.findViewById(R.id.tv_gameTendency_onlyWin),
-            view.findViewById(R.id.tv_gameTendency_voiceOk),
-            view.findViewById(R.id.tv_gameTendency_voiceNo),
-            view.findViewById(R.id.tv_gameTendency_onlyWomen),
-            view.findViewById(R.id.tv_gameTendency_onlyMen),
-            view.findViewById(R.id.tv_gameTendency_womenOrmen)
-        )
-
-        GameNameTextViewList = listOf (
-            view.findViewById(R.id.tv_gameNames_LOL),
-            view.findViewById(R.id.tv_gameNames_OverWatch),
-            view.findViewById(R.id.tv_gameNames_BattleGround),
-            view.findViewById(R.id.tv_gameNames_SuddenAttack),
-            view.findViewById(R.id.tv_gameNames_FIFAOnline4),
-            view.findViewById(R.id.tv_gameNames_LostArk),
-            view.findViewById(R.id.tv_gameNames_MapleStory),
-            view.findViewById(R.id.tv_gameNames_Cyphers),
-            view.findViewById(R.id.tv_gameNames_StarCraft),
-            view.findViewById(R.id.tv_gameNames_DungeonandFighter)
-        )
-
-        btn_modifyUserInfo = view.findViewById(R.id.btn_modifyUserInfo)
-
-    }
-
     private fun uploadImageFromCloud(path: String) {
         val storage = Firebase.storage
         var storageRef = storage.reference
@@ -218,7 +207,7 @@ class Fragment_Myprofile : Fragment() {
         val result = Ref.downloadUrl.addOnSuccessListener {
             Glide.with(this)
                 .load(it)
-                .into(iv_userPicture)
+                .into(binding.ivUserPicture)
         }
 
         return result.isSuccessful
@@ -230,17 +219,17 @@ class Fragment_Myprofile : Fragment() {
         Ref.getBytes(ONE_MEGABYTE).addOnSuccessListener {
             val options = BitmapFactory.Options();
             val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size, options)
-            iv_userPicture.setImageBitmap(bitmap)
+            binding.ivUserPicture.setImageBitmap(bitmap)
         }.addOnFailureListener {
-            iv_userPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
-            iv_userPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            binding.ivUserPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
+            binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
         }
     }
 
-    private fun setChildFragment(fragment : Fragment) {
-        val fragmentTransaction : FragmentTransaction = childFragmentManager.beginTransaction()
+    private fun setChildFragment(fragment: Fragment) {
+        val fragmentTransaction: FragmentTransaction = childFragmentManager.beginTransaction()
 
-        btn_modifyUserInfo.visibility = View.GONE
+        binding.btnModifyUserInfo.visibility = View.GONE
 
         fragmentTransaction.replace(R.id.fl_modify_userProfile, fragment)
         fragmentTransaction.addToBackStack(null)

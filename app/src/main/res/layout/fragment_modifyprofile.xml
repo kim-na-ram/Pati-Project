@@ -17,12 +17,13 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_enterUserPic"
+        android:id="@+id/btn_modifyUserPic"
         android:layout_width="140dp"
         android:layout_height="@dimen/button_height"
         android:background="@color/color_activated_blue"
         android:text="수정하기"
         android:textColor="@color/white"
+        android:textSize="@dimen/button_text_size"
         app:layout_constraintBottom_toBottomOf="@id/iv_userPicture"
         app:layout_constraintEnd_toEndOf="@id/iv_userPicture"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture" />
@@ -38,20 +39,22 @@
         android:text="유저 이름"
         android:textColor="@color/white"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@id/tv_userNickName"
+        app:layout_constraintBottom_toTopOf="@id/et_userNickName"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintLeft_toRightOf="@id/iv_userPicture"
         app:layout_constraintTop_toTopOf="@id/iv_userPicture" />
 
     <EditText
-        android:id="@+id/tv_userNickName"
+        android:id="@+id/et_userNickName"
         android:layout_width="@dimen/edittext_short_userinfo_width"
-        android:layout_height="30dp"
-        android:background="@drawable/edittext_rounded_background_activate"
+        android:layout_height="@dimen/edittext_short_userinfo_height"
+        android:backgroundTint="@color/color_activated_blue"
         android:drawableRight="@drawable/profile_edit_100"
         android:fontFamily="@font/nanumsquareextrabold"
+        android:paddingTop="0dp"
         android:textColor="@color/color_activated_blue"
         android:textSize="22sp"
+        android:inputType="text"
         app:layout_constraintBottom_toTopOf="@id/tv_inGameName"
         app:layout_constraintStart_toStartOf="@id/tv_userName"
         app:layout_constraintTop_toBottomOf="@id/tv_userName"
@@ -67,25 +70,27 @@
         android:text="인게임 닉네임"
         android:textColor="@color/white"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@id/tv_gameUserName"
+        app:layout_constraintBottom_toTopOf="@id/et_gameUserName"
         app:layout_constraintStart_toStartOf="@id/tv_userName"
-        app:layout_constraintTop_toBottomOf="@id/tv_userNickName" />
+        app:layout_constraintTop_toBottomOf="@id/et_userNickName" />
 
-    <TextView
-        android:id="@+id/tv_gameUserName"
+    <EditText
+        android:id="@+id/et_gameUserName"
         android:layout_width="@dimen/edittext_short_userinfo_width"
-        android:layout_height="30dp"
+        android:layout_height="@dimen/edittext_short_userinfo_height"
         android:layout_marginTop="5dp"
-        android:background="@drawable/edittext_rounded_background_activate"
+        android:backgroundTint="@color/color_activated_blue"
         android:drawableRight="@drawable/profile_edit_100"
         android:fontFamily="@font/nanumsquareextrabold"
+        android:paddingTop="0dp"
         android:textColor="@color/color_activated_blue"
         android:textSize="22sp"
+        android:inputType="text"
         app:layout_constraintStart_toStartOf="@id/tv_userName"
         app:layout_constraintTop_toBottomOf="@id/tv_inGameName"
         tools:text="RIT" />
 
-        <TextView
+    <TextView
         android:id="@+id/tv_selfPR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -110,17 +115,18 @@
     <!--        app:layout_constraintTop_toBottomOf="@id/iv_userPicture"-->
     <!--        tools:text="86.7%" />-->
 
-    <TextView
-        android:id="@+id/tv_realSelfPR"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <EditText
+        android:id="@+id/et_selfPR"
+        android:layout_width="360dp"
+        android:layout_height="@dimen/edittext_userinfo_height"
         android:layout_marginTop="6dp"
-        android:background="@color/color_inactivated_blue"
+        android:backgroundTint="@color/color_activated_blue"
         android:fontFamily="@font/nanumsquarebold"
-        android:padding="5dp"
-        android:textColor="@color/white"
+        android:textColor="@color/color_activated_blue"
+        android:paddingTop="0dp"
         android:textSize="19sp"
-        android:visibility="gone"
+        android:inputType="text"
+        android:drawableEnd="@drawable/profile_edit_100"
         app:layout_constraintBottom_toTopOf="@id/tv_gameTendency"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
         app:layout_constraintTop_toBottomOf="@id/tv_selfPR"
@@ -137,7 +143,7 @@
         android:textSize="26sp"
         app:layout_constraintBottom_toTopOf="@+id/fl_selectGameTendency"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
-        app:layout_constraintTop_toBottomOf="@id/tv_realSelfPR" />
+        app:layout_constraintTop_toBottomOf="@id/et_selfPR" />
 
     <com.nex3z.flowlayout.FlowLayout
         android:id="@+id/fl_selectGameTendency"
@@ -403,6 +409,7 @@
     </com.nex3z.flowlayout.FlowLayout>
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_saveUserInfo"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
         android:layout_marginTop="10dp"

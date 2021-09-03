@@ -20,10 +20,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.naram.party_project.PatiConstClass.Companion.IP_ADDRESS
+import com.naram.party_project.databinding.ActivitySignupBinding
 import kotlinx.coroutines.*
 import java.io.*
-import java.net.HttpURLConnection
-import java.net.URL
 import java.nio.charset.Charset
 
 class SignupActivity : AppCompatActivity() {
@@ -34,7 +33,9 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private val INSERT_URL = "http://$IP_ADDRESS/userInsert.php"
-    private val LOG_TAG = "SignupActivity"
+    private val TAG = "SignupActivity"
+
+    private lateinit var binding: ActivitySignupBinding
 
     private var _userPicture: String? = null
     private lateinit var _userEmail: String
@@ -44,45 +45,11 @@ class SignupActivity : AppCompatActivity() {
 
     private lateinit var bitmap: Bitmap
 
-    private val iv_signupUserPic: ImageView by lazy {
-        findViewById(R.id.iv_signupUserPic)
-    }
-
-    private val btn_enterUserPic: Button by lazy {
-        findViewById(R.id.btn_enterUserPic)
-    }
-
-    private val et_signupUserName: EditText by lazy {
-        findViewById(R.id.et_signupUserName)
-    }
-
-    private val radio_userGender: RadioGroup by lazy {
-        findViewById(R.id.radio_userGender)
-    }
-
-    private val radiobutton_userFemale: RadioButton by lazy {
-        findViewById(R.id.radiobutton_userFemale)
-    }
-
-    private val radiobutton_userMale: RadioButton by lazy {
-        findViewById(R.id.radiobutton_userMale)
-    }
-
-    private val et_signupUserEmail: EditText by lazy {
-        findViewById(R.id.et_signupUserEmail)
-    }
-
-    private val et_signupUserPW: EditText by lazy {
-        findViewById(R.id.et_signupUserPW)
-    }
-
-    private val btn_userSignup: Button by lazy {
-        findViewById(R.id.btn_userSignup)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signup)
+        binding = ActivitySignupBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         initViews()
 
@@ -90,19 +57,19 @@ class SignupActivity : AppCompatActivity() {
 
     private fun initViews() {
 
-        btn_enterUserPic.setOnClickListener {
+        binding.btnEnterUserPic.setOnClickListener {
             getUserPermission()
         }
 
-        btn_userSignup.setOnClickListener {
+        binding.btnUserSignup.setOnClickListener {
             val flag = editTextNullCheck()
 
             when (flag) {
                 true -> {
                     val auth = FirebaseAuth.getInstance()
                     auth.createUserWithEmailAndPassword(
-                        et_signupUserEmail.toStringFromText(),
-                        et_signupUserPW.toStringFromText()
+                        binding.etSignupUserEmail.toStringFromText(),
+                        binding.etSignupUserPW.toStringFromText()
                     )
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
@@ -202,7 +169,7 @@ class SignupActivity : AppCompatActivity() {
                 val selectedImageUri: Uri? = data?.data
 
                 if (selectedImageUri != null) {
-                    iv_signupUserPic.setImageURI(selectedImageUri)
+                    binding.ivSignupUserPic.setImageURI(selectedImageUri)
                     bitmap = resize(this, selectedImageUri, 400)
                 } else {
                     Toast.makeText(this, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
@@ -250,13 +217,13 @@ class SignupActivity : AppCompatActivity() {
 
     private fun editTextNullCheck(): Boolean {
 
-        _userNickName = et_signupUserName.toStringFromText()
-        _userEmail = et_signupUserEmail.toStringFromText()
-        _userPassword = et_signupUserPW.toStringFromText()
+        _userNickName = binding.etSignupUserName.toStringFromText()
+        _userEmail = binding.etSignupUserEmail.toStringFromText()
+        _userPassword = binding.etSignupUserPW.toStringFromText()
 
-        when (radio_userGender.checkedRadioButtonId) {
-            radiobutton_userFemale.id -> _userGender = "F"
-            radiobutton_userMale.id -> _userGender = "M"
+        when (binding.radioUserGender.checkedRadioButtonId) {
+            binding.radiobuttonUserFemale.id -> _userGender = "F"
+            binding.radiobuttonUserMale.id -> _userGender = "M"
         }
 
         if (_userNickName.isNotEmpty() && _userEmail.isNotEmpty() && _userPassword.isNotEmpty()) {
@@ -338,48 +305,6 @@ class SignupActivity : AppCompatActivity() {
                     }
                 }
             queue.add(stringReq)
-
-//            try {
-//                val url = URL(serverURL)
-//                val httpURLConnection: HttpURLConnection =
-//                    url.openConnection() as HttpURLConnection
-//
-//                httpURLConnection.readTimeout = 5000
-//                httpURLConnection.connectTimeout = 5000
-//                httpURLConnection.requestMethod = "POST"
-//                httpURLConnection.connect()
-//
-//                val outputStream: OutputStream = httpURLConnection.outputStream
-//                outputStream.write(postParameters.toByteArray(charset("UTF-8")))
-//                outputStream.flush()
-//                outputStream.close()
-//
-//                val responseStatusCode: Int = httpURLConnection.responseCode
-//
-//                val inputStream: InputStream
-//                inputStream = if (responseStatusCode == HttpURLConnection.HTTP_OK) {
-//                    httpURLConnection.inputStream
-//                } else {
-//                    httpURLConnection.errorStream
-//                }
-//
-//                val inputStreamReader = InputStreamReader(inputStream, "UTF-8")
-//                val bufferedReader = BufferedReader(inputStreamReader)
-//
-//                val sb = StringBuilder()
-//                var line: String? = null
-//
-//                while (bufferedReader.readLine().also({ line = it }) != null) {
-//                    sb.append(line)
-//                }
-//
-//                bufferedReader.close()
-//
-//                Log.d("Coroutines-Log", sb.toString())
-//            } catch (e: Exception) {
-//                Log.d("Coroutines-Log", "Error" + e.message)
-//                Toast.makeText(this@SignupActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-//            }
 
         }
 
