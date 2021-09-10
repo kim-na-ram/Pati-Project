@@ -13,17 +13,16 @@ import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.naram.party_project.PatiConstClass.Companion.IP_ADDRESS
 import com.naram.party_project.databinding.ActivitySignupBinding
+import com.naram.party_project.model.User
 import kotlinx.coroutines.*
+import retrofit2.Call
+import retrofit2.Callback
 import java.io.*
-import java.nio.charset.Charset
 
 class SignupActivity : AppCompatActivity() {
 
@@ -32,10 +31,11 @@ class SignupActivity : AppCompatActivity() {
         private const val REQUEST_SUCCESS = 1001
     }
 
-    private val INSERT_URL = "http://$IP_ADDRESS/userInsert.php"
     private val TAG = "SignupActivity"
 
     private lateinit var binding: ActivitySignupBinding
+
+    private lateinit var db : AppDatabase
 
     private var _userPicture: String? = null
     private lateinit var _userEmail: String
@@ -43,7 +43,7 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var _userNickName: String
     private lateinit var _userGender: String
 
-    private lateinit var bitmap: Bitmap
+    private var bitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +51,18 @@ class SignupActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        createDB()
         initViews()
 
+    }
+
+    private fun createDB() {
+        db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "userDB"
+        )
+            .build()
     }
 
     private fun initViews() {
@@ -73,13 +83,8 @@ class SignupActivity : AppCompatActivity() {
                     )
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
-
-                                if (bitmap != null) uploadImageToCloud(bitmap)
-                                else saveUserInfoToDB()
-
-                                finish()
-                                startActivity(Intent(this, MakemyprofileActivity::class.java))
-//                                startActivity(Intent(this, MainActivity::class.java))
+                                if(bitmap == null) saveUserInfoToDB()
+                                else uploadImageToCloud(bitmap!!)
                             } else {
                                 Toast.makeText(this, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show()
                             }
@@ -267,7 +272,6 @@ class SignupActivity : AppCompatActivity() {
     private fun saveUserInfoToDB() {
         runBlocking {
             insertData(
-                INSERT_URL,
                 _userEmail,
                 _userPassword,
                 _userNickName,
@@ -275,39 +279,68 @@ class SignupActivity : AppCompatActivity() {
                 _userPicture
             )
         }
+
+        insertRoom(
+            _userEmail,
+            _userNickName,
+            _userGender,
+            _userPicture
+        )
+
     }
 
     private fun insertData(vararg params: String?) {
         CoroutineScope(Dispatchers.Default).launch {
-            val serverURL: String? = params[0]
-            val email: String? = params[1]
-            val password: String? = params[2]
-            val user_name: String? = params[3]
-            val gender: String? = params[4]
-            val picture: String? = params[5]
+            val email: String? = params[0]
+            val password: String? = params[1]
+            val user_name: String? = params[2]
+            val gender: String? = params[3]
+            val picture: String? = params[4]
 
-            val queue = Volley.newRequestQueue(this@SignupActivity)
+            // Use Retrofit
+            val retrofit = RetrofitClient.getInstance()
 
-            val requestBody = "email=$email&password=$password&user_name=$user_name&gender=$gender&picture=$picture"
-            val stringReq : StringRequest =
-                object : StringRequest(Method.POST, serverURL,
-                    Response.Listener { response ->
-                        // response
-                        var strResp = response.toString()
-                        Log.d("Coroutines-Log", strResp)
-                    },
-                    Response.ErrorListener { error ->
-                        Log.d("Coroutines-Log", "error => $error")
-                    }
-                ){
-                    override fun getBody(): ByteArray {
-                        return requestBody.toByteArray(Charset.defaultCharset())
-                    }
+            val server = retrofit.create(UserAPI::class.java)
+            val call : Call<String> = server.putUser(email!!, password!!, user_name!!, gender!!, picture)
+            call.enqueue(object : Callback<String> {
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d(TAG,"실패 : "+t.localizedMessage)
+                    Toast.makeText(this@SignupActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
-            queue.add(stringReq)
+
+                override fun onResponse(call: Call<String>, response: retrofit2.Response<String>) {
+                    Log.d(TAG,"성공 : "+response?.body().toString())
+                }
+            })
 
         }
 
+    }
+
+    private fun insertRoom(email: String, user_name: String, gender: String, picture: String?) {
+        val thread = Thread(Runnable {
+            db.userDAO().insertUserInfo(
+                User(
+                    email,
+                    picture,
+                    null,
+                    user_name,
+                    null,
+                    gender,
+                    null
+                )
+            )
+
+            db.tendencyDAO().insertUserTendencyInfo(email)
+
+            db.gameDAO().insertUserGameInfo(email)
+
+        })
+
+        thread.start()
+
+        finish()
+        startActivity(Intent(this@SignupActivity, MainActivity::class.java))
     }
 
     fun EditText.toStringFromText(): String {

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import android.os.Bundle as Bundle
@@ -35,8 +36,8 @@ class Fragment_Myprofile : Fragment() {
     private lateinit var TendencyTextViewList: List<TextView>
     private lateinit var GameNameTextViewList: List<TextView>
 
-    private val Fragment_ModifyUserInfo by lazy {
-        Fragment_Modifyprofile()
+    fun newInstance(): Fragment_Myprofile {
+        return Fragment_Myprofile()
     }
 
     override fun onAttach(context: Context) {
@@ -58,7 +59,7 @@ class Fragment_Myprofile : Fragment() {
 
         binding.btnModifyUserInfo.setOnClickListener {
             // TODO 버튼 클릭 시 정보 수정 화면으로 이동
-            val fg = Fragment_ModifyUserInfo.newInstance()
+            val fg = Fragment_Modifyprofile().newInstance()
             setChildFragment(fg)
 
         }
@@ -114,6 +115,7 @@ class Fragment_Myprofile : Fragment() {
                 mainActivity.runOnUiThread {
 
                     binding.ivUserPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
+                    binding.ivUserPicture.setBackgroundColor(resources.getColor(R.color.color_activated_blue))
                     binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
 
                     it.picture?.let {
@@ -131,11 +133,14 @@ class Fragment_Myprofile : Fragment() {
                         binding.tvRealSelfPR.visibility = View.VISIBLE
                     }
 
+                }
+
+                db.tendencyDAO().getTendencyInfo().forEach {
                     val tendency = listOf(
-                        it.tendency0,
-                        it.tendency1,
-                        it.tendency2,
-                        it.tendency3
+                        it.purpose,
+                        it.voice,
+                        it.preferred_gender,
+                        it.game_mode
                     )
 
                     // Game Tendency
@@ -151,7 +156,11 @@ class Fragment_Myprofile : Fragment() {
                         }
                     }
 
-                    val gamenames = listOf(
+                    setTextView(TendencyList)
+                }
+
+                db.gameDAO().getGameInfo().forEach {
+                    val gamenames = listOf (
                         it.game0,
                         it.game1,
                         it.game2,
@@ -167,13 +176,14 @@ class Fragment_Myprofile : Fragment() {
                     // Game Names
                     val GameList = mutableListOf<Games>().apply {
                         GameNameTextViewList.forEachIndexed { index, textView ->
-                            this.add(Games(textView, gamenames[index]))
+                            if(gamenames[index] == 1) this.add(Games(textView, true))
+                            else this.add(Games(textView, false))
                         }
                     }
 
-                    setTextView(TendencyList)
                     setTextView(GameList)
                 }
+
             }
         }).start()
     }
@@ -220,15 +230,16 @@ class Fragment_Myprofile : Fragment() {
             val options = BitmapFactory.Options();
             val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size, options)
             binding.ivUserPicture.setImageBitmap(bitmap)
+            binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_CROP
         }.addOnFailureListener {
-            binding.ivUserPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
-            binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            Toast.makeText(requireContext(), "사진을 불러오는데 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun setChildFragment(fragment: Fragment) {
         val fragmentTransaction: FragmentTransaction = childFragmentManager.beginTransaction()
 
+        binding.flModifyUserProfile.visibility = View.VISIBLE
         binding.btnModifyUserInfo.visibility = View.GONE
 
         fragmentTransaction.replace(R.id.fl_modify_userProfile, fragment)

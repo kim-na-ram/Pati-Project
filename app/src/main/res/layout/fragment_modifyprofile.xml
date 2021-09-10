@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".MakemyprofileActivity">
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/iv_userPicture"
@@ -419,6 +418,5 @@
         android:textSize="@dimen/button_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fl_selectGameNames" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

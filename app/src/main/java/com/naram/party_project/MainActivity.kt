@@ -2,26 +2,13 @@ package com.naram.party_project
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
+import com.naram.party_project.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private val toolbar : Toolbar by lazy {
-        findViewById(R.id.toolbar)
-    }
-
-    private val bnb_menuBar: BottomNavigationView by lazy {
-        findViewById(R.id.bnb_menuBar)
-    }
-
-    private val vp_showView: ViewPager2 by lazy {
-        findViewById(R.id.vp_showView)
-    }
+    private lateinit var binding : ActivityMainBinding
 
     private val Fragment_Myprofile by lazy {
         Fragment_Myprofile()
@@ -57,7 +44,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         initViews()
         initNavigaionBar()
@@ -66,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() {
 
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         val ab = supportActionBar!!
         ab.setDisplayShowTitleEnabled(false)
 
@@ -75,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initNavigaionBar() {
-        bnb_menuBar.run {
+        binding.bnbMenuBar.run {
             setOnNavigationItemSelectedListener {
                 val page = when (it.itemId) {
                     R.id.myProfile -> 0
@@ -86,8 +75,8 @@ class MainActivity : AppCompatActivity() {
                     else -> 0
                 }
 
-                if (page != vp_showView.currentItem) {
-                    vp_showView.currentItem = page
+                if (page != binding.vpShowView.currentItem) {
+                    binding.vpShowView.currentItem = page
                 }
 
                 true
@@ -99,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setViewpager() {
 
-        vp_showView.run {
+        binding.vpShowView.run {
             adapter = pagerAdapter
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
@@ -112,8 +101,8 @@ class MainActivity : AppCompatActivity() {
                         else -> R.id.myProfile
                     }
 
-                    if (bnb_menuBar.selectedItemId != navigation) {
-                        bnb_menuBar.selectedItemId = navigation
+                    if (binding.bnbMenuBar.selectedItemId != navigation) {
+                        binding.bnbMenuBar.selectedItemId = navigation
                     }
                 }
             })
