@@ -61,11 +61,15 @@ class Fragment_Myprofile : Fragment() {
             // TODO 버튼 클릭 시 정보 수정 화면으로 이동
             val fg = Fragment_Modifyprofile().newInstance()
             setChildFragment(fg)
-
         }
 
         return view
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getRoom()
     }
 
     override fun onDestroyView() {
@@ -115,7 +119,7 @@ class Fragment_Myprofile : Fragment() {
                 mainActivity.runOnUiThread {
 
                     binding.ivUserPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
-                    binding.ivUserPicture.setBackgroundColor(resources.getColor(R.color.color_activated_blue))
+                    binding.ivUserPicture.setBackgroundColor(resources.getColor(R.color.color_inactivated_blue))
                     binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
 
                     it.picture?.let {
@@ -136,52 +140,58 @@ class Fragment_Myprofile : Fragment() {
                 }
 
                 db.tendencyDAO().getTendencyInfo().forEach {
-                    val tendency = listOf(
-                        it.purpose,
-                        it.voice,
-                        it.preferred_gender,
-                        it.game_mode
-                    )
+                    mainActivity.runOnUiThread {
 
-                    // Game Tendency
-                    val TendencyList = mutableListOf<Games>().apply {
-                        TendencyTextViewList.forEach { textView ->
-                            this.add(Games(textView, false))
-                            tendency.forEach { s ->
-                                if (textView.text.toString() == s) {
-                                    this.removeLast()
-                                    this.add(Games(textView, true))
+                        val tendency = listOf(
+                            it.purpose,
+                            it.voice,
+                            it.preferred_gender,
+                            it.game_mode
+                        )
+
+                        // Game Tendency
+                        val TendencyList = mutableListOf<Games>().apply {
+                            TendencyTextViewList.forEach { textView ->
+                                this.add(Games(textView, false))
+                                tendency.forEach { s ->
+                                    if (textView.text.toString() == s) {
+                                        this.removeLast()
+                                        this.add(Games(textView, true))
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    setTextView(TendencyList)
+                        setTextView(TendencyList)
+                    }
                 }
 
                 db.gameDAO().getGameInfo().forEach {
-                    val gamenames = listOf (
-                        it.game0,
-                        it.game1,
-                        it.game2,
-                        it.game3,
-                        it.game4,
-                        it.game5,
-                        it.game6,
-                        it.game7,
-                        it.game8,
-                        it.game9
-                    )
+                    mainActivity.runOnUiThread {
 
-                    // Game Names
-                    val GameList = mutableListOf<Games>().apply {
-                        GameNameTextViewList.forEachIndexed { index, textView ->
-                            if(gamenames[index] == 1) this.add(Games(textView, true))
-                            else this.add(Games(textView, false))
+                        val gamenames = listOf(
+                            it.game0,
+                            it.game1,
+                            it.game2,
+                            it.game3,
+                            it.game4,
+                            it.game5,
+                            it.game6,
+                            it.game7,
+                            it.game8,
+                            it.game9
+                        )
+
+                        // Game Names
+                        val GameList = mutableListOf<Games>().apply {
+                            GameNameTextViewList.forEachIndexed { index, textView ->
+                                if (gamenames[index] == 1) this.add(Games(textView, true))
+                                else this.add(Games(textView, false))
+                            }
                         }
-                    }
 
-                    setTextView(GameList)
+                        setTextView(GameList)
+                    }
                 }
 
             }
@@ -192,7 +202,7 @@ class Fragment_Myprofile : Fragment() {
         val storage = Firebase.storage
         var storageRef = storage.reference
         var imagesRef = storageRef.child(path)
-//
+
 //        val localFile = File.createTempFile("images", "jpg")
 //        var uri : Uri? = null
 //
@@ -221,7 +231,6 @@ class Fragment_Myprofile : Fragment() {
         }
 
         return result.isSuccessful
-
     }
 
     private fun uploadImageFromDownload(Ref: StorageReference) {

@@ -11,7 +11,8 @@ import java.lang.Exception
 
 import com.naram.party_project.databinding.ActivitySigninBinding
 import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_GAME_MODE
-import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_PREFERRED_GENDER
+import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_PREFERRED_GENDER_MEN
+import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_PREFERRED_GENDER_WOMEN
 import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_PURPOSE
 import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_VOICE
 import com.naram.party_project.PatiConstClass.Companion.processingTendency
@@ -183,7 +184,8 @@ class SigninActivity : AppCompatActivity() {
         val TendencyMap = mutableMapOf<String, String>().apply {
             this[TAG_TENDENCY_PURPOSE] = response!!.purpose
             this[TAG_TENDENCY_VOICE] = response!!.voice
-            this[TAG_TENDENCY_PREFERRED_GENDER] = response!!.preferred_gender
+            this[TAG_TENDENCY_PREFERRED_GENDER_WOMEN] = response!!.preferred_gender_women
+            this[TAG_TENDENCY_PREFERRED_GENDER_MEN] = response!!.preferred_gender_men
             this[TAG_TENDENCY_GAME_MODE] = response!!.game_mode
         }
 
