@@ -308,8 +308,15 @@ class SignupActivity : AppCompatActivity() {
                     Toast.makeText(this@SignupActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
 
-                override fun onResponse(call: Call<String>, response: retrofit2.Response<String>) {
-                    Log.d(TAG,"성공 : "+response?.body().toString())
+                override fun onResponse(
+                    call: Call<String>,
+                    response: retrofit2.Response<String>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "성공 : ${response.body().toString()}")
+                    } else {
+                        Log.d(TAG, "실패 : ${response.errorBody().toString()}")
+                    }
                 }
             })
 

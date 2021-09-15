@@ -1,5 +1,7 @@
 package com.naram.party_project
 
+import com.naram.party_project.callback.Party
+import com.naram.party_project.callback.Profile
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -10,7 +12,7 @@ interface UserAPI {
     @POST("retrofitUserSelect.php")
     fun getUser(
         @Field("email") email: String
-    ): Call<UserResponse>
+    ): Call<Profile>
 
     @FormUrlEncoded
     @POST("retrofitUserInsert.php")
@@ -46,4 +48,11 @@ interface UserAPI {
         @Field("game8") game8: String,
         @Field("game9") game9: String,
     ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("retrofitAllUserSelect.php")
+    fun getAllUser(
+        @Field("email") email: String
+    ): Call<List<Party>>
+
 }

@@ -16,6 +16,7 @@ import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_PREFERRED_G
 import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_PURPOSE
 import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_VOICE
 import com.naram.party_project.PatiConstClass.Companion.processingTendency
+import com.naram.party_project.callback.Profile
 import com.naram.party_project.model.Game
 import com.naram.party_project.model.Tendency
 import com.naram.party_project.model.User
@@ -65,61 +66,6 @@ class SigninActivity : AppCompatActivity() {
             if (userEmail.isEmpty() || userPW.isEmpty()) return@setOnClickListener
             else {
                 checkFirebaseAuth(userEmail, userPW)
-
-                runBlocking {
-                    getData(userEmail)
-                }
-
-                val thread = Thread(Runnable {
-                    userProfile?.let {
-                        db.userDAO().insertUserInfo(
-                            User(
-                                userProfile!!._userEmail,
-                                userProfile!!._userPicture,
-                                null,
-                                userProfile!!._userNickName,
-                                userProfile!!._userGameName,
-                                userProfile!!._userGender,
-                                userProfile!!._userPR
-                            )
-                        )
-
-                        db.tendencyDAO().insertTendencyInfo(
-                            Tendency(
-                                userProfile!!._userEmail,
-                                userProfile!!._userGameTendency[0],
-                                userProfile!!._userGameTendency[1],
-                                userProfile!!._userGameTendency[2],
-                                userProfile!!._userGameTendency[3]
-                            )
-                        )
-
-                        db.gameDAO().insertGameInfo(
-                            Game(
-                                userProfile!!._userEmail,
-                                userProfile!!._userGameNamesInt!!.get(0),
-                                userProfile!!._userGameNamesInt!!.get(1),
-                                userProfile!!._userGameNamesInt!!.get(2),
-                                userProfile!!._userGameNamesInt!!.get(3),
-                                userProfile!!._userGameNamesInt!!.get(4),
-                                userProfile!!._userGameNamesInt!!.get(5),
-                                userProfile!!._userGameNamesInt!!.get(6),
-                                userProfile!!._userGameNamesInt!!.get(7),
-                                userProfile!!._userGameNamesInt!!.get(8),
-                                userProfile!!._userGameNamesInt!!.get(9)
-                            )
-                        )
-
-                        Log.d(TAG, "Room에 저장")
-                    }
-
-                })
-
-                thread.join()
-
-                val intent = Intent(this, MainActivity::class.java)
-                finish()
-                startActivity(intent)
             }
 
         }
@@ -138,12 +84,23 @@ class SigninActivity : AppCompatActivity() {
     private fun checkFirebaseAuth(userID: String, userPW: String) {
         firebaseAuth = FirebaseAuth.getInstance()
         firebaseAuth!!.signInWithEmailAndPassword(userID, userPW).addOnCompleteListener {
-            if (it.isSuccessful) {
-                return@addOnCompleteListener
+            if(it.isSuccessful) {
+                userInfo()
             } else {
                 Toast.makeText(this, "이메일 혹은 비밀번호가 잘못되었습니다.", Toast.LENGTH_SHORT).show()
+                return@addOnCompleteListener
             }
         }
+    }
+
+    private fun userInfo() {
+
+        val email = FirebaseAuth.getInstance().currentUser?.email
+
+        runBlocking {
+            getData(email!!)
+        }
+
     }
 
     private suspend fun getData(vararg params: String) {
@@ -152,19 +109,24 @@ class SigninActivity : AppCompatActivity() {
 
             val retrofit = RetrofitClient.getInstance()
 
-            val signinAPI = retrofit.create(UserAPI::class.java)
+            val server = retrofit.create(UserAPI::class.java)
 
-            signinAPI.getUser(email!!).enqueue(object : Callback<UserResponse> {
+            server.getUser(email!!).enqueue(object : Callback<Profile> {
                 override fun onResponse(
-                    call: Call<UserResponse>,
-                    response: Response<UserResponse>
+                    call: Call<Profile>,
+                    response: Response<Profile>
                 ) {
-                    Log.d(TAG, "성공 : ${response.body().toString()}")
-                    showResult(response.body())
+                    if(response.isSuccessful) {
+                        Log.d(TAG, "성공 : ${response.body().toString()}")
+                        showResult(response.body())
+                    } else {
+                        Log.d(TAG, "실패 : ${response.errorBody().toString()}")
+                    }
                 }
 
-                override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+                override fun onFailure(call: Call<Profile>, t: Throwable) {
                     Log.d(TAG, "실패 : ${t.localizedMessage}")
+                    FirebaseAuth.getInstance()?.signOut()
                 }
             })
 
@@ -173,25 +135,25 @@ class SigninActivity : AppCompatActivity() {
         try {
             deferred.await()
         } catch (e: Exception) {
-            Log.d(TAG, "Error" + e)
+            Log.d(TAG, "Error$e")
             e.toString()
         }
 
     }
 
-    private fun showResult(response: UserResponse?) {
+    private fun showResult(response: Profile?) {
         // Game Tendency
         val TendencyMap = mutableMapOf<String, String>().apply {
             this[TAG_TENDENCY_PURPOSE] = response!!.purpose
             this[TAG_TENDENCY_VOICE] = response!!.voice
-            this[TAG_TENDENCY_PREFERRED_GENDER_WOMEN] = response!!.preferred_gender_women
-            this[TAG_TENDENCY_PREFERRED_GENDER_MEN] = response!!.preferred_gender_men
+            this[TAG_TENDENCY_PREFERRED_GENDER_WOMEN] = response!!.women
+            this[TAG_TENDENCY_PREFERRED_GENDER_MEN] = response!!.men
             this[TAG_TENDENCY_GAME_MODE] = response!!.game_mode
         }
 
         val tendency = processingTendency(TendencyMap)
 
-        val IntGameList = listOf<Int>(
+        val IntGameList = listOf(
             response!!.game0.toInt(),
             response!!.game1.toInt(),
             response!!.game2.toInt(),
@@ -214,19 +176,21 @@ class SigninActivity : AppCompatActivity() {
 
         userProfile = UserProfile(
             response!!.email,
-            response?.picture,
+            response!!.picture,
             response!!.user_name,
-            response?.game_name,
+            response!!.game_name,
             response!!.gender,
-            response?.self_pr,
+            response!!.self_pr,
             tendency,
             games,
             IntGameList
         )
 
+        saveInfoToRoom()
+
     }
 
-    fun saveInfoToRoom() {
+    private fun saveInfoToRoom() {
         val thread = Thread(Runnable {
             userProfile?.let {
                 db.userDAO().insertUserInfo(
@@ -267,7 +231,6 @@ class SigninActivity : AppCompatActivity() {
                     )
                 )
 
-                Log.d(TAG, "Room에 저장")
             }
 
         })

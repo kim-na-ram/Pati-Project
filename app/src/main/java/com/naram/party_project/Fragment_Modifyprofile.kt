@@ -156,6 +156,7 @@ class Fragment_Modifyprofile : Fragment() {
                     binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
 
                     it.picture?.let {
+                        picture_path = "${FirebaseAuth.getInstance().currentUser?.email}/profile.jpg"
                         uploadImageFromCloud(it)
 //                            db.userDAO().updatePicture(it.email, string_uri)
                     }
@@ -312,7 +313,6 @@ class Fragment_Modifyprofile : Fragment() {
         }.addOnSuccessListener { taskSnapshot ->
 //            _userPicture = imagesRef.toString()
             picture_path = "$email/profile.jpg"
-            Log.d(TAG, picture_path!!)
         }
 
     }
@@ -505,8 +505,12 @@ class Fragment_Modifyprofile : Fragment() {
                     }
                 }
 
-                saveUserInfoToDB()
-                saveUserInfoToRoom()
+                if(TendencyListToString.size == 4) {
+                    saveUserInfoToDB()
+                    saveUserInfoToRoom()
+
+                    Toast.makeText(requireContext(), "정보를 업데이트했습니다.", Toast.LENGTH_SHORT).show()
+                }
 
                 // TODO 내 프로필 프래그먼트로 전환
             }
@@ -592,8 +596,15 @@ class Fragment_Modifyprofile : Fragment() {
                     Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
 
-                override fun onResponse(call: Call<String>, response: retrofit2.Response<String>) {
-                    Log.d(TAG, "성공 : " + response?.body().toString())
+                override fun onResponse(
+                    call: Call<String>,
+                    response: retrofit2.Response<String>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "성공 : ${response.body().toString()}")
+                    } else {
+                        Log.d(TAG, "실패 : ${response.errorBody().toString()}")
+                    }
                 }
             })
 
