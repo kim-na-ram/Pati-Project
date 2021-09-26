@@ -52,7 +52,15 @@ interface UserAPI {
     @FormUrlEncoded
     @POST("retrofitAllUserSelect.php")
     fun getAllUser(
-        @Field("email") email: String
+        @Field("email") email: String,
+        @Field("preferred_gender") preferred_gender: String
     ): Call<List<Party>>
+
+//    @FormUrlEncoded
+//    @POST("retrofitAllUserSelect.php")
+//    fun getAllUser(
+//        @Field("email") email: String,
+//        @Field("preferred_gender") preferred_gender: String
+//    ): Call<String>
 
 }

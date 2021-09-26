@@ -2,26 +2,29 @@ package com.naram.party_project
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import android.os.Bundle as Bundle
 import androidx.room.Room
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
 import com.naram.party_project.databinding.FragmentMyprofileBinding
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Fragment_Myprofile : Fragment() {
 
-    private val TAG = "MyProfile_Fragment"
+    private val TAG = "MyProfile"
     private lateinit var mainActivity: MainActivity
 
     private lateinit var db: AppDatabase
@@ -30,7 +33,9 @@ class Fragment_Myprofile : Fragment() {
 
     private val binding get() = _binding!!
 
-//    private lateinit var currentPhotoPath: String
+    private var modifyFlag = false
+
+    private var currentPhotoPath: String? = null
 
     // user detail profile
     private lateinit var TendencyTextViewList: List<TextView>
@@ -59,21 +64,34 @@ class Fragment_Myprofile : Fragment() {
 
         binding.btnModifyUserInfo.setOnClickListener {
             // TODO 버튼 클릭 시 정보 수정 화면으로 이동
-            val fg = Fragment_Modifyprofile().newInstance()
-            setChildFragment(fg)
+            modifyFlag = true
+            mainActivity.changeFragment()
         }
 
         return view
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause")
+        if(FirebaseAuth.getInstance().currentUser?.email != null && currentPhotoPath != null) {
+            updateRoom()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        getRoom()
+        Log.d(TAG, "onResume")
+        if(modifyFlag) {
+            getRoom()
+            modifyFlag = false
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        currentPhotoPath = null
         _binding = null
     }
 
@@ -117,14 +135,20 @@ class Fragment_Myprofile : Fragment() {
         Thread(Runnable {
             db.userDAO().getUserInfo().forEach {
                 mainActivity.runOnUiThread {
-
-                    binding.ivUserPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
-                    binding.ivUserPicture.setBackgroundColor(resources.getColor(R.color.color_inactivated_blue))
-                    binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
-
-                    it.picture?.let {
-                        uploadImageFromCloud(it)
-//                            db.userDAO().updatePicture(it.email, string_uri)
+                    if(it.picture_uri == null && currentPhotoPath == null) {
+                        it.picture?.let { path ->
+                            currentPhotoPath = uploadImageFromCloud(path)
+                        }
+                    } else if(it.picture_uri != null) {
+                        Glide.with(this)
+                            .load(it.picture_uri)
+                            .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
+                            .into(binding.ivUserPicture)
+                    } else if(currentPhotoPath != null) {
+                        Glide.with(this)
+                            .load(currentPhotoPath)
+                            .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
+                            .into(binding.ivUserPicture)
                     }
 
                     binding.tvUserNickName.text = it.user_name
@@ -193,33 +217,43 @@ class Fragment_Myprofile : Fragment() {
                         setTextView(GameList)
                     }
                 }
-
             }
         }).start()
     }
 
-    private fun uploadImageFromCloud(path: String) {
+    private fun updateRoom() {
+        Thread(Runnable {
+            db.userDAO().updatePicture(FirebaseAuth.getInstance().currentUser!!.email!!, currentPhotoPath!!)
+        }).start()
+    }
+
+    private fun uploadImageFromCloud(path: String) : String {
         val storage = Firebase.storage
         var storageRef = storage.reference
         var imagesRef = storageRef.child(path)
 
-//        val localFile = File.createTempFile("images", "jpg")
-//        var uri : Uri? = null
-//
-//        imagesRef.getFile(localFile).addOnSuccessListener {
-//            Log.d(TAG, "성공하긴 했나요")
-//            uri = localFile.toUri()
-//        }.addOnFailureListener {
-//            Toast.makeText(context, "오류가 발생했습니다", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        return uri!!
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val fileName = "${timeStamp}_user_profile"
+        val localFile = File.createTempFile(fileName, ".jpg", requireContext().filesDir)
 
-        val flag = uploadImageFromURI(imagesRef)
+        imagesRef.getFile(localFile).addOnSuccessListener {
+            Glide.with(this)
+                .load(localFile)
+                .placeholder(R.drawable.app_logo)
+                .error(R.drawable.app_logo)
+                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
+                .into(binding.ivUserPicture)
+        }.addOnFailureListener {
+            val flag = uploadImageFromURI(imagesRef)
 
-        if (!flag) {
-            uploadImageFromDownload(imagesRef)
+            if (!flag)
+                uploadImageFromDownload(imagesRef)
+
+            Log.d(TAG, "uploadImageFromCloud에서 오류 발생")
+            Log.d(TAG, it.toString())
         }
+
+        return localFile.absolutePath
 
     }
 
@@ -227,7 +261,13 @@ class Fragment_Myprofile : Fragment() {
         val result = Ref.downloadUrl.addOnSuccessListener {
             Glide.with(this)
                 .load(it)
+                .placeholder(R.drawable.app_logo)
+                .error(R.drawable.app_logo)
+                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
                 .into(binding.ivUserPicture)
+        }.addOnFailureListener {
+            Log.d(TAG, "uploadImageFromURI에서 오류 발생")
+            Log.d(TAG, it.toString())
         }
 
         return result.isSuccessful
@@ -239,22 +279,14 @@ class Fragment_Myprofile : Fragment() {
             val options = BitmapFactory.Options();
             val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size, options)
             binding.ivUserPicture.setImageBitmap(bitmap)
-            binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_CROP
         }.addOnFailureListener {
+            binding.ivUserPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo, resources.newTheme()))
+
             Toast.makeText(requireContext(), "사진을 불러오는데 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+
+            Log.d(TAG, "uploadImageFromDownload에서 오류 발생")
+            Log.d(TAG, it.toString())
         }
-    }
-
-    private fun setChildFragment(fragment: Fragment) {
-        val fragmentTransaction: FragmentTransaction = childFragmentManager.beginTransaction()
-
-        binding.flModifyUserProfile.visibility = View.VISIBLE
-        binding.btnModifyUserInfo.visibility = View.GONE
-
-        fragmentTransaction.replace(R.id.fl_modify_userProfile, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-
     }
 
     private fun setTextView(list: List<Games>) {

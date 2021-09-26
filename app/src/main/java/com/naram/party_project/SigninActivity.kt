@@ -236,6 +236,7 @@ class SigninActivity : AppCompatActivity() {
         })
 
         thread.start()
+        thread.join()
 
         val intent = Intent(this, MainActivity::class.java)
         finish()

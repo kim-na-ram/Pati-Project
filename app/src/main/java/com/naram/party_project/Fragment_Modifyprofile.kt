@@ -24,7 +24,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import java.io.FileNotFoundException
 
-import com.naram.party_project.PatiConstClass.Companion.IP_ADDRESS
+import com.naram.party_project.PatiConstClass.Companion.ListToMap
 import com.naram.party_project.PatiConstClass.Companion.REQUEST_GALLERY
 import com.naram.party_project.PatiConstClass.Companion.REQUEST_SUCCESS
 import com.naram.party_project.PatiConstClass.Companion.processingTendency
@@ -36,10 +36,13 @@ import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Fragment_Modifyprofile : Fragment() {
 
-    private val TAG = "Modifyprofile_Fragment"
+    private val TAG = "ModifyProfile"
 
     private lateinit var mainActivity: MainActivity
 
@@ -55,12 +58,15 @@ class Fragment_Modifyprofile : Fragment() {
 
     private var TendencyList: List<Games>? = null
     private val TendencyListToString = mutableListOf<String>()
+    private val TendencyListToMap = mutableMapOf<String, String>()
     private var GameNameList: List<Games>? = null
     private val GameListToString = mutableListOf<String>()
     private val GameListToInt = mutableListOf<Int>()
 
     private var bitmap: Bitmap? = null
     private var picture_path: String? = null
+    private var currentPhotoPath: String? = null
+    private var pictureFlag : Boolean = false
 
     private lateinit var email: String
     private lateinit var user_name: String
@@ -102,6 +108,32 @@ class Fragment_Modifyprofile : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        Log.d(TAG, "onDestroy")
+
+        TendencyList = null
+        TendencyListToString.clear()
+        TendencyListToMap.clear()
+        GameNameList = null
+        GameListToString.clear()
+        GameListToInt.clear()
+
+        bitmap = null
+        picture_path = null
+        currentPhotoPath = null
+        pictureFlag = false
+
+        mainActivity.removeFragment()
+    }
+
+//    override fun onPause() {
+//        super.onPause()
+//
+//        mainActivity.removeFragment()
+//    }
 
     private fun createDB() {
         db = Room.databaseBuilder(
@@ -151,14 +183,20 @@ class Fragment_Modifyprofile : Fragment() {
             db.userDAO().getUserInfo().forEach {
                 mainActivity.runOnUiThread {
 
-                    binding.ivUserPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
-                    binding.ivUserPicture.setBackgroundColor(resources.getColor(R.color.color_inactivated_blue))
-                    binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
-
-                    it.picture?.let {
-                        picture_path = "${FirebaseAuth.getInstance().currentUser?.email}/profile.jpg"
-                        uploadImageFromCloud(it)
-//                            db.userDAO().updatePicture(it.email, string_uri)
+                    if(it.picture_uri == null && currentPhotoPath == null) {
+                        it.picture?.let { path ->
+                            currentPhotoPath = uploadImageFromCloud(path)
+                        }
+                    } else if(it.picture_uri != null) {
+                        Glide.with(this)
+                            .load(it.picture_uri)
+                            .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
+                            .into(binding.ivUserPicture)
+                    } else if(currentPhotoPath != null) {
+                        Glide.with(this)
+                            .load(currentPhotoPath)
+                            .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
+                            .into(binding.ivUserPicture)
                     }
 
                     binding.etUserNickName.setText(it.user_name)
@@ -220,10 +258,6 @@ class Fragment_Modifyprofile : Fragment() {
                         GameNameTextViewList.forEachIndexed { index, textView ->
                             if (gamenames[index] == 1) this.add(Games(textView, true))
                             else this.add(Games(textView, false))
-                            Log.d(
-                                TAG,
-                                "$index : ${textView.text.toString()} -> ${gamenames[index]}"
-                            )
                         }
                     }
 
@@ -234,28 +268,36 @@ class Fragment_Modifyprofile : Fragment() {
         }).start()
     }
 
-    private fun uploadImageFromCloud(path: String) {
+    private fun uploadImageFromCloud(path: String) : String {
         val storage = Firebase.storage
         var storageRef = storage.reference
         var imagesRef = storageRef.child(path)
 
-//        val localFile = File.createTempFile("images", "jpg")
-//        var uri : Uri? = null
-//
-//        imagesRef.getFile(localFile).addOnSuccessListener {
-//            Log.d(TAG, "성공하긴 했나요")
-//            uri = localFile.toUri()
-//        }.addOnFailureListener {
-//            Toast.makeText(context, "오류가 발생했습니다", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        return uri!!
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val fileName = "${timeStamp}_user_profile"
+        var localFile = File.createTempFile(fileName, ".jpg", requireContext().filesDir)
 
-        val flag = uploadImageFromURI(imagesRef)
+        imagesRef.getFile(localFile).addOnSuccessListener {
+            Glide.with(this)
+                .load(localFile)
+                .placeholder(R.drawable.app_logo)
+                .error(R.drawable.app_logo)
+                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
+                .into(binding.ivUserPicture)
+        }.addOnFailureListener {
+            val flag = uploadImageFromURI(imagesRef)
 
-        if (!flag) {
-            uploadImageFromDownload(imagesRef)
+            if (!flag)
+                uploadImageFromDownload(imagesRef)
+
+            localFile = null
+
+            Toast.makeText(context, "오류가 발생했습니다", Toast.LENGTH_SHORT).show()
+            Log.d(TAG, "uploadImageFromCloud에서 오류 발생")
+            Log.d(TAG, it.toString())
         }
+
+        return localFile.absolutePath
 
     }
 
@@ -264,6 +306,10 @@ class Fragment_Modifyprofile : Fragment() {
             Glide.with(this)
                 .load(it)
                 .into(binding.ivUserPicture)
+        }
+        .addOnFailureListener {
+            Log.d(TAG, "uploadImageFromURI에서 오류 발생")
+            Log.d(TAG, it.toString())
         }
 
         binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -282,6 +328,9 @@ class Fragment_Modifyprofile : Fragment() {
         }.addOnFailureListener {
             binding.ivUserPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
             binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
+
+            Log.d(TAG, "uploadImageFromDownload에서 오류 발생")
+            Log.d(TAG, it.toString())
         }
     }
 
@@ -311,7 +360,6 @@ class Fragment_Modifyprofile : Fragment() {
             )
                 .show()
         }.addOnSuccessListener { taskSnapshot ->
-//            _userPicture = imagesRef.toString()
             picture_path = "$email/profile.jpg"
         }
 
@@ -416,6 +464,7 @@ class Fragment_Modifyprofile : Fragment() {
                 if (selectedImageUri != null) {
                     binding.ivUserPicture.setImageURI(selectedImageUri)
                     bitmap = resize(requireContext(), selectedImageUri, 400)
+                    pictureFlag = true
                 } else {
                     Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -446,12 +495,12 @@ class Fragment_Modifyprofile : Fragment() {
             }
 
             options.inSampleSize = samplesize;
-            val bitmap = BitmapFactory.decodeStream(
+            val temp = BitmapFactory.decodeStream(
                 context.contentResolver.openInputStream(uri),
                 null,
                 options
             )
-            resizeBitmap = bitmap;
+            resizeBitmap = temp
 
         } catch (e: FileNotFoundException) {
             e.printStackTrace();
@@ -479,14 +528,15 @@ class Fragment_Modifyprofile : Fragment() {
 
         binding.btnSaveUserInfo.setOnClickListener {
 
-            if (bitmap != null) {
+            if (pictureFlag) {
                 uploadImageToCloud(bitmap!!)
-                picture_path = "$email/profile.jpg"
+                if(picture_path.isNullOrEmpty())
+                    picture_path = "$email/profile.jpg"
             }
 
             if (email.isNotEmpty() && binding.etUserNickName.text.isNotEmpty()) {
-                GameNameList?.let {
-                    it.forEach {
+                GameNameList?.let { list ->
+                    list.forEach {
                         if (it.flag) {
                             GameListToString.add("1")
                             GameListToInt.add(1)
@@ -497,8 +547,8 @@ class Fragment_Modifyprofile : Fragment() {
                     }
                 }
 
-                TendencyList?.let {
-                    it.forEach {
+                TendencyList?.let { list ->
+                    list.forEach {
                         if (it.flag) {
                             TendencyListToString.add(it.textView.text.toString())
                         }
@@ -507,12 +557,16 @@ class Fragment_Modifyprofile : Fragment() {
 
                 if(TendencyListToString.size == 4) {
                     saveUserInfoToDB()
-                    saveUserInfoToRoom()
+                    saveUserInfoToRoom(pictureFlag)
 
                     Toast.makeText(requireContext(), "정보를 업데이트했습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.d(TAG, "${TendencyListToString.size}")
                 }
 
                 // TODO 내 프로필 프래그먼트로 전환
+                mainActivity.changeFragment()
+                mainActivity.removeFragment()
             }
         }
     }
@@ -534,11 +588,12 @@ class Fragment_Modifyprofile : Fragment() {
         self_pr = if (binding.etSelfPR.toStringFromText().isEmpty()) null
             else binding.etSelfPR.toStringFromText()
 
-        val TendencyMap: Map<String, String> = processingTendency(TendencyListToString)
+        val tendencyMap = processingTendency(TendencyListToString)
+        TendencyListToMap.putAll(ListToMap(TendencyListToString))
 
         runBlocking {
             updateData(
-                TendencyMap,
+                tendencyMap,
                 GameListToString,
                 email,
                 picture_path,
@@ -612,23 +667,34 @@ class Fragment_Modifyprofile : Fragment() {
 
     }
 
-    private fun saveUserInfoToRoom() {
+    private fun saveUserInfoToRoom(flag: Boolean) {
         runBlocking {
             Thread(Runnable {
-                db.userDAO().updateUserInfo(
-                    email,
-                    picture_path,
-                    null,
-                    user_name,
-                    game_name,
-                    self_pr
-                )
+                if(flag) {
+                    db.userDAO().updateUserInfo(
+                        email,
+                        picture_path,
+                        null,
+                        user_name,
+                        game_name,
+                        self_pr
+                    )
+                } else {
+                    db.userDAO().updateUserInfo(
+                        email,
+                        picture_path,
+                        currentPhotoPath,
+                        user_name,
+                        game_name,
+                        self_pr
+                    )
+                }
                 db.tendencyDAO().updateUserSimpleInfo(
                     email,
-                    TendencyListToString[0],
-                    TendencyListToString[1],
-                    TendencyListToString[2],
-                    TendencyListToString[3],
+                    TendencyListToMap["purpose"]!!,
+                    TendencyListToMap["voice"]!!,
+                    TendencyListToMap["preferred_gender"]!!,
+                    TendencyListToMap["game_mode"]!!
                 )
                 db.gameDAO().updateGameInfo(
                     email,

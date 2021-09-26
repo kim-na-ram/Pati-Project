@@ -14,6 +14,9 @@ interface TendencyDAO {
     @Query("SELECT * FROM tendency")
     fun getTendencyInfo(): List<Tendency>
 
+    @Query("SELECT preferred_gender FROM tendency where email like :email")
+    fun getTendencyGenderInfo(email : String): String
+
     @Insert
     fun insertTendencyInfo(tendency: Tendency)
 
