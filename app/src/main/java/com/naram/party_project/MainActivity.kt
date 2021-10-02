@@ -3,11 +3,14 @@ package com.naram.party_project
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.auth.FirebaseAuth
 import com.naram.party_project.callback.Party
+import com.naram.party_project.callback.Profile
 import com.naram.party_project.databinding.ActivityMainBinding
 import kotlinx.coroutines.runBlocking
 import retrofit2.Call
@@ -18,11 +21,12 @@ class MainActivity : AppCompatActivity() {
 
     private val TAG = "Main"
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
-    private lateinit var db : AppDatabase
+    private lateinit var db: AppDatabase
 
     private var list = mutableListOf<Party>()
+    private var profile : Profile? = null
 
     private val Fragment_Myprofile by lazy {
         Fragment_Myprofile()
@@ -37,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val Fragment_Searchscores by lazy {
-        Fragment_Searchscores()
+        Fragment_Friends()
     }
 
     private val Fragment_Setting by lazy {
@@ -46,6 +50,10 @@ class MainActivity : AppCompatActivity() {
 
     private val Fragment_Modifyprofile by lazy {
         Fragment_Modifyprofile()
+    }
+
+    private val Fragment_Showprofile by lazy {
+        Fragment_Showprofile()
     }
 
     private var fragments: MutableList<Fragment> = mutableListOf(
@@ -143,13 +151,12 @@ class MainActivity : AppCompatActivity() {
     private fun setupPartyUserList() {
 
         val email = FirebaseAuth.getInstance().currentUser?.email
-        var gender : String? = null
+        var gender: String? = null
 
         runBlocking {
-            val thread = Thread(Runnable{
+            val thread = Thread(Runnable {
                 val stringGender = db.tendencyDAO().getTendencyGenderInfo(email!!)
-                Log.d(TAG, stringGender)
-                gender = when(stringGender) {
+                gender = when (stringGender) {
                     "여성 Only" -> "like 'F'"
                     "남성 Only" -> "like 'M'"
                     else -> "like 'F' or 'M'"
@@ -158,8 +165,6 @@ class MainActivity : AppCompatActivity() {
 
             thread.start()
             thread.join()
-
-            Log.d(TAG, "$gender")
 
             val retrofit = RetrofitClient.getInstance()
 
@@ -178,7 +183,6 @@ class MainActivity : AppCompatActivity() {
 //                }
 //
 //                override fun onFailure(call: Call<String>, t: Throwable) {
-//                    TODO("Not yet implemented")
 //                }
 //            })
 
@@ -188,7 +192,6 @@ class MainActivity : AppCompatActivity() {
                     response: Response<List<Party>>
                 ) {
                     if (response.isSuccessful) {
-                        Log.d(TAG, "성공 : ${response.body().toString()}")
                         list.clear()
                         list.addAll(response.body()!!)
                     } else {
@@ -206,11 +209,39 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun getPartyUserProfile(email: String) {
+        val retrofit = RetrofitClient.getInstance()
+
+        val server = retrofit.create(UserAPI::class.java)
+
+        server.getUser(email).enqueue(object : Callback<Profile> {
+            override fun onResponse(
+                call: Call<Profile>,
+                response: Response<Profile>
+            ) {
+                if (response.isSuccessful) {
+                    profile = response.body()!!
+                    appearFragment()
+                } else {
+                    Log.d(TAG, "실패 : ${response.errorBody().toString()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Profile>, t: Throwable) {
+                Log.d(TAG, "실패 : ${t.localizedMessage}")
+            }
+        })
+    }
+
+    fun getProfile() : Profile? {
+        return profile
+    }
+
     fun changeFragment() {
         fragments.add(Fragment_Modifyprofile)
 
         val id = binding.vpShowView.currentItem
-        binding.vpShowView.currentItem = when(id) {
+        binding.vpShowView.currentItem = when (id) {
             fragments.indexOf(Fragment_Myprofile) -> fragments.indexOf(Fragment_Modifyprofile)
             fragments.indexOf(Fragment_Modifyprofile) -> {
                 setupPartyUserList()
@@ -225,17 +256,50 @@ class MainActivity : AppCompatActivity() {
         fragments.remove(Fragment_Modifyprofile)
     }
 
+    fun appearFragment() {
+        binding.flShowPartyProfile.visibility = View.VISIBLE
+
+        val fragment = Fragment_Showprofile()
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.fl_showPartyProfile, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+    }
+
+    fun disappearFragment() {
+        supportFragmentManager.popBackStack()
+        binding.flShowPartyProfile.visibility = View.GONE
+    }
+
     override fun onBackPressed() {
-        when(binding.vpShowView.currentItem) {
+        if(binding.flShowPartyProfile.isVisible) {
+            disappearFragment()
+        } else when (binding.vpShowView.currentItem) {
             fragments.indexOf(Fragment_Modifyprofile) -> {
                 binding.vpShowView.currentItem = fragments.indexOf(Fragment_Myprofile)
                 fragments.remove(Fragment_Modifyprofile)
             }
+//            fragments.indexOf(Fragment_Searchparty) -> {
+//                val fragmentList = supportFragmentManager.fragments
+//                fragmentList.forEach {
+//                    if (it.id == Fragment_Showprofile.id) {
+//                        if (it.isVisible) {
+//                            disappearFragment()
+//                            return@forEach
+//                        }
+//                        else if(!it.isVisible) {
+//                            super.onBackPressed()
+//                            return@forEach
+//                        }
+//                    }
+//                }
+//            }
             else -> super.onBackPressed()
         }
     }
 
-    fun getList() : List<Party> {
+    fun getList(): List<Party> {
         return list
     }
 

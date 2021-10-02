@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/recyclerview_item_height"
-    android:padding="15dp">
+    android:layout_height="wrap_content"
+    android:id="@+id/cl_showprofile"
+    android:background="@color/color_opacity90_gray"
+    android:padding="10dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_party_userPicture"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        app:layout_constraintEnd_toStartOf="@id/fl_party_showGameNames"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,7 +22,7 @@
         android:layout_marginStart="10dp"
         android:fontFamily="@font/nanumsquareextrabold"
         android:textColor="@color/color_activated_blue"
-        android:textSize="32sp"
+        android:textSize="29sp"
         app:layout_constraintStart_toEndOf="@id/iv_party_userPicture"
         app:layout_constraintTop_toTopOf="@id/iv_party_userPicture"
         tools:text="한우" />
@@ -55,7 +55,7 @@
         android:textColor="@color/color_inactivated_blue"
         android:textSize="18sp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/fl_party_showGameNames"
+        app:layout_constraintBottom_toTopOf="@id/fl_party_showTendency"
         app:layout_constraintEnd_toStartOf="@id/tv_party_rightQuote"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@id/tv_party_leftQuote"
@@ -79,16 +79,27 @@
         tools:visibility="visible" />
 
     <com.nex3z.flowlayout.FlowLayout
-        android:id="@+id/fl_party_showGameNames"
+        android:id="@+id/fl_party_showTendency"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="bottom"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@id/iv_party_userPicture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_party_userPicture"
         app:layout_constraintTop_toBottomOf="@id/tv_party_userPR">
+
+    </com.nex3z.flowlayout.FlowLayout>
+
+    <com.nex3z.flowlayout.FlowLayout
+        android:id="@+id/fl_party_showGameNames"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/iv_party_userPicture"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_party_game0"
@@ -98,7 +109,8 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/textview_rounded_activated"
             android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="3dp"
+            android:paddingVertical="1dp"
             android:text="LOL"
             android:textColor="@color/white"
             android:textSize="17sp"
@@ -113,7 +125,8 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/textview_rounded_activated"
             android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="3dp"
+            android:paddingVertical="1dp"
             android:text="오버워치"
             android:textColor="@color/white"
             android:textSize="17sp"
@@ -128,7 +141,8 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/textview_rounded_activated"
             android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="3dp"
+            android:paddingVertical="1dp"
             android:text="배틀 그라운드"
             android:textColor="@color/white"
             android:textSize="17sp"
@@ -143,7 +157,8 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/textview_rounded_activated"
             android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="3dp"
+            android:paddingVertical="1dp"
             android:text="서든어택"
             android:textColor="@color/white"
             android:textSize="17sp"
@@ -158,7 +173,8 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/textview_rounded_activated"
             android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="3dp"
+            android:paddingVertical="1dp"
             android:text="피파 온라인4"
             android:textColor="@color/white"
             android:textSize="17sp"
@@ -173,7 +189,8 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/textview_rounded_activated"
             android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="3dp"
+            android:paddingVertical="1dp"
             android:text="로스트아크"
             android:textColor="@color/white"
             android:textSize="17sp"
@@ -188,7 +205,8 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/textview_rounded_activated"
             android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="3dp"
+            android:paddingVertical="1dp"
             android:text="메이플 스토리"
             android:textColor="@color/white"
             android:textSize="17sp"
@@ -203,12 +221,13 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/textview_rounded_activated"
             android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="3dp"
+            android:paddingVertical="1dp"
             android:text="사이퍼즈"
             android:textColor="@color/white"
             android:textSize="17sp"
             android:visibility="gone"
-            tools:visibility="visible"  />
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_party_game8"
@@ -218,12 +237,13 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/textview_rounded_activated"
             android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="3dp"
+            android:paddingVertical="1dp"
             android:text="스타크래프트"
             android:textColor="@color/white"
             android:textSize="17sp"
             android:visibility="gone"
-            tools:visibility="visible"  />
+            tools:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_party_game9"
@@ -233,27 +253,55 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/textview_rounded_activated"
             android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
+            android:paddingHorizontal="3dp"
+            android:paddingVertical="1dp"
             android:text="던전 앤 파이터"
             android:textColor="@color/white"
             android:textSize="17sp"
             android:visibility="gone"
-            tools:visibility="visible"  />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="2dp"
-            android:text="..."
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible"  />
+            tools:visibility="visible" />
 
     </com.nex3z.flowlayout.FlowLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_buttonLayout"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:orientation="horizontal"
+        android:background="@drawable/partyprofile_rounded_background_white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fl_party_showGameNames">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_sendMessage"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="@dimen/button_height"
+            android:text="메세지 보내기"
+            android:textColor="@color/color_activated_blue"
+            android:background="@null"
+            android:textSize="@dimen/button_text_size"
+            android:fontFamily="@font/nanumsquareextrabold" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="@dimen/button_text_size"
+            android:layout_gravity="center"
+            android:background="@color/color_activated_blue" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_requestParty"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="@dimen/button_height"
+            android:text="파티 요청"
+            android:textColor="@color/color_activated_blue"
+            android:background="@null"
+            android:textSize="@dimen/button_text_size"
+            android:fontFamily="@font/nanumsquareextrabold" />
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

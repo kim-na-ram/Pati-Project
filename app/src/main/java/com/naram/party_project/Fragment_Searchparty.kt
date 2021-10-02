@@ -58,30 +58,29 @@ class Fragment_Searchparty : Fragment() {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        mainActivity.disappearFragment()
+
+        Log.d(TAG, "onPause")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        val datas = mutableListOf(
-//            Party(
-//                email = "snrneh3@naver.com", user_name = "나람", gender = "F",
-//                game_name = null, self_pr = "사이퍼즈 죽을 때까지 하자고.", picture = "null",
-//                game0 = "1", game1 = "1", game2 = "1", game3 = "1", game4 = "1",
-//                game5 = "1", game6 = "1", game7 = "1", game8 = "1", game9 = "1"
-//            ),
-//            Party(
-//                email = "tlsdmswjs3@gmail.com", user_name = "RIT", gender = "F",
-//                game_name = null, self_pr = null, picture = "null",
-//                game0 = "1", game1 = "1", game2 = "0", game3 = "0", game4 = "0",
-//                game5 = "0", game6 = "0", game7 = "1", game8 = "0", game9 = "0"
-//            )
-//        )
-
         Log.d(TAG, "onViewCreated")
 
-        userListAdapter = UserListAdapter()
+        userListAdapter = UserListAdapter(this.requireContext(), list as MutableList<Party>) {
+            if(mainActivity.getProfile() == null)
+                mainActivity.getPartyUserProfile(it.email)
+            else {
+                mainActivity.disappearFragment()
+                mainActivity.getPartyUserProfile(it.email)
+            }
+        }
         userListAdapter.setHasStableIds(true)
         binding.rvPartyUserList.visibility = View.VISIBLE
-        userListAdapter.list = list as MutableList<Party>
         binding.rvPartyUserList.adapter = userListAdapter
         binding.progessBar.visibility = View.GONE
 
@@ -89,6 +88,7 @@ class Fragment_Searchparty : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
         _binding = null
     }
 
@@ -105,31 +105,6 @@ class Fragment_Searchparty : Fragment() {
 
         binding.progessBar.incrementProgressBy(20)
 
-//        val retrofit = RetrofitClient.getInstance()
-//
-//        val server = retrofit.create(UserAPI::class.java)
-//
-//        server.getAllUser(email!!).enqueue(object : Callback<List<Party>> {
-//            override fun onResponse(
-//                call: Call<List<Party>>,
-//                response: Response<List<Party>>
-//            ) {
-//                if(response.isSuccessful) {
-//                    Log.d(TAG, "성공 : ${response.body().toString()}")
-////                    userListAdapter.setData(response.body()!! as MutableList<Party>)
-//                    userListAdapter.updateList(response.body()!!)
-//                    binding.rvPartyUserList.visibility = View.VISIBLE
-//                    binding.progessBar.visibility = View.GONE
-//                } else {
-//                    Log.d(TAG, "실패 : ${response.errorBody().toString()}")
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<List<Party>>, t: Throwable) {
-//                Log.d(TAG, "실패 : ${t.localizedMessage}")
-//            }
-//        })
-//
     }
 
 }

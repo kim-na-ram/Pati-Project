@@ -12,7 +12,7 @@
     <item
         android:id="@+id/searchParty"
         android:enabled="true"
-        android:icon="@drawable/bottomnavigation_party_100"
+        android:icon="@drawable/bottomnavigation_friends_100"
         android:title="파티 찾기"
         app:showAsAction="always" />
     <item
@@ -24,8 +24,8 @@
     <item
         android:id="@+id/searchScores"
         android:enabled="true"
-        android:icon="@drawable/bottomnavigation_scores_100"
-        android:title="전적 검색"
+        android:icon="@drawable/bottomnavigation_friends_100"
+        android:title="친구"
         app:showAsAction="always" />
     <item
         android:id="@+id/setting"
@@ -33,4 +33,5 @@
         android:icon="@drawable/bottomnavigation_setting_100"
         android:title="설정"
         app:showAsAction="always" />
+
 </menu>
