@@ -7,7 +7,10 @@
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/button_rounded_special.xml" value="0.15" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/edittext_rounded_background_activate.xml" value="0.2765625" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/edittext_rounded_background_white.xml" value="0.15052083333333333" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/imageview_rounded_background.xml" value="0.2765625" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/imageview_rounded_user_picture.xml" value="0.2765625" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/layout_rounded_background_activated_blue.xml" value="0.2765625" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/layout_rounded_background_white.xml" value="0.2765625" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/partyprofile_rounded_background_gray.xml" value="0.15260416666666668" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/partyprofile_rounded_background_white.xml" value="0.16770833333333332" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/drawable/radiobutton_selected_custom.xml" value="0.2765625" />
@@ -35,7 +38,9 @@
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_searchscores.xml" value="0.1" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_setting.xml" value="0.1" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/fragment_showprofile.xml" value="0.4" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/item_friends.xml" value="0.1515625" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/item_party.xml" value="0.4" />
+        <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/layout/item_requested_party.xml" value="0.47740440324449596" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/menu/bnb_menubar.xml" value="0.1" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/xml/network_security_config.xml" value="0.2604166666666667" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/xml/preferences.xml" value="0.536" />

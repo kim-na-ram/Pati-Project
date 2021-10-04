@@ -9,6 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="color_inactivated_blue">#D4E0F9</color>
     <color name="color_activated_blue">#B4C7E7</color>
+    <color name="color_opacity65_activated_blue">#A6B4C7E7</color>
+    <color name="color_opacity65_inactivated_blue">#A6D4E0F9</color>
     <color name="color_opacity80_gray">#CCF4F4F4</color>
     <color name="color_opacity90_gray">#E6F4F4F4</color>
     <color name="color_opacity65_white">#A6FFFFFF</color>

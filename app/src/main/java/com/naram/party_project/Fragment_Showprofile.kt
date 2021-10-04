@@ -13,10 +13,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.naram.party_project.databinding.FragmentShowprofileBinding
 import com.nex3z.flowlayout.FlowLayout
+import kotlinx.coroutines.runBlocking
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class Fragment_Showprofile : Fragment() {
 
@@ -58,6 +63,47 @@ class Fragment_Showprofile : Fragment() {
 
         binding.btnRequestParty.setOnClickListener {
             // TODO 파티 요청 보내기
+            runBlocking {
+                requestParty()
+            }
+        }
+
+    }
+
+    private fun requestParty() {
+
+        val retrofit = RetrofitClient.getInstance()
+
+        val server = retrofit.create(UserAPI::class.java)
+
+        val request_email = FirebaseAuth.getInstance().currentUser?.email
+        val receive_email = mainActivity.getProfile()?.email
+
+        receive_email?.let {
+
+            val call : Call<String> = server.putRequestedParty(request_email!!, receive_email)
+            call.enqueue(object : Callback<String> {
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d(TAG,"실패 : "+t.localizedMessage)
+                }
+
+                override fun onResponse(
+                    call: Call<String>,
+                    response: Response<String>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "성공 : ${response.body().toString()}")
+                        Toast.makeText(
+                            requireContext(),
+                            "\'${binding.tvPartyUserName.text}\'님에게 파티 요청을 보냈습니다!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Log.d(TAG, "실패 : ${response.errorBody().toString()}")
+                    }
+                }
+            })
+
         }
 
     }
@@ -83,26 +129,26 @@ class Fragment_Showprofile : Fragment() {
 
             val purpose = profile.purpose.toInt()
             purpose?.let {
-                var str = if(it == 1) "승리지향" else "승패상관 x"
+                var str = if (it == 1) "승리지향" else "승패상관 x"
                 makeTextView(str!!, binding.flPartyShowTendency)
             }
             val voice = profile.voice.toInt()
             voice?.let {
-                var str = if(it == 1) "보이스톡 O" else "보이스톡 X"
+                var str = if (it == 1) "보이스톡 O" else "보이스톡 X"
                 makeTextView(str!!, binding.flPartyShowTendency)
             }
             val game_mode = profile.game_mode.toInt()
             game_mode?.let {
-                var str = if(it == 1) "즐겜" else "빡겜"
+                var str = if (it == 1) "즐겜" else "빡겜"
                 makeTextView(str!!, binding.flPartyShowTendency)
             }
             val men = profile.men.toInt()
             val women = profile.women.toInt()
             men?.let { m ->
-                var str : String? = null
+                var str: String? = null
                 women?.let { w ->
-                    if(m == 1 && w == 1) str = "성별상관 X"
-                    else if(m == 1 && w == 0) str = "남성 Only"
+                    if (m == 1 && w == 1) str = "성별상관 X"
+                    else if (m == 1 && w == 0) str = "남성 Only"
                     else if (m == 0 && w == 1) str = "여성 Only"
                     makeTextView(str!!, binding.flPartyShowTendency)
                 }
@@ -144,7 +190,7 @@ class Fragment_Showprofile : Fragment() {
         }
     }
 
-    private fun makeTextView(text: String, layout : FlowLayout) {
+    private fun makeTextView(text: String, layout: FlowLayout) {
         val gameTextView = TextView(this.requireContext())
         gameTextView.text = text
         gameTextView.setTextColor(resources.getColor(R.color.white, null))
@@ -153,9 +199,17 @@ class Fragment_Showprofile : Fragment() {
             gameTextView.typeface = resources.getFont(R.font.nanumsquarebold)
         }
         gameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17.toFloat())
-        gameTextView.setPadding(3.dpToPixels(requireContext()), 1.dpToPixels(requireContext()), 3.dpToPixels(requireContext()), 1.dpToPixels(requireContext()))
+        gameTextView.setPadding(
+            3.dpToPixels(requireContext()),
+            1.dpToPixels(requireContext()),
+            3.dpToPixels(requireContext()),
+            1.dpToPixels(requireContext())
+        )
 
-        LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+        LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
             marginEnd = 5.dpToPixels(requireContext())
             bottomMargin = 5.dpToPixels(requireContext())
 
@@ -165,8 +219,8 @@ class Fragment_Showprofile : Fragment() {
         layout.addView(gameTextView)
     }
 
-    fun Int.dpToPixels(context: Context):Int = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,this.toFloat(),context.resources.displayMetrics
+    fun Int.dpToPixels(context: Context): Int = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), context.resources.displayMetrics
     ).toInt()
 
 }

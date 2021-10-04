@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="5dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_friends_picture"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:src="@drawable/temp_img"
+        app:civ_border_color="@color/color_activated_blue"
+        app:civ_border_width="2dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_friends_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_friends_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/nanumsquareextrabold"
+        android:maxLines="1"
+        android:textColor="@color/color_activated_blue"
+        android:textSize="19sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_friends_picture"
+        app:layout_constraintEnd_toStartOf="@id/ll_buttonLayout"
+        app:layout_constraintStart_toEndOf="@id/iv_friends_picture"
+        app:layout_constraintTop_toTopOf="@id/iv_friends_picture"
+        tools:text="RIT" />
+
+    <LinearLayout
+        android:id="@+id/ll_buttonLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/iv_friends_picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_friends_name"
+        app:layout_constraintTop_toTopOf="@id/iv_friends_picture">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_sendMessage"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="@dimen/small_button_width"
+            android:layout_height="@dimen/small_button_height"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/button_rounded_basic"
+            android:fontFamily="@font/nanumsquarebold"
+            android:text="메시지"
+            android:textColor="@color/white"
+            android:textSize="@dimen/small_button_text_size" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_removeFriends"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="@dimen/small_button_width"
+            android:layout_height="@dimen/small_button_height"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/button_rounded_special"
+            android:fontFamily="@font/nanumsquarebold"
+            android:text="삭제"
+            android:textColor="@color/color_inactivated_blue"
+            android:textSize="@dimen/small_button_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btn_acceptRequest" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

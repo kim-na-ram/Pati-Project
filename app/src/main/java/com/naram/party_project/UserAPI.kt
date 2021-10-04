@@ -1,5 +1,6 @@
 package com.naram.party_project
 
+import com.naram.party_project.callback.Friend
 import com.naram.party_project.callback.Party
 import com.naram.party_project.callback.Profile
 import retrofit2.Call
@@ -62,5 +63,44 @@ interface UserAPI {
 //        @Field("email") email: String,
 //        @Field("preferred_gender") preferred_gender: String
 //    ): Call<String>
+
+    @FormUrlEncoded
+    @POST("retrofitPartySelect.php")
+    fun getRequestedParty(
+        @Field("email") email: String
+    ): Call<List<Friend>>
+
+//    @FormUrlEncoded
+//    @POST("retrofitPartySelect.php")
+//    fun getRequestedParty(
+//        @Field("email") email: String
+//    ): Call<String>
+
+    @FormUrlEncoded
+    @POST("retrofitPartyInsert.php")
+    fun putRequestedParty(
+        @Field("request_email") request_email: String,
+        @Field("receive_email") receive_email: String
+    ): Call<String>
+
+    @FormUrlEncoded
+    @POST("retrofitPartyDelete.php")
+    fun delRequestedParty(
+        @Field("request_email") request_email: String,
+        @Field("receive_email") receive_email: String
+    ): Call<String>
+
+    @FormUrlEncoded
+    @POST("retrofitFriendInsert.php")
+    fun putFriend(
+        @Field("email") email: String,
+        @Field("friend_email") friend_email: String
+    ): Call<String>
+
+    @FormUrlEncoded
+    @POST("retrofitFriendSelect.php")
+    fun getFriend(
+        @Field("email") email: String
+    ): Call<List<Friend>>
 
 }

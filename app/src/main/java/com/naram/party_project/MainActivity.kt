@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         Fragment_Chatting()
     }
 
-    private val Fragment_Searchscores by lazy {
+    private val Fragment_Friends by lazy {
         Fragment_Friends()
     }
 
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         Fragment_Myprofile,
         Fragment_Searchparty,
         Fragment_Chatting,
-        Fragment_Searchscores,
+        Fragment_Friends,
         Fragment_Setting
     )
 
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.myProfile -> fragments.indexOf(Fragment_Myprofile)
                     R.id.searchParty -> fragments.indexOf(Fragment_Searchparty)
                     R.id.chatting -> fragments.indexOf(Fragment_Chatting)
-                    R.id.searchScores -> fragments.indexOf(Fragment_Searchscores)
+                    R.id.friends -> fragments.indexOf(Fragment_Friends)
                     R.id.setting -> fragments.indexOf(Fragment_Setting)
                     else -> fragments.indexOf(Fragment_Myprofile)
                 }
@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                         fragments.indexOf(Fragment_Myprofile) -> R.id.myProfile
                         fragments.indexOf(Fragment_Searchparty) -> R.id.searchParty
                         fragments.indexOf(Fragment_Chatting) -> R.id.chatting
-                        fragments.indexOf(Fragment_Searchscores) -> R.id.searchScores
+                        fragments.indexOf(Fragment_Friends) -> R.id.friends
                         fragments.indexOf(Fragment_Setting) -> R.id.setting
                         else -> R.id.myProfile
                     }

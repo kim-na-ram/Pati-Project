@@ -22,6 +22,7 @@ import com.naram.party_project.model.User
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.Response
 import java.io.*
 
 class SignupActivity : AppCompatActivity() {
@@ -310,7 +311,7 @@ class SignupActivity : AppCompatActivity() {
 
                 override fun onResponse(
                     call: Call<String>,
-                    response: retrofit2.Response<String>
+                    response: Response<String>
                 ) {
                     if (response.isSuccessful) {
                         Log.d(TAG, "성공 : ${response.body().toString()}")

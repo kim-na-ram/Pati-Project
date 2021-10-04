@@ -1,6 +1,7 @@
 package com.naram.party_project
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.naram.party_project.callback.Party
@@ -70,28 +70,28 @@ class UserListAdapter(
         private fun uploadImageFromCloud(path: String) {
             val imagesRef = Firebase.storage.reference.child(path)
 
-            imagesRef.downloadUrl.addOnCompleteListener { task ->
-                task.addOnSuccessListener {
-                    Glide.with(itemView)
-                        .load(it)
-                        .placeholder(R.drawable.app_logo)
-                        .override(binding.ivPartyUserPicture.width, binding.ivPartyUserPicture.height)
-                        .into(binding.ivPartyUserPicture)
-                }.addOnFailureListener {
-                    Toast.makeText(binding.root.context, "사진을 불러오는데 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-                }
-
-                if(task.isComplete) Log.d("Adapter", "성공")
-            }
-
-//            val MAX_BYTE: Long = 400 * 400
-//            imagesRef.getBytes(MAX_BYTE).addOnSuccessListener {
-//                val options = BitmapFactory.Options();
-//                val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size, options)
-//                binding.ivPartyUserPicture.setImageBitmap(bitmap)
-//            }.addOnFailureListener {
-//                Toast.makeText(binding.root.context, "사진을 불러오는데 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+//            imagesRef.downloadUrl.addOnCompleteListener { task ->
+//                task.addOnSuccessListener {
+//                    Glide.with(itemView)
+//                        .load(it)
+//                        .placeholder(R.drawable.app_logo)
+//                        .override(binding.ivPartyUserPicture.width, binding.ivPartyUserPicture.height)
+//                        .into(binding.ivPartyUserPicture)
+//                }.addOnFailureListener {
+//                    Toast.makeText(binding.root.context, "사진을 불러오는데 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+//                }
+//
+//                if(task.isComplete) Log.d("Adapter", "성공")
 //            }
+
+            val MAX_BYTE: Long = 400 * 400
+            imagesRef.getBytes(MAX_BYTE).addOnSuccessListener {
+                val options = BitmapFactory.Options();
+                val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size, options)
+                binding.ivPartyUserPicture.setImageBitmap(bitmap)
+            }.addOnFailureListener {
+                Toast.makeText(binding.root.context, "사진을 불러오는데 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            }
 
         }
     }
@@ -123,14 +123,14 @@ class UserListAdapter(
 
     fun setData(newData: List<Party>) {
         Log.d("adapter", "setData")
-        val diffResult = DiffUtil.calculateDiff(DiffCallback(list, newData))
+        val diffResult = DiffUtil.calculateDiff(PartyDiffCallback(list, newData))
         list.clear()
         list.addAll(newData)
         diffResult.dispatchUpdatesTo(this)
     }
 
     fun updateList(newData: List<Party>) {
-        val diffCallback = DiffCallback(list, newData)
+        val diffCallback = PartyDiffCallback(list, newData)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
         list.run {

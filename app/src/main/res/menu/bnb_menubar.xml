@@ -12,7 +12,7 @@
     <item
         android:id="@+id/searchParty"
         android:enabled="true"
-        android:icon="@drawable/bottomnavigation_friends_100"
+        android:icon="@drawable/bottomnavigation_party_100"
         android:title="파티 찾기"
         app:showAsAction="always" />
     <item
@@ -22,7 +22,7 @@
         android:title="채팅"
         app:showAsAction="always" />
     <item
-        android:id="@+id/searchScores"
+        android:id="@+id/friends"
         android:enabled="true"
         android:icon="@drawable/bottomnavigation_friends_100"
         android:title="친구"
