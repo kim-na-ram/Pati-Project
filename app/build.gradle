@@ -66,4 +66,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0' // reftrofit2 dependencies 추가
     implementation 'de.hdodenhof:circleimageview:3.1.0' // circleimageview dependencies 추가
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0") // swipefreshlayout dependencies 추가
+    implementation 'com.facebook.shimmer:shimmer:0.5.0' // shimmer dependencies 추가
 }

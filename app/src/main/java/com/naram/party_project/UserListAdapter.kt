@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -20,12 +20,18 @@ class UserListAdapter(
     val list: MutableList<Party>,
     val itemClick: (Party) -> Unit) : RecyclerView.Adapter<UserListAdapter.ViewHolder>() {
 
+    private val mDiffer = AsyncListDiffer(this, mPartyDiffCallback)
+
     inner class ViewHolder(val binding: ItemPartyBinding, itemClick: (Party) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Party) {
 
             item.picture?.let {
-                uploadImageFromCloud(it)
+                Log.d("Adapter", "${item.user_name} is bitmap ${item.bitmap.toString()}")
+                if(item.bitmap == null) uploadImageFromCloud(it)
+                    // TODO 오류 처리 필요
+                else binding.ivPartyUserPicture.setImageBitmap(item.bitmap)
+//                binding.ivPartyUserPicture.setImageBitmap(item.bitmap)
             }
 
             binding.tvPartyUserName.text = item.user_name
@@ -105,13 +111,20 @@ class UserListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position])
+        val item = mDiffer.currentList[position]
+        holder.bind(item)
     }
 
-    override fun getItemCount(): Int = list.size
+//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+//        holder.bind(list[position])
+//    }
+
+    override fun getItemCount(): Int = mDiffer.currentList.size
+
+//    override fun getItemCount(): Int = list.size
 
     override fun getItemId(position: Int): Long {
-        return list[position].hashCode().toLong()
+        return mDiffer.currentList[position].hashCode().toLong()
     }
 
     fun notifyData(newData : List<Party>) {
@@ -121,23 +134,9 @@ class UserListAdapter(
         this.notifyDataSetChanged()
     }
 
-    fun setData(newData: List<Party>) {
-        Log.d("adapter", "setData")
-        val diffResult = DiffUtil.calculateDiff(PartyDiffCallback(list, newData))
-        list.clear()
-        list.addAll(newData)
-        diffResult.dispatchUpdatesTo(this)
-    }
-
-    fun updateList(newData: List<Party>) {
-        val diffCallback = PartyDiffCallback(list, newData)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-
-        list.run {
-            clear()
-            addAll(newData)
-            diffResult.dispatchUpdatesTo(this@UserListAdapter)
-        }
+    fun submitList(newData: List<Party>) {
+        Log.d("adapter", "submitList")
+        mDiffer.submitList(newData)
     }
 
 }

@@ -1,5 +1,7 @@
 package com.naram.party_project.callback
 
+import android.graphics.Bitmap
+
 data class Party(
     val email : String,
     val user_name : String,
@@ -7,6 +9,7 @@ data class Party(
     val game_name : String?,
     val self_pr : String?,
     val picture : String?,
+    var bitmap : Bitmap?,
     val game0 : String?,
     val game1 : String?,
     val game2 : String?,

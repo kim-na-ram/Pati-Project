@@ -1,14 +1,18 @@
 package com.naram.party_project
 
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.naram.party_project.callback.Party
 import com.naram.party_project.callback.Profile
 import com.naram.party_project.databinding.ActivityMainBinding
@@ -26,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
 
     private var list = mutableListOf<Party>()
+    private var flag = false
     private var profile : Profile? = null
 
     private val Fragment_Myprofile by lazy {
@@ -192,8 +197,22 @@ class MainActivity : AppCompatActivity() {
                     response: Response<List<Party>>
                 ) {
                     if (response.isSuccessful) {
-                        list.clear()
-                        list.addAll(response.body()!!)
+                        response.body()!!.forEachIndexed { index, item ->
+                            list.add(item)
+                            item.picture?.let { path ->
+                                val MAX_BYTE: Long = 400 * 400
+                                val imagesRef = Firebase.storage.reference.child(path)
+
+                                imagesRef.getBytes(MAX_BYTE).addOnSuccessListener {
+                                    val options = BitmapFactory.Options();
+                                    val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size, options)
+                                    list[index].bitmap = bitmap
+                                }.addOnFailureListener {
+                                    Toast.makeText(binding.root.context, "사진을 불러오는데 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                        flag = true
                     } else {
                         Log.d(TAG, "실패 : ${response.errorBody().toString()}")
                         list.clear()
@@ -280,27 +299,16 @@ class MainActivity : AppCompatActivity() {
                 binding.vpShowView.currentItem = fragments.indexOf(Fragment_Myprofile)
                 fragments.remove(Fragment_Modifyprofile)
             }
-//            fragments.indexOf(Fragment_Searchparty) -> {
-//                val fragmentList = supportFragmentManager.fragments
-//                fragmentList.forEach {
-//                    if (it.id == Fragment_Showprofile.id) {
-//                        if (it.isVisible) {
-//                            disappearFragment()
-//                            return@forEach
-//                        }
-//                        else if(!it.isVisible) {
-//                            super.onBackPressed()
-//                            return@forEach
-//                        }
-//                    }
-//                }
-//            }
             else -> super.onBackPressed()
         }
     }
 
     fun getList(): List<Party> {
         return list
+    }
+
+    fun checkFlag() : Boolean {
+        return flag
     }
 
 }
