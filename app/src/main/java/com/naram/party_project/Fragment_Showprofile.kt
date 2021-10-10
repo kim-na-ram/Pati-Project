@@ -174,11 +174,11 @@ class Fragment_Showprofile : Fragment() {
             task.addOnSuccessListener {
                 Glide.with(this)
                     .load(it)
-                    .placeholder(R.drawable.app_logo)
                     .override(
                         binding.ivPartyUserPicture.width,
                         binding.ivPartyUserPicture.height
                     )
+                    .placeholder(resources.getDrawable(R.drawable.loading_image))
                     .into(binding.ivPartyUserPicture)
             }.addOnFailureListener {
                 Toast.makeText(

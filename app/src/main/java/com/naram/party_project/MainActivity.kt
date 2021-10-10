@@ -3,6 +3,7 @@ package com.naram.party_project
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -10,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private var list = mutableListOf<Party>()
     private var flag = false
-    private var profile : Profile? = null
+    private var profile: Profile? = null
 
     private val Fragment_Myprofile by lazy {
         Fragment_Myprofile()
@@ -100,6 +102,26 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         val ab = supportActionBar!!
         ab.setDisplayShowTitleEnabled(false)
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            if (binding.swipeRefreshLayout.isRefreshing) {
+                when(binding.vpShowView.currentItem) {
+                    fragments.indexOf(Fragment_Searchparty) -> {
+                        flag = false
+                        setupPartyUserList()
+                        Fragment_Searchparty.refreshLayout()
+                    }
+                    fragments.indexOf(Fragment_Friends) -> {
+                        // TODO Friends refreshLayout 실행
+                        Fragment_Friends.refreshLayout()
+                    }
+                    else -> {
+
+                    }
+                }
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+        }
 
         setViewpager()
 
@@ -197,6 +219,8 @@ class MainActivity : AppCompatActivity() {
                     response: Response<List<Party>>
                 ) {
                     if (response.isSuccessful) {
+                        list.clear()
+                        Log.d(TAG, "list is changed")
                         response.body()!!.forEachIndexed { index, item ->
                             list.add(item)
                             item.picture?.let { path ->
@@ -205,10 +229,15 @@ class MainActivity : AppCompatActivity() {
 
                                 imagesRef.getBytes(MAX_BYTE).addOnSuccessListener {
                                     val options = BitmapFactory.Options();
-                                    val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size, options)
+                                    val bitmap =
+                                        BitmapFactory.decodeByteArray(it, 0, it.size, options)
                                     list[index].bitmap = bitmap
                                 }.addOnFailureListener {
-                                    Toast.makeText(binding.root.context, "사진을 불러오는데 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        binding.root.context,
+                                        "사진을 불러오는데 오류가 발생했습니다.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         }
@@ -252,7 +281,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    fun getProfile() : Profile? {
+    fun getProfile(): Profile? {
         return profile
     }
 
@@ -292,7 +321,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if(binding.flShowPartyProfile.isVisible) {
+        if (binding.flShowPartyProfile.isVisible) {
             disappearFragment()
         } else when (binding.vpShowView.currentItem) {
             fragments.indexOf(Fragment_Modifyprofile) -> {
@@ -307,7 +336,7 @@ class MainActivity : AppCompatActivity() {
         return list
     }
 
-    fun checkFlag() : Boolean {
+    fun checkFlag(): Boolean {
         return flag
     }
 

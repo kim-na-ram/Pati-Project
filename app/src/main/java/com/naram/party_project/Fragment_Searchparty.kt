@@ -8,17 +8,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.naram.party_project.callback.Party
 import com.naram.party_project.databinding.FragmentSearchpartyBinding
-import kotlinx.coroutines.*
-import java.lang.Exception
-import java.lang.Runnable
-import java.util.*
 import kotlin.concurrent.timer
 
 class Fragment_Searchparty : Fragment() {
@@ -73,13 +66,6 @@ class Fragment_Searchparty : Fragment() {
         Log.d(TAG, "onPause")
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        Log.d(TAG, "onViewCreated")
-//
-//    }
-
     override fun onDestroyView() {
         super.onDestroyView()
 
@@ -100,21 +86,23 @@ class Fragment_Searchparty : Fragment() {
         }
 
         Handler(Looper.getMainLooper()).postDelayed({
-            if(mainActivity.checkFlag())
-                showSampleData(false)
+            if (mainActivity.checkFlag())
+                activity?.runOnUiThread {
+                    showSampleData(false)
+                }
         }, 3000)
-
 
     }
 
     private fun showSampleData(isLoading: Boolean) {
         if (isLoading) {
-            binding.slShowFirst.startShimmer()
-            binding.slShowFirst.visibility = View.VISIBLE
+            binding.slPartyShimmer.startShimmer()
+            binding.rvPartyUserList.visibility = View.INVISIBLE
+            binding.slPartyShimmer.visibility = View.VISIBLE
         } else {
-            binding.slShowFirst.stopShimmer()
+            binding.slPartyShimmer.stopShimmer()
             binding.rvPartyUserList.visibility = View.VISIBLE
-            binding.slShowFirst.visibility = View.INVISIBLE
+            binding.slPartyShimmer.visibility = View.INVISIBLE
         }
     }
 
@@ -122,15 +110,19 @@ class Fragment_Searchparty : Fragment() {
 
         userListAdapter = UserListAdapter(this.requireContext(), mutableListOf()) {
             if (mainActivity.getProfile() == null)
-                mainActivity.getPartyUserProfile(it.email)
+                mainActivity.getPartyUserProfile(it.email!!)
             else {
                 mainActivity.disappearFragment()
-                mainActivity.getPartyUserProfile(it.email)
+                mainActivity.getPartyUserProfile(it.email!!)
             }
         }
         userListAdapter.setHasStableIds(true)
         binding.rvPartyUserList.adapter = userListAdapter
 
+    }
+
+    fun refreshLayout() {
+        loadSampleData()
     }
 
 }

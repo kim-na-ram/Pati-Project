@@ -669,8 +669,8 @@ class Fragment_Modifyprofile : Fragment() {
 
     private fun saveUserInfoToRoom(flag: Boolean) {
         runBlocking {
-            Thread(Runnable {
-                if(flag) {
+            Thread {
+                if (flag) {
                     db.userDAO().updateUserInfo(
                         email,
                         picture_path,
@@ -710,7 +710,7 @@ class Fragment_Modifyprofile : Fragment() {
                     GameListToInt[9]
                 )
 
-            }).start()
+            }.start()
         }
     }
 
