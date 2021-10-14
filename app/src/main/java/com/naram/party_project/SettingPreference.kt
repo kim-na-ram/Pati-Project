@@ -9,17 +9,29 @@ import com.google.firebase.auth.FirebaseAuth
 
 class SettingPreference : PreferenceFragmentCompat() {
 
-    private var signOutPreference : Preference? = null
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
-        setting_signout()
+        val auth = FirebaseAuth.getInstance()
+
+        auth?.let {
+            setting_email(auth)
+            setting_signout(auth)
+        }
+
 
     }
 
-    private fun setting_signout() {
-        signOutPreference = findPreference("key_sign_out")
+    private fun setting_email(auth : FirebaseAuth) {
+
+        val emailPreference : Preference? = findPreference("key_showEmail")
+
+        emailPreference?.title = auth.currentUser?.email
+
+    }
+
+    private fun setting_signout(auth : FirebaseAuth) {
+        val signOutPreference : Preference? = findPreference("key_signOut")
 
         signOutPreference!!.setOnPreferenceClickListener {
 
@@ -33,8 +45,7 @@ class SettingPreference : PreferenceFragmentCompat() {
                 db.userDAO().deleteAll()
             }).start()
 
-            val auth = FirebaseAuth.getInstance()
-            auth?.signOut()
+            auth.signOut()
 
             activity?.finish()
             startActivity(Intent(activity, SigninActivity::class.java))

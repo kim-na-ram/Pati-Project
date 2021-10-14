@@ -9,10 +9,16 @@
         app:iconSpaceReserved="false">
 
         <Preference
-            android:iconSpaceReserved="false"
-            android:key="key_sign_out"
+            android:icon="@drawable/setting_email_black_100"
+            android:key="key_showEmail"
+            android:title="사용자 설정"
+            app:iconSpaceReserved="false" />
+
+        <Preference
             android:icon="@drawable/setting_signout_black_100"
-            android:title="Sign Out"
+            android:iconSpaceReserved="false"
+            android:key="key_signOut"
+            android:title="로그아웃"
             app:iconSpaceReserved="false" />
 
     </PreferenceCategory>

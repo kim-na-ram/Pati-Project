@@ -11,6 +11,7 @@
         android:id="@+id/iv_party_userPicture"
         android:layout_width="120dp"
         android:layout_height="120dp"
+        android:src="@drawable/loading_image"
         app:civ_border_width="2dp"
         app:civ_border_color="@color/color_activated_blue"
         app:layout_constraintEnd_toStartOf="@id/fl_party_showGameNames"

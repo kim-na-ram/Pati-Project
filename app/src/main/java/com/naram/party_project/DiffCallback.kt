@@ -10,7 +10,7 @@ val mPartyDiffCallback = object : DiffUtil.ItemCallback<Party>() {
     }
 
     override fun areContentsTheSame(oldItem: Party, newItem: Party): Boolean {
-        return oldItem.email == newItem.email
+        return oldItem == newItem
     }
 }
 
@@ -20,6 +20,6 @@ val mFriendDiffCallback = object : DiffUtil.ItemCallback<Friend>() {
     }
 
     override fun areContentsTheSame(oldItem: Friend, newItem: Friend): Boolean {
-        return oldItem.email == newItem.email
+        return oldItem == newItem
     }
 }

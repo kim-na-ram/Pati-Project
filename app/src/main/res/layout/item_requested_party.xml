@@ -65,10 +65,7 @@
             android:fontFamily="@font/nanumsquarebold"
             android:text="거절"
             android:textColor="@color/color_inactivated_blue"
-            android:textSize="@dimen/small_button_text_size"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btn_acceptRequest" />
+            android:textSize="@dimen/small_button_text_size"/>
 
     </LinearLayout>
 

@@ -98,6 +98,14 @@ interface UserAPI {
     ): Call<String>
 
     @FormUrlEncoded
+    @POST("retrofitFriendDelete.php")
+    fun delFriend(
+        @Field("email") email: String,
+        @Field("friend_email") friend_email: String
+    ): Call<String>
+
+
+    @FormUrlEncoded
     @POST("retrofitFriendSelect.php")
     fun getFriend(
         @Field("email") email: String
