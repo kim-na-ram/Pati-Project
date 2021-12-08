@@ -6,14 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-class Fragment_Setting : Fragment() {
+class ChattingFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         //return super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(R.layout.fragment_setting, container, false)
-
+        return inflater.inflate(R.layout.fragment_chatting, container, false)
     }
 }

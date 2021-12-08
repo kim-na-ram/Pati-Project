@@ -9,18 +9,28 @@
     <ImageView
         android:id="@+id/iv_userPicture"
         android:layout_width="140dp"
-        android:layout_height="150dp"
+        android:layout_height="140dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toTopOf="@id/tv_selfPR"
         app:layout_constraintRight_toLeftOf="@id/tv_userName"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageButton
+        android:id="@+id/ib_removeUserPicture"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/ic_background_rounded_rectangle"
+        android:src="@drawable/ic_close"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toEndOf="@id/iv_userPicture"
+        app:layout_constraintTop_toTopOf="@id/iv_userPicture" />
+
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_modifyUserPic"
+        android:id="@+id/btn_modifyUserPicture"
         android:layout_width="140dp"
         android:layout_height="@dimen/button_height"
         android:background="@color/color_activated_blue"
-        android:text="수정하기"
+        android:text="프로필 사진 변경"
         android:textColor="@color/white"
         android:textSize="@dimen/button_text_size"
         app:layout_constraintBottom_toBottomOf="@id/iv_userPicture"
@@ -152,113 +162,288 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_gameTendency">
 
-        <TextView
-            android:id="@+id/tv_gameTendency_wantWin"
+        <RadioGroup
+            android:id="@+id/rg_Purpose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
-            android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
-            android:paddingVertical="@dimen/gametendency_padding_vertical"
-            android:text="승리지향"
-            android:textSize="20dp" />
+            android:layout_marginEnd="@dimen/gametendency_margin_end">
 
-        <TextView
-            android:id="@+id/tv_gameTendency_winOrlose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/gametendency_margin_vertical"
-            android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
-            android:paddingVertical="@dimen/gametendency_padding_vertical"
-            android:text="승패상관 X"
-            android:textSize="20dp" />
+            <RadioButton
+                android:id="@+id/rb_wantWin"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:layout_marginEnd="@dimen/gametendency_margin_end"
+                android:text="승리지향"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textColor="@drawable/selector_tendency_radio_text"
+                android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
+                android:paddingVertical="@dimen/gametendency_padding_vertical"
+                android:button="@null"
+                android:checked="true"
+                android:background="@drawable/selector_tendency_radio" />
 
-        <TextView
-            android:id="@+id/tv_gameTendency_onlyFun"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/gametendency_margin_vertical"
-            android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
-            android:paddingVertical="@dimen/gametendency_padding_vertical"
-            android:text="즐겜"
-            android:textSize="20dp" />
+            <RadioButton
+                android:id="@+id/rb_winOrlose"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:text="승패상관 X"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textColor="@drawable/selector_tendency_radio_text"
+                android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
+                android:paddingVertical="@dimen/gametendency_padding_vertical"
+                android:button="@null"
+                android:background="@drawable/selector_tendency_radio" />
 
-        <TextView
-            android:id="@+id/tv_gameTendency_onlyWin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/gametendency_margin_vertical"
-            android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
-            android:paddingVertical="@dimen/gametendency_padding_vertical"
-            android:text="빡겜"
-            android:textSize="20dp" />
+        </RadioGroup>
 
-        <TextView
-            android:id="@+id/tv_gameTendency_voiceOk"
+        <RadioGroup
+            android:id="@+id/rg_Voice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
-            android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
-            android:paddingVertical="@dimen/gametendency_padding_vertical"
-            android:text="보이스톡 O"
-            android:textSize="20dp" />
+            android:layout_marginEnd="@dimen/gametendency_margin_end">
 
-        <TextView
-            android:id="@+id/tv_gameTendency_voiceNo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/gametendency_margin_vertical"
-            android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
-            android:paddingVertical="@dimen/gametendency_padding_vertical"
-            android:text="보이스톡 X"
-            android:textSize="20dp" />
+            <RadioButton
+                android:id="@+id/rb_VoiceOn"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:layout_marginEnd="@dimen/gametendency_margin_end"
+                android:text="보이스톡 O"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textColor="@drawable/selector_tendency_radio_text"
+                android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
+                android:paddingVertical="@dimen/gametendency_padding_vertical"
+                android:button="@null"
+                android:checked="true"
+                android:background="@drawable/selector_tendency_radio" />
 
-        <TextView
-            android:id="@+id/tv_gameTendency_onlyWomen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/gametendency_margin_vertical"
-            android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
-            android:paddingVertical="@dimen/gametendency_padding_vertical"
-            android:text="여성 Only"
-            android:textSize="20dp" />
+            <RadioButton
+                android:id="@+id/rb_VoiceOff"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:text="보이스톡 X"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textColor="@drawable/selector_tendency_radio_text"
+                android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
+                android:paddingVertical="@dimen/gametendency_padding_vertical"
+                android:button="@null"
+                android:background="@drawable/selector_tendency_radio" />
 
-        <TextView
-            android:id="@+id/tv_gameTendency_onlyMen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/gametendency_margin_vertical"
-            android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
-            android:paddingVertical="@dimen/gametendency_padding_vertical"
-            android:text="남성 Only"
-            android:textSize="20dp" />
+        </RadioGroup>
 
-        <TextView
-            android:id="@+id/tv_gameTendency_womenOrmen"
+        <RadioGroup
+            android:id="@+id/rg_Mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginVertical="@dimen/gametendency_margin_vertical"
-            android:layout_marginEnd="@dimen/gametendency_margin_end"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
-            android:paddingVertical="@dimen/gametendency_padding_vertical"
-            android:text="성별상관 X"
-            android:textSize="20dp" />
+            android:layout_marginEnd="@dimen/gametendency_margin_end">
+
+            <RadioButton
+                android:id="@+id/rb_Funny"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:layout_marginEnd="@dimen/gametendency_margin_end"
+                android:text="즐겜"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textColor="@drawable/selector_tendency_radio_text"
+                android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
+                android:paddingVertical="@dimen/gametendency_padding_vertical"
+                android:button="@null"
+                android:checked="true"
+                android:background="@drawable/selector_tendency_radio" />
+
+            <RadioButton
+                android:id="@+id/rb_Hard"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:text="빡겜"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textColor="@drawable/selector_tendency_radio_text"
+                android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
+                android:paddingVertical="@dimen/gametendency_padding_vertical"
+                android:button="@null"
+                android:background="@drawable/selector_tendency_radio" />
+
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/rg_Gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginVertical="@dimen/gametendency_margin_vertical"
+            android:layout_marginEnd="@dimen/gametendency_margin_end">
+
+            <RadioButton
+                android:id="@+id/rb_Women"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:layout_marginEnd="@dimen/gametendency_margin_end"
+                android:text="여성 Only"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textColor="@drawable/selector_tendency_radio_text"
+                android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
+                android:paddingVertical="@dimen/gametendency_padding_vertical"
+                android:button="@null"
+                android:checked="true"
+                android:background="@drawable/selector_tendency_radio" />
+
+            <RadioButton
+                android:id="@+id/rb_Men"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:text="남성 Only"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:layout_marginEnd="@dimen/gametendency_margin_end"
+                android:textColor="@drawable/selector_tendency_radio_text"
+                android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
+                android:paddingVertical="@dimen/gametendency_padding_vertical"
+                android:button="@null"
+                android:background="@drawable/selector_tendency_radio" />
+
+            <RadioButton
+                android:id="@+id/rb_All"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:text="성별상관 X"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textColor="@drawable/selector_tendency_radio_text"
+                android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
+                android:paddingVertical="@dimen/gametendency_padding_vertical"
+                android:button="@null"
+                android:background="@drawable/selector_tendency_radio" />
+
+        </RadioGroup>
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_gameTendency_wantWin"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
+<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+<!--            android:text="승리지향"-->
+<!--            android:textSize="20dp" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_gameTendency_winOrlose"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
+<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+<!--            android:text="승패상관 X"-->
+<!--            android:textSize="20dp" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_gameTendency_onlyFun"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
+<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+<!--            android:text="즐겜"-->
+<!--            android:textSize="20dp" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_gameTendency_onlyWin"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
+<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+<!--            android:text="빡겜"-->
+<!--            android:textSize="20dp" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_gameTendency_voiceOk"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
+<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+<!--            android:text="보이스톡 O"-->
+<!--            android:textSize="20dp" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_gameTendency_voiceNo"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
+<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+<!--            android:text="보이스톡 X"-->
+<!--            android:textSize="20dp" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_gameTendency_onlyWomen"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
+<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+<!--            android:text="여성 Only"-->
+<!--            android:textSize="20dp" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_gameTendency_onlyMen"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
+<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+<!--            android:text="남성 Only"-->
+<!--            android:textSize="20dp" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/tv_gameTendency_womenOrmen"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginVertical="@dimen/gametendency_margin_vertical"-->
+<!--            android:layout_marginEnd="@dimen/gametendency_margin_end"-->
+<!--            android:fontFamily="@font/nanumsquareextrabold"-->
+<!--            android:paddingHorizontal="@dimen/gametendency_padding_horizontal"-->
+<!--            android:paddingVertical="@dimen/gametendency_padding_vertical"-->
+<!--            android:text="성별상관 X"-->
+<!--            android:textSize="20dp" />-->
 
     </com.nex3z.flowlayout.FlowLayout>
 

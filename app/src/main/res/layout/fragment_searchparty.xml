@@ -1,52 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_party_userList"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_party" />
+    <data>
+        <variable
+            name="viewModel"
+            type="com.naram.party_project.viewmodel.SearchPartyViewModel" />
+    </data>
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/sl_partyShimmer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_party_userList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:visibility="invisible"
+            app:items="@{viewModel.currentList}"/>
 
-            <include layout="@layout/item_party_shimmer" />
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/sl_partyShimmer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <include layout="@layout/item_party_shimmer" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <include layout="@layout/item_party_shimmer" />
+                <include layout="@layout/item_party_shimmer" />
 
-            <include layout="@layout/item_party_shimmer" />
+                <include layout="@layout/item_party_shimmer" />
 
-            <include layout="@layout/item_party_shimmer" />
+                <include layout="@layout/item_party_shimmer" />
 
-            <include layout="@layout/item_party_shimmer" />
+                <include layout="@layout/item_party_shimmer" />
 
-            <include layout="@layout/item_party_shimmer" />
+                <include layout="@layout/item_party_shimmer" />
 
-        </LinearLayout>
+                <include layout="@layout/item_party_shimmer" />
 
-    </com.facebook.shimmer.ShimmerFrameLayout>
+                <include layout="@layout/item_party_shimmer" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

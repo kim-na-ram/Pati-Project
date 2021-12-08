@@ -3,23 +3,49 @@ package com.naram.party_project
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER
 import java.lang.Exception
 
 import com.naram.party_project.databinding.ActivitySigninBinding
-import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_GAME_MODE
-import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_PREFERRED_GENDER_MEN
-import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_PREFERRED_GENDER_WOMEN
-import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_PURPOSE
-import com.naram.party_project.PatiConstClass.Companion.TAG_TENDENCY_VOICE
-import com.naram.party_project.PatiConstClass.Companion.processingTendency
-import com.naram.party_project.callback.Profile
+import com.naram.party_project.util.Const.Companion.TAG_TENDENCY_GAME_MODE
+import com.naram.party_project.util.Const.Companion.TAG_TENDENCY_PREFERRED_GENDER_MEN
+import com.naram.party_project.util.Const.Companion.TAG_TENDENCY_PREFERRED_GENDER_WOMEN
+import com.naram.party_project.util.Const.Companion.TAG_TENDENCY_PURPOSE
+import com.naram.party_project.util.Const.Companion.TAG_TENDENCY_VOICE
+import com.naram.party_project.util.Const.Companion.processingTendency
 import com.naram.party_project.model.Game
 import com.naram.party_project.model.Tendency
 import com.naram.party_project.model.User
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_0_LOL
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_1_OVER_WATCH
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_2_BATTLE_GROUND
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_3_SUDDEN_ATTACK
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_4_FIFA_ONLINE_4
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_5_LOST_ARK
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_6_MAPLE_STORY
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_7_CYPHERS
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_8_STAR_CRAFT
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_9_DUNGEON_AND_FIGHTER
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_GAME_MODE
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PREFERRED_GENDER_MEN
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PREFERRED_GENDER_WOMEN
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PURPOSE
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_VOICE
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_EMAIL
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GENDER
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_NAME
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_PICTURE
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,6 +62,30 @@ class SigninActivity : AppCompatActivity() {
     private var firebaseAuth: FirebaseAuth? = null
 
     private lateinit var binding: ActivitySigninBinding
+
+    private var tmpEmail : String? = null
+    private var tmpName : String? = null
+    private var tmpGender : String? = null
+    private var tmpPicture : String? = null
+    private var tmpPurpose : String? = null
+    private var tmpVoice : String? = null
+    private var tmpMen : String? = null
+    private var tmpWomen : String? = null
+    private var tmpGameMode : String? = null
+    private var tmpGame0 : String? = null
+    private var tmpGame1 : String? = null
+    private var tmpGame2 : String? = null
+    private var tmpGame3 : String? = null
+    private var tmpGame4 : String? = null
+    private var tmpGame5 : String? = null
+    private var tmpGame6 : String? = null
+    private var tmpGame7 : String? = null
+    private var tmpGame8 : String? = null
+    private var tmpGame9 : String? = null
+
+    var tendency = listOf<String>()
+    var gameIntList = listOf<Int>()
+    val games = mutableListOf<Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +125,6 @@ class SigninActivity : AppCompatActivity() {
         }
 
         binding.tvUserSignup.setOnClickListener {
-            finish()
             startActivity(Intent(this, SignupActivity::class.java))
         }
 
@@ -95,10 +144,141 @@ class SigninActivity : AppCompatActivity() {
 
     private fun userInfo() {
 
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
         val email = FirebaseAuth.getInstance().currentUser?.email
 
-        runBlocking {
-            getData(email!!)
+        showProgressbar(true)
+        getFirebaseData(uid!!)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            showResult()
+            showProgressbar(false)
+        }, 3000)
+
+//        runBlocking {
+//            getFirebaseData(uid!!)
+//            getData(email!!)
+//            showResult()
+//        }
+
+    }
+
+    private fun getFirebaseData(uid : String) {
+
+        val mDatabaseReference = FirebaseDatabase.getInstance().reference.child(uid)
+
+        mDatabaseReference.child(FIREBASE_USER).get().addOnSuccessListener { dataSnapshot ->
+            Log.d(TAG, "user uid : ${dataSnapshot.key}")
+            dataSnapshot.children.forEach {
+                when(it.key) {
+                    FIREBASE_USER_EMAIL -> {
+                        tmpEmail = it.value.toString()
+                        Log.d(TAG, "로그인 성공 : $tmpEmail")
+                    }
+                    FIREBASE_USER_NAME -> tmpName = it.value.toString()
+                    FIREBASE_USER_GENDER -> tmpGender = it.value.toString()
+                    FIREBASE_USER_PICTURE -> tmpPicture = it.value.toString()
+                }
+            }
+        }.addOnFailureListener {
+            Log.d(TAG, "로그인 실패")
+        }
+
+        mDatabaseReference.child(FIREBASE_TENDENCY).get().addOnSuccessListener { dataSnapshot ->
+            dataSnapshot.children.forEach {
+                when(it.key) {
+                    FIREBASE_TENDENCY_PURPOSE -> {
+                        tmpPurpose = it.value.toString()
+                        Log.d(TAG, "tendency is $tmpPurpose")
+                    }
+                    FIREBASE_TENDENCY_VOICE -> tmpVoice = it.value.toString()
+                    FIREBASE_TENDENCY_PREFERRED_GENDER_MEN -> tmpMen = it.value.toString()
+                    FIREBASE_TENDENCY_PREFERRED_GENDER_WOMEN -> tmpWomen = it.value.toString()
+                    FIREBASE_TENDENCY_GAME_MODE -> tmpGameMode = it.value.toString()
+                }
+            }
+        }
+
+        mDatabaseReference.child(FIREBASE_GAME).get().addOnSuccessListener { dataSnapshot ->
+            dataSnapshot.children.forEach {
+                when(it.key) {
+                    FIREBASE_GAME_0_LOL -> {
+                        tmpGame0 = it.value.toString()
+                    }
+                    FIREBASE_GAME_1_OVER_WATCH -> tmpGame1 = it.value.toString()
+                    FIREBASE_GAME_2_BATTLE_GROUND -> tmpGame2 = it.value.toString()
+                    FIREBASE_GAME_3_SUDDEN_ATTACK -> tmpGame3 = it.value.toString()
+                    FIREBASE_GAME_4_FIFA_ONLINE_4 -> tmpGame4 = it.value.toString()
+                    FIREBASE_GAME_5_LOST_ARK -> tmpGame5 = it.value.toString()
+                    FIREBASE_GAME_6_MAPLE_STORY -> tmpGame6 = it.value.toString()
+                    FIREBASE_GAME_7_CYPHERS -> tmpGame7 = it.value.toString()
+                    FIREBASE_GAME_8_STAR_CRAFT -> tmpGame8 = it.value.toString()
+                    FIREBASE_GAME_9_DUNGEON_AND_FIGHTER -> tmpGame9 = it.value.toString()
+                }
+            }
+        }
+
+    }
+
+    private fun showResult() {
+        val TendencyMap = mutableMapOf<String, String>().apply {
+            Log.d(TAG, "purpose is $tmpPurpose")
+            this[TAG_TENDENCY_PURPOSE] = tmpPurpose!!
+            this[TAG_TENDENCY_VOICE] = tmpVoice!!
+            this[TAG_TENDENCY_PREFERRED_GENDER_WOMEN] = tmpWomen!!
+            this[TAG_TENDENCY_PREFERRED_GENDER_MEN] = tmpMen!!
+            this[TAG_TENDENCY_GAME_MODE] = tmpGameMode!!
+        }
+
+        val tendency = processingTendency(TendencyMap)
+
+        val IntGameList = listOf(
+            tmpGame0!!.toInt(),
+            tmpGame1!!.toInt(),
+            tmpGame2!!.toInt(),
+            tmpGame3!!.toInt(),
+            tmpGame4!!.toInt(),
+            tmpGame5!!.toInt(),
+            tmpGame6!!.toInt(),
+            tmpGame7!!.toInt(),
+            tmpGame8!!.toInt(),
+            tmpGame9!!.toInt()
+        )
+
+        val games = mutableListOf<Boolean>()
+
+        IntGameList.forEach {
+            if(it == 1)
+                games.add(true)
+            else games.add(false)
+        }
+
+        userProfile = UserProfile(
+            tmpEmail!!,
+            tmpPicture,
+            tmpName!!,
+            null,
+            tmpGender!!,
+            null,
+            tendency,
+            games,
+            IntGameList
+        )
+
+        saveInfoToRoom()
+
+    }
+
+    private fun showProgressbar(flag : Boolean) {
+
+        if(flag) {
+            binding.pbShowLoginProgress.visibility = View.VISIBLE
+            val rotateAnimation =
+                AnimationUtils.loadAnimation(baseContext, R.anim.animation_progressbar)
+            binding.pbShowLoginProgress.startAnimation(rotateAnimation)
+        } else {
+            binding.pbShowLoginProgress.clearAnimation()
+            binding.pbShowLoginProgress.visibility = View.GONE
         }
 
     }
@@ -111,10 +291,10 @@ class SigninActivity : AppCompatActivity() {
 
             val server = retrofit.create(UserAPI::class.java)
 
-            server.getUser(email!!).enqueue(object : Callback<Profile> {
+            server.getUser(email!!).enqueue(object : Callback<com.naram.party_project.callback.User> {
                 override fun onResponse(
-                    call: Call<Profile>,
-                    response: Response<Profile>
+                    call: Call<com.naram.party_project.callback.User>,
+                    response: Response<com.naram.party_project.callback.User>
                 ) {
                     if(response.isSuccessful) {
                         Log.d(TAG, "성공 : ${response.body().toString()}")
@@ -124,7 +304,7 @@ class SigninActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<Profile>, t: Throwable) {
+                override fun onFailure(call: Call<com.naram.party_project.callback.User>, t: Throwable) {
                     Log.d(TAG, "실패 : ${t.localizedMessage}")
                     FirebaseAuth.getInstance()?.signOut()
                 }
@@ -141,7 +321,7 @@ class SigninActivity : AppCompatActivity() {
 
     }
 
-    private fun showResult(response: Profile?) {
+    private fun showResult(response: com.naram.party_project.callback.User?) {
         // Game Tendency
         val TendencyMap = mutableMapOf<String, String>().apply {
             this[TAG_TENDENCY_PURPOSE] = response!!.purpose
@@ -167,12 +347,6 @@ class SigninActivity : AppCompatActivity() {
         )
 
         val games = mutableListOf<Boolean>()
-
-        IntGameList.forEach {
-            if(it == 1)
-                games.add(true)
-            else games.add(false)
-        }
 
         userProfile = UserProfile(
             response!!.email,

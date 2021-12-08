@@ -23,7 +23,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class Fragment_Showprofile : Fragment() {
+class ShowProfileFragment : Fragment() {
 
     private val TAG = "Showprofile"
 
@@ -33,6 +33,8 @@ class Fragment_Showprofile : Fragment() {
 
     private var _binding: FragmentShowprofileBinding? = null
     private val binding get() = _binding!!
+
+    private val searchPartyFragment = SearchPartyFragment()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -109,7 +111,7 @@ class Fragment_Showprofile : Fragment() {
     }
 
     private fun setUserProfile() {
-        val profile = mainActivity.getProfile()
+        val profile = searchPartyFragment.getUserProfile()
         profile?.let { profile ->
             val name = profile.user_name
             binding.tvPartyUserName.text = name
@@ -178,7 +180,7 @@ class Fragment_Showprofile : Fragment() {
                         binding.ivPartyUserPicture.width,
                         binding.ivPartyUserPicture.height
                     )
-                    .placeholder(resources.getDrawable(R.drawable.loading_image))
+                    .placeholder(resources.getDrawable(R.drawable.loading_image, null))
                     .into(binding.ivPartyUserPicture)
             }.addOnFailureListener {
                 Toast.makeText(

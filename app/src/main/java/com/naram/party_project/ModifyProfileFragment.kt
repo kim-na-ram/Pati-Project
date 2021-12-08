@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,15 +20,19 @@ import androidx.fragment.app.Fragment
 import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER
 import java.io.FileNotFoundException
 
-import com.naram.party_project.PatiConstClass.Companion.ListToMap
-import com.naram.party_project.PatiConstClass.Companion.REQUEST_GALLERY
-import com.naram.party_project.PatiConstClass.Companion.REQUEST_SUCCESS
-import com.naram.party_project.PatiConstClass.Companion.processingTendency
+import com.naram.party_project.util.Const.Companion.ListToMap
+import com.naram.party_project.util.Const.Companion.REQUEST_GALLERY
+import com.naram.party_project.util.Const.Companion.REQUEST_SUCCESS
+import com.naram.party_project.util.Const.Companion.processingTendency
 import com.naram.party_project.databinding.FragmentModifyprofileBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +45,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Fragment_Modifyprofile : Fragment() {
+class ModifyProfileFragment : Fragment() {
 
     private val TAG = "ModifyProfile"
 
@@ -53,10 +58,9 @@ class Fragment_Modifyprofile : Fragment() {
     private val binding get() = _binding!!
 
     // user detail profile
-    private lateinit var TendencyTextViewList: List<TextView>
+    private lateinit var TendencyRadioList: List<RadioButton>
     private lateinit var GameNameTextViewList: List<TextView>
 
-    private var TendencyList: List<Games>? = null
     private val TendencyListToString = mutableListOf<String>()
     private val TendencyListToMap = mutableMapOf<String, String>()
     private var GameNameList: List<Games>? = null
@@ -65,16 +69,17 @@ class Fragment_Modifyprofile : Fragment() {
 
     private var bitmap: Bitmap? = null
     private var picture_path: String? = null
+    private var bitPicture: String? = null
     private var currentPhotoPath: String? = null
-    private var pictureFlag : Boolean = false
+    private var pictureFlag: Boolean = false
 
     private lateinit var email: String
     private lateinit var user_name: String
     private var game_name: String? = null
     private var self_pr: String? = null
 
-    fun newInstance(): Fragment_Modifyprofile {
-        return Fragment_Modifyprofile()
+    fun newInstance(): ModifyProfileFragment {
+        return ModifyProfileFragment()
     }
 
     override fun onAttach(context: Context) {
@@ -114,7 +119,6 @@ class Fragment_Modifyprofile : Fragment() {
 
         Log.d(TAG, "onDestroy")
 
-        TendencyList = null
         TendencyListToString.clear()
         TendencyListToMap.clear()
         GameNameList = null
@@ -123,6 +127,7 @@ class Fragment_Modifyprofile : Fragment() {
 
         bitmap = null
         picture_path = null
+        bitPicture = null
         currentPhotoPath = null
         pictureFlag = false
 
@@ -147,16 +152,16 @@ class Fragment_Modifyprofile : Fragment() {
     private fun initViews() {
 
         // Detail User Info
-        TendencyTextViewList = listOf(
-            binding.tvGameTendencyWantWin,
-            binding.tvGameTendencyWinOrlose,
-            binding.tvGameTendencyOnlyFun,
-            binding.tvGameTendencyOnlyWin,
-            binding.tvGameTendencyVoiceOk,
-            binding.tvGameTendencyVoiceNo,
-            binding.tvGameTendencyOnlyWomen,
-            binding.tvGameTendencyOnlyMen,
-            binding.tvGameTendencyWomenOrmen
+        TendencyRadioList = listOf(
+            binding.rbWantWin,
+            binding.rbWinOrlose,
+            binding.rbFunny,
+            binding.rbHard,
+            binding.rbVoiceOn,
+            binding.rbVoiceOff,
+            binding.rbWomen,
+            binding.rbMen,
+            binding.rbAll
         )
 
         GameNameTextViewList = listOf(
@@ -172,7 +177,18 @@ class Fragment_Modifyprofile : Fragment() {
             binding.tvGameNamesDungeonandFighter
         )
 
-        binding.btnModifyUserPic.setOnClickListener {
+        binding.ibRemoveUserPicture.setOnClickListener {
+            binding.btnModifyUserPicture.text = "프로필 사진 선택"
+            Glide.with(this)
+                .load(R.drawable.app_logo_reverse)
+                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
+                .into(binding.ivUserPicture)
+            pictureFlag = false
+            picture_path = null
+            bitPicture = null
+        }
+
+        binding.btnModifyUserPicture.setOnClickListener {
             getUserPermission()
         }
 
@@ -183,16 +199,16 @@ class Fragment_Modifyprofile : Fragment() {
             db.userDAO().getUserInfo().forEach {
                 mainActivity.runOnUiThread {
 
-                    if(it.picture_uri == null && currentPhotoPath == null) {
+                    if (it.picture_uri == null && currentPhotoPath == null) {
                         it.picture?.let { path ->
                             currentPhotoPath = uploadImageFromCloud(path)
                         }
-                    } else if(it.picture_uri != null) {
+                    } else if (it.picture_uri != null) {
                         Glide.with(this)
                             .load(it.picture_uri)
                             .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
                             .into(binding.ivUserPicture)
-                    } else if(currentPhotoPath != null) {
+                    } else if (currentPhotoPath != null) {
                         Glide.with(this)
                             .load(currentPhotoPath)
                             .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
@@ -222,18 +238,13 @@ class Fragment_Modifyprofile : Fragment() {
                     )
 
                     // Game Tendency
-                    TendencyList = mutableListOf<Games>().apply {
-                        TendencyTextViewList.forEach { textView ->
-                            this.add(Games(textView, false))
-                            tendency.forEach { s ->
-                                if (textView.text.toString() == s) {
-                                    this.removeLast()
-                                    this.add(Games(textView, true))
-                                }
+                    TendencyRadioList.forEach { rb ->
+                        tendency.forEach { s ->
+                            if (rb.text.toString() == s) {
+                                rb.isChecked = true
                             }
                         }
                     }
-                    setTextView(TendencyList)
                 }
             }
 
@@ -268,7 +279,16 @@ class Fragment_Modifyprofile : Fragment() {
         }).start()
     }
 
-    private fun uploadImageFromCloud(path: String) : String {
+    private fun uploadImageToFirebase(bitmap: Bitmap) {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        val imgArray = stream.toByteArray()
+
+        bitPicture = Base64.encodeToString(imgArray, Base64.DEFAULT)
+
+    }
+
+    private fun uploadImageFromCloud(path: String): String {
         val storage = Firebase.storage
         var storageRef = storage.reference
         var imagesRef = storageRef.child(path)
@@ -280,8 +300,8 @@ class Fragment_Modifyprofile : Fragment() {
         imagesRef.getFile(localFile).addOnSuccessListener {
             Glide.with(this)
                 .load(localFile)
-                .placeholder(R.drawable.app_logo)
-                .error(R.drawable.app_logo)
+                .placeholder(R.drawable.app_logo_reverse)
+                .error(R.drawable.app_logo_reverse)
                 .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
                 .into(binding.ivUserPicture)
         }.addOnFailureListener {
@@ -305,14 +325,13 @@ class Fragment_Modifyprofile : Fragment() {
         val result = Ref.downloadUrl.addOnSuccessListener {
             Glide.with(this)
                 .load(it)
+                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
                 .into(binding.ivUserPicture)
         }
-        .addOnFailureListener {
-            Log.d(TAG, "uploadImageFromURI에서 오류 발생")
-            Log.d(TAG, it.toString())
-        }
-
-        binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_CROP
+            .addOnFailureListener {
+                Log.d(TAG, "uploadImageFromURI에서 오류 발생")
+                Log.d(TAG, it.toString())
+            }
 
         return result.isSuccessful
 
@@ -323,11 +342,15 @@ class Fragment_Modifyprofile : Fragment() {
         Ref.getBytes(ONE_MEGABYTE).addOnSuccessListener {
             val options = BitmapFactory.Options();
             val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size, options)
-            binding.ivUserPicture.setImageBitmap(bitmap)
-            binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_CROP
+            Glide.with(this)
+                .load(bitmap)
+                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
+                .into(binding.ivUserPicture)
         }.addOnFailureListener {
-            binding.ivUserPicture.setImageDrawable(resources.getDrawable(R.drawable.app_logo))
-            binding.ivUserPicture.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            Glide.with(this)
+                .load(R.drawable.app_logo_reverse)
+                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
+                .into(binding.ivUserPicture)
 
             Log.d(TAG, "uploadImageFromDownload에서 오류 발생")
             Log.d(TAG, it.toString())
@@ -354,12 +377,12 @@ class Fragment_Modifyprofile : Fragment() {
         var uploadTask = imagesRef.putBytes(data)
         uploadTask.addOnFailureListener {
             Toast.makeText(
-                this@Fragment_Modifyprofile.requireContext(),
+                this@ModifyProfileFragment.requireContext(),
                 "사진 업로드에 실패했습니다.",
                 Toast.LENGTH_SHORT
             )
                 .show()
-        }.addOnSuccessListener { taskSnapshot ->
+        }.addOnSuccessListener { _ ->
             picture_path = "$email/profile.jpg"
         }
 
@@ -368,22 +391,25 @@ class Fragment_Modifyprofile : Fragment() {
     private fun setTextView(list: List<Games>?) {
         list?.forEach {
             if (it.flag) {
-                it.textView.setTextColor(resources.getColor(R.color.white))
-                it.textView.setBackgroundDrawable(resources.getDrawable(R.drawable.textview_rounded_activated))
+                it.textView.setTextColor(resources.getColor(R.color.white, null))
+                it.textView.background =
+                    resources.getDrawable(R.drawable.textview_rounded_activated, null)
             } else {
-                it.textView.setTextColor(resources.getColor(R.color.color_inactivated_blue))
-                it.textView.setBackgroundDrawable(resources.getDrawable(R.drawable.textview_rounded_inactivated))
+                it.textView.setTextColor(resources.getColor(R.color.color_inactivated_blue, null))
+                it.textView.background =
+                    resources.getDrawable(R.drawable.textview_rounded_inactivated, null)
             }
         }
     }
 
     private fun setTextView(textView: TextView, flag: Boolean) {
         if (flag) {
-            textView.setTextColor(resources.getColor(R.color.white))
-            textView.setBackgroundDrawable(resources.getDrawable(R.drawable.textview_rounded_activated))
+            textView.setTextColor(resources.getColor(R.color.white, null))
+            textView.background = resources.getDrawable(R.drawable.textview_rounded_activated, null)
         } else {
-            textView.setTextColor(resources.getColor(R.color.color_inactivated_blue))
-            textView.setBackgroundDrawable(resources.getDrawable(R.drawable.textview_rounded_inactivated))
+            textView.setTextColor(resources.getColor(R.color.color_inactivated_blue, null))
+            textView.background =
+                resources.getDrawable(R.drawable.textview_rounded_inactivated, null)
         }
     }
 
@@ -412,13 +438,13 @@ class Fragment_Modifyprofile : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("권한 요청")
             .setMessage("앱에서 사진을 불러오기 위해 권한이 필요합니다.")
-            .setPositiveButton("동의", { _, _ ->
+            .setPositiveButton("동의") { _, _ ->
                 requestPermissions(
                     arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
                     REQUEST_GALLERY
                 )
-            })
-            .setNegativeButton("취소", { _, _ -> })
+            }
+            .setNegativeButton("취소") { _, _ -> }
             .create()
             .show()
     }
@@ -464,6 +490,7 @@ class Fragment_Modifyprofile : Fragment() {
                 if (selectedImageUri != null) {
                     binding.ivUserPicture.setImageURI(selectedImageUri)
                     bitmap = resize(requireContext(), selectedImageUri, 400)
+                    binding.btnModifyUserPicture.text = "프로필 사진 변경"
                     pictureFlag = true
                 } else {
                     Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
@@ -510,13 +537,6 @@ class Fragment_Modifyprofile : Fragment() {
     }
 
     private fun modifyUserInfo() {
-        TendencyTextViewList.forEach { textView ->
-            textView.setOnClickListener {
-                TendencyList?.let {
-                    changeTextView(it, textView)
-                }
-            }
-        }
 
         GameNameTextViewList.forEach { textView ->
             textView.setOnClickListener {
@@ -529,8 +549,9 @@ class Fragment_Modifyprofile : Fragment() {
         binding.btnSaveUserInfo.setOnClickListener {
 
             if (pictureFlag) {
+                uploadImageToFirebase(bitmap!!)
                 uploadImageToCloud(bitmap!!)
-                if(picture_path.isNullOrEmpty())
+                if (picture_path.isNullOrEmpty())
                     picture_path = "$email/profile.jpg"
             }
 
@@ -547,15 +568,13 @@ class Fragment_Modifyprofile : Fragment() {
                     }
                 }
 
-                TendencyList?.let { list ->
-                    list.forEach {
-                        if (it.flag) {
-                            TendencyListToString.add(it.textView.text.toString())
-                        }
+                TendencyRadioList.forEach { rb ->
+                    if(rb.isChecked) {
+                        TendencyListToString.add(rb.text.toString())
                     }
                 }
 
-                if(TendencyListToString.size == 4) {
+                if (TendencyListToString.size == 4) {
                     saveUserInfoToDB()
                     saveUserInfoToRoom(pictureFlag)
 
@@ -584,24 +603,98 @@ class Fragment_Modifyprofile : Fragment() {
 
         user_name = binding.etUserNickName.toStringFromText()
         game_name = if (binding.etGameUserName.toStringFromText().isEmpty()) null
-            else binding.etGameUserName.toStringFromText()
+        else binding.etGameUserName.toStringFromText()
         self_pr = if (binding.etSelfPR.toStringFromText().isEmpty()) null
-            else binding.etSelfPR.toStringFromText()
+        else binding.etSelfPR.toStringFromText()
 
         val tendencyMap = processingTendency(TendencyListToString)
         TendencyListToMap.putAll(ListToMap(TendencyListToString))
 
         runBlocking {
-            updateData(
+//            updateData(
+//                tendencyMap,
+//                GameListToString,
+//                email,
+//                picture_path,
+//                user_name,
+//                game_name,
+//                self_pr
+//            )
+
+            updateFirebase(
                 tendencyMap,
                 GameListToString,
+                FirebaseAuth.getInstance().currentUser!!.uid,
                 email,
                 picture_path,
+                bitPicture,
                 user_name,
                 game_name,
                 self_pr
             )
         }
+    }
+
+    private fun updateFirebase(
+        paramMap: Map<String, String>,
+        paramList: List<String>,
+        vararg params: String?
+    ) {
+
+        val tendencyMap: Map<String, String> = paramMap
+        val gameList: List<String> = paramList
+        val uid: String? = params[0]
+        val email: String? = params[1]
+        val picture: String? = params[2]
+        val bitPicture: String? = params[3]
+        val user_name: String? = params[4]
+        val game_name: String? = params[5]
+        val self_pr: String? = params[6]
+
+        val mDatabaseReference = FirebaseDatabase.getInstance().reference.child("$uid")
+
+        val childUpdates = hashMapOf<String, Any>(
+            "${FIREBASE_USER}/name" to "$user_name"
+        )
+
+        game_name?.let {
+            childUpdates["${FIREBASE_USER}/game_name"] = game_name
+        }
+
+        picture?.let {
+            childUpdates["${FIREBASE_USER}/picture"] = picture
+        }
+
+        bitPicture?.let {
+            childUpdates["${FIREBASE_USER}/bitPicture"] = bitPicture
+        }
+
+        self_pr?.let {
+            childUpdates["${FIREBASE_USER}/self_pr"] = self_pr
+        }
+
+        tendencyMap.forEach { (t, u) ->
+            when (t) {
+                "purpose" -> childUpdates["${FIREBASE_TENDENCY}/purpose"] = "$u"
+                "voice" -> childUpdates["${FIREBASE_TENDENCY}/voice"] = "$u"
+                "men" -> childUpdates["${FIREBASE_TENDENCY}/men"] = "$u"
+                "women" -> childUpdates["${FIREBASE_TENDENCY}/women"] = "$u"
+                "game_mode" -> childUpdates["${FIREBASE_TENDENCY}/game_mode"] = "$u"
+            }
+        }
+
+        gameList.forEachIndexed { index, str ->
+            childUpdates["${FIREBASE_GAME}/game$index"] = str
+        }
+
+        mDatabaseReference.updateChildren(childUpdates)
+
+//        mDatabaseReference.child(FIREBASE_USER).child(uid!!).get().addOnSuccessListener { dataSnapshot ->
+//            Log.d(TAG, "user uid : ${dataSnapshot.key}")
+//        }.addOnFailureListener {
+//            Log.d(TAG, "로그인 실패")
+//        }
+
     }
 
     private fun updateData(

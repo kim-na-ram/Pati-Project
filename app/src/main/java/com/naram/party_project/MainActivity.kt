@@ -3,7 +3,6 @@ package com.naram.party_project
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -11,12 +10,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.naram.party_project.adapter.MainViewPagerAdapter
 import com.naram.party_project.callback.Party
-import com.naram.party_project.callback.Profile
+import com.naram.party_project.callback.PartyFirebase
+import com.naram.party_project.callback.User
 import com.naram.party_project.databinding.ActivityMainBinding
 import kotlinx.coroutines.runBlocking
 import retrofit2.Call
@@ -32,43 +32,44 @@ class MainActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
 
     private var list = mutableListOf<Party>()
+    private var firebaseList = mutableListOf<PartyFirebase>()
     private var flag = false
-    private var profile: Profile? = null
+    private var user: User? = null
 
-    private val Fragment_Myprofile by lazy {
-        Fragment_Myprofile()
+    private val myProfileFragment by lazy {
+        MyProfileFragment()
     }
 
-    private val Fragment_Searchparty by lazy {
-        Fragment_Searchparty()
+    private val searchPartyFragment by lazy {
+        SearchPartyFragment()
     }
 
-    private val Fragment_Chatting by lazy {
-        Fragment_Chatting()
+    private val chattingFragment by lazy {
+        ChattingFragment()
     }
 
-    private val Fragment_Friends by lazy {
-        Fragment_Friends()
+    private val friendsFragment by lazy {
+        FriendsFragment()
     }
 
-    private val Fragment_Setting by lazy {
-        Fragment_Setting()
+    private val settingFragment by lazy {
+        SettingFragment()
     }
 
     private val Fragment_Modifyprofile by lazy {
-        Fragment_Modifyprofile()
+        ModifyProfileFragment()
     }
 
     private val Fragment_Showprofile by lazy {
-        Fragment_Showprofile()
+        ShowProfileFragment()
     }
 
     private var fragments: MutableList<Fragment> = mutableListOf(
-        Fragment_Myprofile,
-        Fragment_Searchparty,
-        Fragment_Chatting,
-        Fragment_Friends,
-        Fragment_Setting
+        MyProfileFragment(),
+        searchPartyFragment,
+        chattingFragment,
+        friendsFragment,
+        settingFragment
     )
 
     private val pagerAdapter: MainViewPagerAdapter by lazy {
@@ -84,7 +85,6 @@ class MainActivity : AppCompatActivity() {
         createDB()
         initViews()
         initNavigationBar()
-        setupPartyUserList()
 
     }
 
@@ -103,25 +103,25 @@ class MainActivity : AppCompatActivity() {
         val ab = supportActionBar!!
         ab.setDisplayShowTitleEnabled(false)
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            if (binding.swipeRefreshLayout.isRefreshing) {
-                when(binding.vpShowView.currentItem) {
-                    fragments.indexOf(Fragment_Searchparty) -> {
-                        flag = false
-                        setupPartyUserList()
-                        Fragment_Searchparty.refreshLayout()
-                    }
-                    fragments.indexOf(Fragment_Friends) -> {
-                        // TODO Friends refreshLayout 실행
-                        Fragment_Friends.refreshLayout()
-                    }
-                    else -> {
-
-                    }
-                }
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
-        }
+//        binding.swipeRefreshLayout.setOnRefreshListener {
+//            if (binding.swipeRefreshLayout.isRefreshing) {
+//                when(binding.vpShowView.currentItem) {
+//                    fragments.indexOf(searchPartyFragment) -> {
+//                        flag = false
+//                        setupPartyUserList()
+//                        searchPartyFragment.refreshLayout()
+//                    }
+//                    fragments.indexOf(friendsFragment) -> {
+//                        // TODO Friends refreshLayout 실행
+//                        friendsFragment.refreshLayout()
+//                    }
+//                    else -> {
+//
+//                    }
+//                }
+//                binding.swipeRefreshLayout.isRefreshing = false
+//            }
+//        }
 
         setViewpager()
 
@@ -132,12 +132,12 @@ class MainActivity : AppCompatActivity() {
         binding.bnbMenuBar.run {
             setOnItemSelectedListener {
                 val page = when (it.itemId) {
-                    R.id.myProfile -> fragments.indexOf(Fragment_Myprofile)
-                    R.id.searchParty -> fragments.indexOf(Fragment_Searchparty)
-                    R.id.chatting -> fragments.indexOf(Fragment_Chatting)
-                    R.id.friends -> fragments.indexOf(Fragment_Friends)
-                    R.id.setting -> fragments.indexOf(Fragment_Setting)
-                    else -> fragments.indexOf(Fragment_Myprofile)
+                    R.id.myProfile -> fragments.indexOf(MyProfileFragment())
+                    R.id.searchParty -> fragments.indexOf(searchPartyFragment)
+                    R.id.chatting -> fragments.indexOf(chattingFragment)
+                    R.id.friends -> fragments.indexOf(friendsFragment)
+                    R.id.setting -> fragments.indexOf(settingFragment)
+                    else -> fragments.indexOf(MyProfileFragment())
                 }
 
                 if (page != binding.vpShowView.currentItem) {
@@ -158,11 +158,11 @@ class MainActivity : AppCompatActivity() {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     val navigation = when (position) {
-                        fragments.indexOf(Fragment_Myprofile) -> R.id.myProfile
-                        fragments.indexOf(Fragment_Searchparty) -> R.id.searchParty
-                        fragments.indexOf(Fragment_Chatting) -> R.id.chatting
-                        fragments.indexOf(Fragment_Friends) -> R.id.friends
-                        fragments.indexOf(Fragment_Setting) -> R.id.setting
+                        fragments.indexOf(MyProfileFragment()) -> R.id.myProfile
+                        fragments.indexOf(searchPartyFragment) -> R.id.searchParty
+                        fragments.indexOf(chattingFragment) -> R.id.chatting
+                        fragments.indexOf(friendsFragment) -> R.id.friends
+                        fragments.indexOf(settingFragment) -> R.id.setting
                         else -> R.id.myProfile
                     }
 
@@ -262,27 +262,27 @@ class MainActivity : AppCompatActivity() {
 
         val server = retrofit.create(UserAPI::class.java)
 
-        server.getUser(email).enqueue(object : Callback<Profile> {
+        server.getUser(email).enqueue(object : Callback<User> {
             override fun onResponse(
-                call: Call<Profile>,
-                response: Response<Profile>
+                call: Call<User>,
+                response: Response<User>
             ) {
                 if (response.isSuccessful) {
-                    profile = response.body()!!
+                    user = response.body()!!
                     appearFragment()
                 } else {
                     Log.d(TAG, "실패 : ${response.errorBody().toString()}")
                 }
             }
 
-            override fun onFailure(call: Call<Profile>, t: Throwable) {
+            override fun onFailure(call: Call<User>, t: Throwable) {
                 Log.d(TAG, "실패 : ${t.localizedMessage}")
             }
         })
     }
 
-    fun getProfile(): Profile? {
-        return profile
+    fun getProfile(): User? {
+        return user
     }
 
     fun changeFragment() {
@@ -290,12 +290,12 @@ class MainActivity : AppCompatActivity() {
 
         val id = binding.vpShowView.currentItem
         binding.vpShowView.currentItem = when (id) {
-            fragments.indexOf(Fragment_Myprofile) -> fragments.indexOf(Fragment_Modifyprofile)
+            fragments.indexOf(MyProfileFragment()) -> fragments.indexOf(Fragment_Modifyprofile)
             fragments.indexOf(Fragment_Modifyprofile) -> {
                 setupPartyUserList()
-                fragments.indexOf(Fragment_Myprofile)
+                fragments.indexOf(MyProfileFragment())
             }
-            else -> fragments.indexOf(Fragment_Myprofile)
+            else -> fragments.indexOf(MyProfileFragment())
         }
 
     }
@@ -307,7 +307,7 @@ class MainActivity : AppCompatActivity() {
     fun appearFragment() {
         binding.flShowPartyProfile.visibility = View.VISIBLE
 
-        val fragment = Fragment_Showprofile()
+        val fragment = ShowProfileFragment()
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.add(R.id.fl_showPartyProfile, fragment)
@@ -325,19 +325,15 @@ class MainActivity : AppCompatActivity() {
             disappearFragment()
         } else when (binding.vpShowView.currentItem) {
             fragments.indexOf(Fragment_Modifyprofile) -> {
-                binding.vpShowView.currentItem = fragments.indexOf(Fragment_Myprofile)
+                binding.vpShowView.currentItem = fragments.indexOf(MyProfileFragment())
                 fragments.remove(Fragment_Modifyprofile)
             }
             else -> super.onBackPressed()
         }
     }
 
-    fun getList(): List<Party> {
-        return list
-    }
-
-    fun checkFlag(): Boolean {
-        return flag
+    fun getDB() : AppDatabase {
+        return db
     }
 
 }

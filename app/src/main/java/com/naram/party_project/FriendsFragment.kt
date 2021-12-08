@@ -21,7 +21,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.concurrent.timer
 
-class Fragment_Friends : Fragment() {
+class FriendsFragment : Fragment() {
 
     private val TAG = "Friends"
 
@@ -60,14 +60,14 @@ class Fragment_Friends : Fragment() {
 
         Log.d(TAG, "onViewCreated")
 
-        setPartyRecyclerView()
-        setFriendRecyclerView()
-
-        getRequestedPartyList()
-        getFriendList()
-
-        requestedPartyLoadSampleData()
-        friendsLoadSampleData()
+//        setPartyRecyclerView()
+//        setFriendRecyclerView()
+//
+//        getRequestedPartyList()
+//        getFriendList()
+//
+//        requestedPartyLoadSampleData()
+//        friendsLoadSampleData()
 
     }
 

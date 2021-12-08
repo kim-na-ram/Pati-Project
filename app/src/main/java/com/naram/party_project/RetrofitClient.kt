@@ -3,7 +3,7 @@ package com.naram.party_project
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.naram.party_project.PatiConstClass.Companion.IP_ADDRESS
+import com.naram.party_project.util.Const.Companion.IP_ADDRESS
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
