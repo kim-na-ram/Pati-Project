@@ -8,54 +8,31 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.*
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
-import com.naram.party_project.util.Const.Companion.FIREBASE_GAME
-import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY
-import com.naram.party_project.util.Const.Companion.FIREBASE_USER
+import com.naram.party_project.base.BaseActivity
+import com.naram.party_project.databinding.ActivityModifyProfileBinding
+import com.naram.party_project.util.Const
+import com.naram.party_project.util.Const.Companion.MODIFY_USER_PROFILE
+import kotlinx.coroutines.runBlocking
+import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 
-import com.naram.party_project.util.Const.Companion.ListToMap
-import com.naram.party_project.util.Const.Companion.REQUEST_GALLERY
-import com.naram.party_project.util.Const.Companion.REQUEST_SUCCESS
-import com.naram.party_project.util.Const.Companion.processingTendency
-import com.naram.party_project.databinding.FragmentModifyprofileBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import retrofit2.Call
-import retrofit2.Callback
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
-
-class ModifyProfileFragment : Fragment() {
+class ModifyProfileActivity : BaseActivity<ActivityModifyProfileBinding> ({
+    ActivityModifyProfileBinding.inflate(it)
+}) {
 
     private val TAG = "ModifyProfile"
-
-    private lateinit var mainActivity: MainActivity
-
-    private lateinit var db: AppDatabase
-
-    private var _binding: FragmentModifyprofileBinding? = null
-
-    private val binding get() = _binding!!
 
     // user detail profile
     private lateinit var TendencyRadioList: List<RadioButton>
@@ -68,9 +45,7 @@ class ModifyProfileFragment : Fragment() {
     private val GameListToInt = mutableListOf<Int>()
 
     private var bitmap: Bitmap? = null
-    private var picture_path: String? = null
-    private var bitPicture: String? = null
-    private var currentPhotoPath: String? = null
+    private var picturePath: String? = null
     private var pictureFlag: Boolean = false
 
     private lateinit var email: String
@@ -78,78 +53,19 @@ class ModifyProfileFragment : Fragment() {
     private var game_name: String? = null
     private var self_pr: String? = null
 
-    fun newInstance(): ModifyProfileFragment {
-        return ModifyProfileFragment()
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainActivity = context as MainActivity
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentModifyprofileBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        val auth = FirebaseAuth.getInstance()
-        val user = auth.currentUser
-        user?.let {
-            email = user.email!!
-        }
-
-        createDB()
         initViews()
         getRoom()
         modifyUserInfo()
-
-        return view
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        Log.d(TAG, "onDestroy")
-
-        TendencyListToString.clear()
-        TendencyListToMap.clear()
-        GameNameList = null
-        GameListToString.clear()
-        GameListToInt.clear()
-
-        bitmap = null
-        picture_path = null
-        bitPicture = null
-        currentPhotoPath = null
-        pictureFlag = false
-
-        mainActivity.removeFragment()
-    }
-
-//    override fun onPause() {
-//        super.onPause()
-//
-//        mainActivity.removeFragment()
-//    }
-
-    private fun createDB() {
-        db = Room.databaseBuilder(
-            requireContext(),
-            AppDatabase::class.java,
-            "userDB"
-        )
-            .build()
     }
 
     private fun initViews() {
+
+        setSupportActionBar(binding.layoutTop.toolbar)
+        val ab = supportActionBar!!
+        ab.setDisplayShowTitleEnabled(false)
 
         // Detail User Info
         TendencyRadioList = listOf(
@@ -180,12 +96,11 @@ class ModifyProfileFragment : Fragment() {
         binding.ibRemoveUserPicture.setOnClickListener {
             binding.btnModifyUserPicture.text = "프로필 사진 선택"
             Glide.with(this)
-                .load(R.drawable.app_logo_reverse)
+                .load(R.drawable.ic_signup_enter_picture_r_128)
                 .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
                 .into(binding.ivUserPicture)
             pictureFlag = false
-            picture_path = null
-            bitPicture = null
+            picturePath = null
         }
 
         binding.btnModifyUserPicture.setOnClickListener {
@@ -197,22 +112,12 @@ class ModifyProfileFragment : Fragment() {
     private fun getRoom() {
         Thread(Runnable {
             db.userDAO().getUserInfo().forEach {
-                mainActivity.runOnUiThread {
+                runOnUiThread {
 
-                    if (it.picture_uri == null && currentPhotoPath == null) {
-                        it.picture?.let { path ->
-                            currentPhotoPath = uploadImageFromCloud(path)
-                        }
-                    } else if (it.picture_uri != null) {
-                        Glide.with(this)
-                            .load(it.picture_uri)
-                            .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
-                            .into(binding.ivUserPicture)
-                    } else if (currentPhotoPath != null) {
-                        Glide.with(this)
-                            .load(currentPhotoPath)
-                            .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
-                            .into(binding.ivUserPicture)
+                    email = it.email
+
+                    it.picture?.let {
+                        uploadImageFromCloud(it)
                     }
 
                     binding.etUserNickName.setText(it.user_name)
@@ -228,7 +133,7 @@ class ModifyProfileFragment : Fragment() {
             }
 
             db.tendencyDAO().getTendencyInfo().forEach {
-                mainActivity.runOnUiThread {
+                runOnUiThread {
 
                     val tendency = listOf(
                         it.purpose,
@@ -249,7 +154,7 @@ class ModifyProfileFragment : Fragment() {
             }
 
             db.gameDAO().getGameInfo().forEach {
-                mainActivity.runOnUiThread {
+                runOnUiThread {
 
                     val gamenames = listOf(
                         it.game0,
@@ -279,82 +184,23 @@ class ModifyProfileFragment : Fragment() {
         }).start()
     }
 
-    private fun uploadImageToFirebase(bitmap: Bitmap) {
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-        val imgArray = stream.toByteArray()
-
-        bitPicture = Base64.encodeToString(imgArray, Base64.DEFAULT)
-
-    }
-
-    private fun uploadImageFromCloud(path: String): String {
+    private fun uploadImageFromCloud(path: String) {
         val storage = Firebase.storage
         var storageRef = storage.reference
         var imagesRef = storageRef.child(path)
 
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val fileName = "${timeStamp}_user_profile"
-        var localFile = File.createTempFile(fileName, ".jpg", requireContext().filesDir)
-
-        imagesRef.getFile(localFile).addOnSuccessListener {
-            Glide.with(this)
-                .load(localFile)
-                .placeholder(R.drawable.app_logo_reverse)
-                .error(R.drawable.app_logo_reverse)
-                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
-                .into(binding.ivUserPicture)
-        }.addOnFailureListener {
-            val flag = uploadImageFromURI(imagesRef)
-
-            if (!flag)
-                uploadImageFromDownload(imagesRef)
-
-            localFile = null
-
-            Toast.makeText(context, "오류가 발생했습니다", Toast.LENGTH_SHORT).show()
-            Log.d(TAG, "uploadImageFromCloud에서 오류 발생")
-            Log.d(TAG, it.toString())
-        }
-
-        return localFile.absolutePath
-
-    }
-
-    private fun uploadImageFromURI(Ref: StorageReference): Boolean {
-        val result = Ref.downloadUrl.addOnSuccessListener {
-            Glide.with(this)
-                .load(it)
-                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
-                .into(binding.ivUserPicture)
-        }
-            .addOnFailureListener {
-                Log.d(TAG, "uploadImageFromURI에서 오류 발생")
-                Log.d(TAG, it.toString())
+        imagesRef.downloadUrl.addOnCompleteListener { task ->
+            task.addOnSuccessListener {
+                Glide.with(this)
+                    .load(it)
+                    .placeholder(R.drawable.loading_image)
+                    .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
+                    .into(binding.ivUserPicture)
+            }.addOnFailureListener {
+                Toast.makeText(this, "사진을 불러오는데 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
             }
-
-        return result.isSuccessful
-
-    }
-
-    private fun uploadImageFromDownload(Ref: StorageReference) {
-        val ONE_MEGABYTE: Long = 1024 * 1024
-        Ref.getBytes(ONE_MEGABYTE).addOnSuccessListener {
-            val options = BitmapFactory.Options();
-            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size, options)
-            Glide.with(this)
-                .load(bitmap)
-                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
-                .into(binding.ivUserPicture)
-        }.addOnFailureListener {
-            Glide.with(this)
-                .load(R.drawable.app_logo_reverse)
-                .override(binding.ivUserPicture.width, binding.ivUserPicture.height)
-                .into(binding.ivUserPicture)
-
-            Log.d(TAG, "uploadImageFromDownload에서 오류 발생")
-            Log.d(TAG, it.toString())
         }
+
     }
 
     private fun uploadImageToCloud(bitmap: Bitmap) {
@@ -371,19 +217,19 @@ class ModifyProfileFragment : Fragment() {
 //        }
 //
         val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
 
         var uploadTask = imagesRef.putBytes(data)
         uploadTask.addOnFailureListener {
             Toast.makeText(
-                this@ModifyProfileFragment.requireContext(),
+                this,
                 "사진 업로드에 실패했습니다.",
                 Toast.LENGTH_SHORT
             )
                 .show()
         }.addOnSuccessListener { _ ->
-            picture_path = "$email/profile.jpg"
+            picturePath = "$email/profile.jpg"
         }
 
     }
@@ -416,7 +262,7 @@ class ModifyProfileFragment : Fragment() {
     private fun getUserPermission() {
         when {
             ContextCompat.checkSelfPermission(
-                requireContext(),
+                this,
                 android.Manifest.permission.READ_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED -> {
                 navigateGallery()
@@ -428,20 +274,20 @@ class ModifyProfileFragment : Fragment() {
                 // TODO 권한 요청
                 requestPermissions(
                     arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                    REQUEST_GALLERY
+                    Const.REQUEST_GALLERY
                 )
             }
         }
     }
 
     private fun showPermissionContextPopup() {
-        AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(this)
             .setTitle("권한 요청")
             .setMessage("앱에서 사진을 불러오기 위해 권한이 필요합니다.")
             .setPositiveButton("동의") { _, _ ->
                 requestPermissions(
                     arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                    REQUEST_GALLERY
+                    Const.REQUEST_GALLERY
                 )
             }
             .setNegativeButton("취소") { _, _ -> }
@@ -457,11 +303,11 @@ class ModifyProfileFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            REQUEST_GALLERY -> {
+            Const.REQUEST_GALLERY -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     navigateGallery()
                 } else {
-                    Toast.makeText(requireContext(), "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
             else -> {
@@ -473,7 +319,7 @@ class ModifyProfileFragment : Fragment() {
     private fun navigateGallery() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
-        startActivityForResult(intent, REQUEST_SUCCESS)
+        startActivityForResult(intent, Const.REQUEST_SUCCESS)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -484,20 +330,20 @@ class ModifyProfileFragment : Fragment() {
         }
 
         when (requestCode) {
-            REQUEST_SUCCESS -> {
+            Const.REQUEST_SUCCESS -> {
                 val selectedImageUri: Uri? = data?.data
 
                 if (selectedImageUri != null) {
                     binding.ivUserPicture.setImageURI(selectedImageUri)
-                    bitmap = resize(requireContext(), selectedImageUri, 400)
+                    bitmap = resize(this, selectedImageUri, 400)
                     binding.btnModifyUserPicture.text = "프로필 사진 변경"
                     pictureFlag = true
                 } else {
-                    Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
             else -> {
-                Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -549,10 +395,12 @@ class ModifyProfileFragment : Fragment() {
         binding.btnSaveUserInfo.setOnClickListener {
 
             if (pictureFlag) {
-                uploadImageToFirebase(bitmap!!)
                 uploadImageToCloud(bitmap!!)
-                if (picture_path.isNullOrEmpty())
-                    picture_path = "$email/profile.jpg"
+                if (picturePath.isNullOrEmpty())
+                    picturePath = "$email/profile.jpg"
+            } else {
+                if(binding.ivUserPicture.drawable == null)
+                    picturePath = "$email/profile.jpg"
             }
 
             if (email.isNotEmpty() && binding.etUserNickName.text.isNotEmpty()) {
@@ -578,14 +426,17 @@ class ModifyProfileFragment : Fragment() {
                     saveUserInfoToDB()
                     saveUserInfoToRoom(pictureFlag)
 
-                    Toast.makeText(requireContext(), "정보를 업데이트했습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "정보를 업데이트했습니다.", Toast.LENGTH_SHORT).show()
                 } else {
                     Log.d(TAG, "${TendencyListToString.size}")
                 }
 
-                // TODO 내 프로필 프래그먼트로 전환
-                mainActivity.changeFragment()
-                mainActivity.removeFragment()
+                MODIFY_USER_PROFILE = true
+
+                // 내 프로필 프래그먼트로 전환
+                finish()
+                startActivity(Intent(this, MainActivity::class.java))
+
             }
         }
     }
@@ -607,8 +458,8 @@ class ModifyProfileFragment : Fragment() {
         self_pr = if (binding.etSelfPR.toStringFromText().isEmpty()) null
         else binding.etSelfPR.toStringFromText()
 
-        val tendencyMap = processingTendency(TendencyListToString)
-        TendencyListToMap.putAll(ListToMap(TendencyListToString))
+        val tendencyMap = Const.processingTendency(TendencyListToString)
+        TendencyListToMap.putAll(Const.ListToMap(TendencyListToString))
 
         runBlocking {
 //            updateData(
@@ -626,8 +477,7 @@ class ModifyProfileFragment : Fragment() {
                 GameListToString,
                 FirebaseAuth.getInstance().currentUser!!.uid,
                 email,
-                picture_path,
-                bitPicture,
+                picturePath,
                 user_name,
                 game_name,
                 self_pr
@@ -646,119 +496,108 @@ class ModifyProfileFragment : Fragment() {
         val uid: String? = params[0]
         val email: String? = params[1]
         val picture: String? = params[2]
-        val bitPicture: String? = params[3]
-        val user_name: String? = params[4]
-        val game_name: String? = params[5]
-        val self_pr: String? = params[6]
+        val user_name: String? = params[3]
+        val game_name: String? = params[4]
+        val self_pr: String? = params[5]
 
         val mDatabaseReference = FirebaseDatabase.getInstance().reference.child("$uid")
 
         val childUpdates = hashMapOf<String, Any>(
-            "${FIREBASE_USER}/name" to "$user_name"
+            "${Const.FIREBASE_USER}/name" to "$user_name"
         )
 
         game_name?.let {
-            childUpdates["${FIREBASE_USER}/game_name"] = game_name
+            childUpdates["${Const.FIREBASE_USER}/game_name"] = game_name
         }
 
         picture?.let {
-            childUpdates["${FIREBASE_USER}/picture"] = picture
-        }
-
-        bitPicture?.let {
-            childUpdates["${FIREBASE_USER}/bitPicture"] = bitPicture
+            childUpdates["${Const.FIREBASE_USER}/picture"] = picture
         }
 
         self_pr?.let {
-            childUpdates["${FIREBASE_USER}/self_pr"] = self_pr
+            childUpdates["${Const.FIREBASE_USER}/self_pr"] = self_pr
         }
 
         tendencyMap.forEach { (t, u) ->
             when (t) {
-                "purpose" -> childUpdates["${FIREBASE_TENDENCY}/purpose"] = "$u"
-                "voice" -> childUpdates["${FIREBASE_TENDENCY}/voice"] = "$u"
-                "men" -> childUpdates["${FIREBASE_TENDENCY}/men"] = "$u"
-                "women" -> childUpdates["${FIREBASE_TENDENCY}/women"] = "$u"
-                "game_mode" -> childUpdates["${FIREBASE_TENDENCY}/game_mode"] = "$u"
+                "purpose" -> childUpdates["${Const.FIREBASE_TENDENCY}/purpose"] = "$u"
+                "voice" -> childUpdates["${Const.FIREBASE_TENDENCY}/voice"] = "$u"
+                "men" -> childUpdates["${Const.FIREBASE_TENDENCY}/men"] = "$u"
+                "women" -> childUpdates["${Const.FIREBASE_TENDENCY}/women"] = "$u"
+                "game_mode" -> childUpdates["${Const.FIREBASE_TENDENCY}/game_mode"] = "$u"
             }
         }
 
         gameList.forEachIndexed { index, str ->
-            childUpdates["${FIREBASE_GAME}/game$index"] = str
+            childUpdates["${Const.FIREBASE_GAME}/game$index"] = str
         }
 
         mDatabaseReference.updateChildren(childUpdates)
 
-//        mDatabaseReference.child(FIREBASE_USER).child(uid!!).get().addOnSuccessListener { dataSnapshot ->
-//            Log.d(TAG, "user uid : ${dataSnapshot.key}")
-//        }.addOnFailureListener {
-//            Log.d(TAG, "로그인 실패")
+    }
+
+//    private fun updateData(
+//        paramMap: Map<String, String>,
+//        paramList: List<String>,
+//        vararg params: String?
+//    ) {
+//        CoroutineScope(Dispatchers.Default).launch {
+//
+//            val tendencyMap: Map<String, String> = paramMap
+//            val gameList: List<String> = paramList
+//            val email: String? = params[0]
+//            val picture: String? = params[1]
+//            val user_name: String? = params[2]
+//            val game_name: String? = params[3]
+//            val self_pr: String? = params[4]
+//
+//            // Use Retrofit
+//            val retrofit = RetrofitClient.getInstance()
+//
+//            val server = retrofit.create(UserAPI::class.java)
+//            val call: Call<String> = server.updateUser(
+//                email!!,
+//                picture,
+//                user_name!!,
+//                game_name!!,
+//                self_pr,
+//                tendencyMap["purpose"]!!,
+//                tendencyMap["voice"]!!,
+//                tendencyMap["men"]!!,
+//                tendencyMap["women"]!!,
+//                tendencyMap["game_mode"]!!,
+//                gameList[0],
+//                gameList[1],
+//                gameList[2],
+//                gameList[3],
+//                gameList[4],
+//                gameList[5],
+//                gameList[6],
+//                gameList[7],
+//                gameList[8],
+//                gameList[9]
+//            )
+//            call.enqueue(object : Callback<String> {
+//                override fun onFailure(call: Call<String>, t: Throwable) {
+//                    Log.d(TAG, "실패 : " + t.localizedMessage)
+//                    Toast.makeText(baseContext, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+//                }
+//
+//                override fun onResponse(
+//                    call: Call<String>,
+//                    response: retrofit2.Response<String>
+//                ) {
+//                    if (response.isSuccessful) {
+//                        Log.d(TAG, "성공 : ${response.body().toString()}")
+//                    } else {
+//                        Log.d(TAG, "실패 : ${response.errorBody().toString()}")
+//                    }
+//                }
+//            })
+//
 //        }
-
-    }
-
-    private fun updateData(
-        paramMap: Map<String, String>,
-        paramList: List<String>,
-        vararg params: String?
-    ) {
-        CoroutineScope(Dispatchers.Default).launch {
-
-            val tendencyMap: Map<String, String> = paramMap
-            val gameList: List<String> = paramList
-            val email: String? = params[0]
-            val picture: String? = params[1]
-            val user_name: String? = params[2]
-            val game_name: String? = params[3]
-            val self_pr: String? = params[4]
-
-            // Use Retrofit
-            val retrofit = RetrofitClient.getInstance()
-
-            val server = retrofit.create(UserAPI::class.java)
-            val call: Call<String> = server.updateUser(
-                email!!,
-                picture,
-                user_name!!,
-                game_name!!,
-                self_pr,
-                tendencyMap["purpose"]!!,
-                tendencyMap["voice"]!!,
-                tendencyMap["men"]!!,
-                tendencyMap["women"]!!,
-                tendencyMap["game_mode"]!!,
-                gameList[0],
-                gameList[1],
-                gameList[2],
-                gameList[3],
-                gameList[4],
-                gameList[5],
-                gameList[6],
-                gameList[7],
-                gameList[8],
-                gameList[9]
-            )
-            call.enqueue(object : Callback<String> {
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.d(TAG, "실패 : " + t.localizedMessage)
-                    Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onResponse(
-                    call: Call<String>,
-                    response: retrofit2.Response<String>
-                ) {
-                    if (response.isSuccessful) {
-                        Log.d(TAG, "성공 : ${response.body().toString()}")
-                    } else {
-                        Log.d(TAG, "실패 : ${response.errorBody().toString()}")
-                    }
-                }
-            })
-
-        }
-
-    }
+//
+//    }
 
     private fun saveUserInfoToRoom(flag: Boolean) {
         runBlocking {
@@ -766,7 +605,7 @@ class ModifyProfileFragment : Fragment() {
                 if (flag) {
                     db.userDAO().updateUserInfo(
                         email,
-                        picture_path,
+                        picturePath,
                         null,
                         user_name,
                         game_name,
@@ -775,8 +614,8 @@ class ModifyProfileFragment : Fragment() {
                 } else {
                     db.userDAO().updateUserInfo(
                         email,
-                        picture_path,
-                        currentPhotoPath,
+                        picturePath,
+                        null,
                         user_name,
                         game_name,
                         self_pr
@@ -810,5 +649,6 @@ class ModifyProfileFragment : Fragment() {
     fun EditText.toStringFromText(): String {
         return this.text.toString()
     }
+
 
 }

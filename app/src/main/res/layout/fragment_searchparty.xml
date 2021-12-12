@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.naram.party_project.viewmodel.SearchPartyViewModel" />
@@ -18,9 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:visibility="invisible"
-            app:items="@{viewModel.currentList}"/>
+            app:items="@{viewModel.currentList}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/sl_partyShimmer"

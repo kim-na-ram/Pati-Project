@@ -14,4 +14,5 @@
     <color name="color_opacity80_gray">#CCF4F4F4</color>
     <color name="color_opacity90_gray">#E6F4F4F4</color>
     <color name="color_opacity65_white">#A6FFFFFF</color>
+    <color name="color_opacity80_white">#CCFFFFFF</color>
 </resources>

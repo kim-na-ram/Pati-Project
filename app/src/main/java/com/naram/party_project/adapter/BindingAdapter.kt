@@ -15,12 +15,6 @@ object BindingAdapter {
 
         if (recyclerView.adapter == null) {
             val adapter = UserListAdapter() {
-
-                if (user == null) {
-                    SearchPartyFragment().appearUserProfile(it)
-                } else {
-                    SearchPartyFragment().disappearUserProfile()
-                }
             }
             adapter.setHasStableIds(true)
             recyclerView.adapter = adapter

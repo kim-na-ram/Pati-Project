@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.naram.party_project.base.BaseFragment
 import com.naram.party_project.databinding.FragmentShowprofileBinding
 import com.nex3z.flowlayout.FlowLayout
 import kotlinx.coroutines.runBlocking
@@ -23,16 +24,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ShowProfileFragment : Fragment() {
+class ShowProfileFragment : BaseFragment<FragmentShowprofileBinding>() {
 
     private val TAG = "Showprofile"
 
     private lateinit var mainActivity: MainActivity
-
-    private lateinit var db: AppDatabase
-
-    private var _binding: FragmentShowprofileBinding? = null
-    private val binding get() = _binding!!
 
     private val searchPartyFragment = SearchPartyFragment()
 
@@ -41,20 +37,13 @@ class ShowProfileFragment : Fragment() {
         mainActivity = context as MainActivity
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentShowprofileBinding.inflate(inflater, container, false)
-        val view = binding.root
+    override fun getFragmentBinding() = FragmentShowprofileBinding.inflate(layoutInflater)
 
-        Log.d(TAG, "onCreateView")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initViews()
         setUserProfile()
-
-        return view
     }
 
     private fun initViews() {
@@ -74,99 +63,99 @@ class ShowProfileFragment : Fragment() {
 
     private fun requestParty() {
 
-        val retrofit = RetrofitClient.getInstance()
-
-        val server = retrofit.create(UserAPI::class.java)
-
-        val request_email = FirebaseAuth.getInstance().currentUser?.email
-        val receive_email = mainActivity.getProfile()?.email
-
-        receive_email?.let {
-
-            val call : Call<String> = server.putRequestedParty(request_email!!, receive_email)
-            call.enqueue(object : Callback<String> {
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.d(TAG,"실패 : "+t.localizedMessage)
-                }
-
-                override fun onResponse(
-                    call: Call<String>,
-                    response: Response<String>
-                ) {
-                    if (response.isSuccessful) {
-                        Log.d(TAG, "성공 : ${response.body().toString()}")
-                        Toast.makeText(
-                            requireContext(),
-                            "\'${binding.tvPartyUserName.text}\'님에게 파티 요청을 보냈습니다!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        Log.d(TAG, "실패 : ${response.errorBody().toString()}")
-                    }
-                }
-            })
-
-        }
+//        val retrofit = RetrofitClient.getInstance()
+//
+//        val server = retrofit.create(UserAPI::class.java)
+//
+//        val request_email = FirebaseAuth.getInstance().currentUser?.email
+////        val receive_email = mainActivity.getProfile()?.email
+//
+//        receive_email?.let {
+//
+//            val call : Call<String> = server.putRequestedParty(request_email!!, receive_email)
+//            call.enqueue(object : Callback<String> {
+//                override fun onFailure(call: Call<String>, t: Throwable) {
+//                    Log.d(TAG,"실패 : "+t.localizedMessage)
+//                }
+//
+//                override fun onResponse(
+//                    call: Call<String>,
+//                    response: Response<String>
+//                ) {
+//                    if (response.isSuccessful) {
+//                        Log.d(TAG, "성공 : ${response.body().toString()}")
+//                        Toast.makeText(
+//                            requireContext(),
+//                            "\'${binding.tvPartyUserName.text}\'님에게 파티 요청을 보냈습니다!",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    } else {
+//                        Log.d(TAG, "실패 : ${response.errorBody().toString()}")
+//                    }
+//                }
+//            })
+//
+//        }
 
     }
 
     private fun setUserProfile() {
-        val profile = searchPartyFragment.getUserProfile()
-        profile?.let { profile ->
-            val name = profile.user_name
-            binding.tvPartyUserName.text = name
-
-            val selfpr = profile.self_pr
-            selfpr?.let {
-                binding.tvPartyLeftQuote.visibility = View.VISIBLE
-                binding.tvPartyRightQuote.visibility = View.VISIBLE
-                binding.tvPartyUserPR.visibility = View.VISIBLE
-                binding.tvPartyUserPR.text = it
-            }
-
-            val picture = profile.picture
-            picture?.let {
-                uploadImageFromCloud(it)
-            }
-
-            val purpose = profile.purpose.toInt()
-            purpose?.let {
-                var str = if (it == 1) "승리지향" else "승패상관 x"
-                makeTextView(str!!, binding.flPartyShowTendency)
-            }
-            val voice = profile.voice.toInt()
-            voice?.let {
-                var str = if (it == 1) "보이스톡 O" else "보이스톡 X"
-                makeTextView(str!!, binding.flPartyShowTendency)
-            }
-            val game_mode = profile.game_mode.toInt()
-            game_mode?.let {
-                var str = if (it == 1) "즐겜" else "빡겜"
-                makeTextView(str!!, binding.flPartyShowTendency)
-            }
-            val men = profile.men.toInt()
-            val women = profile.women.toInt()
-            men?.let { m ->
-                var str: String? = null
-                women?.let { w ->
-                    if (m == 1 && w == 1) str = "성별상관 X"
-                    else if (m == 1 && w == 0) str = "남성 Only"
-                    else if (m == 0 && w == 1) str = "여성 Only"
-                    makeTextView(str!!, binding.flPartyShowTendency)
-                }
-            }
-
-            if (profile.game0?.toInt() == 1) binding.tvPartyGame0.visibility = View.VISIBLE
-            if (profile.game1?.toInt() == 1) binding.tvPartyGame1.visibility = View.VISIBLE
-            if (profile.game2?.toInt() == 1) binding.tvPartyGame2.visibility = View.VISIBLE
-            if (profile.game3?.toInt() == 1) binding.tvPartyGame3.visibility = View.VISIBLE
-            if (profile.game4?.toInt() == 1) binding.tvPartyGame4.visibility = View.VISIBLE
-            if (profile.game5?.toInt() == 1) binding.tvPartyGame5.visibility = View.VISIBLE
-            if (profile.game6?.toInt() == 1) binding.tvPartyGame6.visibility = View.VISIBLE
-            if (profile.game7?.toInt() == 1) binding.tvPartyGame7.visibility = View.VISIBLE
-            if (profile.game8?.toInt() == 1) binding.tvPartyGame8.visibility = View.VISIBLE
-            if (profile.game9?.toInt() == 1) binding.tvPartyGame9.visibility = View.VISIBLE
-        }
+//        val profile = searchPartyFragment.getUserProfile()
+//        profile?.let { profile ->
+//            val name = profile.user_name
+//            binding.tvPartyUserName.text = name
+//
+//            val selfpr = profile.self_pr
+//            selfpr?.let {
+//                binding.tvPartyLeftQuote.visibility = View.VISIBLE
+//                binding.tvPartyRightQuote.visibility = View.VISIBLE
+//                binding.tvPartyUserPR.visibility = View.VISIBLE
+//                binding.tvPartyUserPR.text = it
+//            }
+//
+//            val picture = profile.picture
+//            picture?.let {
+//                uploadImageFromCloud(it)
+//            }
+//
+//            val purpose = profile.purpose.toInt()
+//            purpose?.let {
+//                var str = if (it == 1) "승리지향" else "승패상관 x"
+//                makeTextView(str!!, binding.flPartyShowTendency)
+//            }
+//            val voice = profile.voice.toInt()
+//            voice?.let {
+//                var str = if (it == 1) "보이스톡 O" else "보이스톡 X"
+//                makeTextView(str!!, binding.flPartyShowTendency)
+//            }
+//            val game_mode = profile.game_mode.toInt()
+//            game_mode?.let {
+//                var str = if (it == 1) "즐겜" else "빡겜"
+//                makeTextView(str!!, binding.flPartyShowTendency)
+//            }
+//            val men = profile.men.toInt()
+//            val women = profile.women.toInt()
+//            men?.let { m ->
+//                var str: String? = null
+//                women?.let { w ->
+//                    if (m == 1 && w == 1) str = "성별상관 X"
+//                    else if (m == 1 && w == 0) str = "남성 Only"
+//                    else if (m == 0 && w == 1) str = "여성 Only"
+//                    makeTextView(str!!, binding.flPartyShowTendency)
+//                }
+//            }
+//
+//            if (profile.game0?.toInt() == 1) binding.tvPartyGame0.visibility = View.VISIBLE
+//            if (profile.game1?.toInt() == 1) binding.tvPartyGame1.visibility = View.VISIBLE
+//            if (profile.game2?.toInt() == 1) binding.tvPartyGame2.visibility = View.VISIBLE
+//            if (profile.game3?.toInt() == 1) binding.tvPartyGame3.visibility = View.VISIBLE
+//            if (profile.game4?.toInt() == 1) binding.tvPartyGame4.visibility = View.VISIBLE
+//            if (profile.game5?.toInt() == 1) binding.tvPartyGame5.visibility = View.VISIBLE
+//            if (profile.game6?.toInt() == 1) binding.tvPartyGame6.visibility = View.VISIBLE
+//            if (profile.game7?.toInt() == 1) binding.tvPartyGame7.visibility = View.VISIBLE
+//            if (profile.game8?.toInt() == 1) binding.tvPartyGame8.visibility = View.VISIBLE
+//            if (profile.game9?.toInt() == 1) binding.tvPartyGame9.visibility = View.VISIBLE
+//        }
     }
 
     private fun uploadImageFromCloud(path: String) {

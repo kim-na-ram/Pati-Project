@@ -6,28 +6,24 @@
     android:layout_height="match_parent"
     tools:context="com.naram.party_project.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@dimen/toolbar_size"-->
+<!--        android:background="@color/color_inactivated_blue"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/sv_viewpagerContainer"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        tools:ignore="MissingConstraints">-->
+
+    <include
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_size"
-        android:background="@color/color_inactivated_blue"
+        layout="@layout/layout_toolbar"
         app:layout_constraintBottom_toTopOf="@id/sv_viewpagerContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/tv_textToolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/toolbar_size"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:gravity="center_vertical"
-            android:text="@string/app_name"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/toolbar_text_size" />
-
-    </androidx.appcompat.widget.Toolbar>
+        app:layout_constraintTop_toTopOf="parent" />
 
 <!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
 <!--        android:id="@+id/swipeRefreshLayout"-->
@@ -53,16 +49,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/vp_showView"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:id="@+id/flMainContainer" />
+
+<!--                <androidx.viewpager2.widget.ViewPager2-->
+<!--                    android:id="@+id/vp_showView"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent" />-->
 
                 <FrameLayout
-                    android:id="@+id/fl_showPartyProfile"
+                    android:id="@+id/flShowPartyProfile"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:layout_marginHorizontal="30dp"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

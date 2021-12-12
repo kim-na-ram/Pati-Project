@@ -23,7 +23,7 @@
         android:layout_marginBottom="5dp"
         android:background="@color/color_activated_blue"
         android:fontFamily="@font/nanumsquarebold"
-        android:text="유저 이름"
+        android:text="닉네임"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/tv_userNickName"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nanumsquareextrabold"
         android:textColor="@color/color_activated_blue"
-        android:textSize="22sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/tv_inGameName"
         app:layout_constraintStart_toStartOf="@id/tv_userName"
         app:layout_constraintTop_toBottomOf="@id/tv_userName"
@@ -50,7 +50,7 @@
         android:layout_marginTop="10dp"
         android:background="@color/color_activated_blue"
         android:fontFamily="@font/nanumsquarebold"
-        android:text="인게임 닉네임"
+        android:text="게임 닉네임"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/tv_gameUserName"
@@ -64,7 +64,7 @@
         android:layout_marginTop="5dp"
         android:fontFamily="@font/nanumsquareextrabold"
         android:textColor="@color/color_activated_blue"
-        android:textSize="22sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@id/tv_userName"
         app:layout_constraintTop_toBottomOf="@id/tv_inGameName"
         tools:text="RIT" />
@@ -77,7 +77,7 @@
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="한줄 자기소개"
         android:textColor="@color/color_activated_blue"
-        android:textSize="26sp"
+        android:textSize="@dimen/main_title_text_size"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
         app:layout_constraintTop_toBottomOf="@id/iv_userPicture" />
 
@@ -103,8 +103,9 @@
         android:fontFamily="@font/nanumsquarebold"
         android:padding="5dp"
         android:textColor="@color/white"
-        android:textSize="19sp"
+        android:textSize="18sp"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/tv_gameTendency"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
         app:layout_constraintTop_toBottomOf="@id/tv_selfPR"
@@ -112,13 +113,13 @@
 
     <TextView
         android:id="@+id/tv_gameTendency"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="게임 성향"
         android:textColor="@color/color_activated_blue"
-        android:textSize="26sp"
+        android:textSize="@dimen/main_title_text_size"
         app:layout_constraintBottom_toTopOf="@+id/fl_showGameTendency"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
         app:layout_constraintTop_toBottomOf="@id/tv_realSelfPR" />
@@ -140,7 +141,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="승리지향"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameTendency_winOrlose"
@@ -152,7 +153,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="승패상관 X"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameTendency_onlyFun"
@@ -164,7 +165,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="즐겜"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameTendency_onlyWin"
@@ -176,7 +177,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="빡겜"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameTendency_voiceOk"
@@ -188,7 +189,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="보이스톡 O"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameTendency_voiceNo"
@@ -200,7 +201,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="보이스톡 X"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameTendency_onlyWomen"
@@ -212,7 +213,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="여성 Only"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameTendency_onlyMen"
@@ -224,7 +225,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="남성 Only"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameTendency_womenOrmen"
@@ -236,19 +237,19 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="성별상관 X"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
     </com.nex3z.flowlayout.FlowLayout>
 
     <TextView
         android:id="@+id/tv_gameNames"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="이런 게임 같이 해요!"
         android:textColor="@color/color_activated_blue"
-        android:textSize="26sp"
+        android:textSize="@dimen/main_title_text_size"
         app:layout_constraintBottom_toTopOf="@id/fl_showGameNames"
         app:layout_constraintStart_toStartOf="@id/iv_userPicture"
         app:layout_constraintTop_toBottomOf="@id/fl_showGameTendency" />
@@ -270,7 +271,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="LoL"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameNames_OverWatch"
@@ -282,7 +283,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="오버워치"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameNames_BattleGround"
@@ -294,7 +295,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="배틀 그라운드"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameNames_SuddenAttack"
@@ -306,7 +307,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="서든어택"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameNames_FIFAOnline4"
@@ -318,7 +319,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="피파 온라인4"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameNames_LostArk"
@@ -330,7 +331,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="로스트아크"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameNames_MapleStory"
@@ -342,7 +343,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="메이플 스토리"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameNames_Cyphers"
@@ -354,7 +355,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="사이퍼즈"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameNames_StarCraft"
@@ -366,7 +367,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="스타크래프트"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <TextView
             android:id="@+id/tv_gameNames_DungeonandFighter"
@@ -378,7 +379,7 @@
             android:paddingHorizontal="@dimen/gametendency_padding_horizontal"
             android:paddingVertical="@dimen/gametendency_padding_vertical"
             android:text="던전 앤 파이터"
-            android:textSize="20dp" />
+            android:textSize="@dimen/main_content_text_size" />
 
         <!--        <TextView-->
         <!--            android:id="@+id/tv_gameNames_DeadbyDaylight"-->

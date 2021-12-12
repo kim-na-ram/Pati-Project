@@ -1,20 +1,15 @@
 package com.naram.party_project
 
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.os.Bundle
-import android.util.Base64
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
+import com.naram.party_project.base.BaseViewDataFragment
 import com.naram.party_project.callback.PartyFirebase
-import com.naram.party_project.callback.User
 import com.naram.party_project.callback.UserFirebase
 import com.naram.party_project.databinding.FragmentSearchpartyBinding
 import com.naram.party_project.util.Const
@@ -28,16 +23,20 @@ import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_6_MAPLE_STORY
 import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_7_CYPHERS
 import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_8_STAR_CRAFT
 import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_9_DUNGEON_AND_FIGHTER
+import com.naram.party_project.util.Const.Companion.FIREBASE_TABLE_NAMES
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_EMAIL
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GAME_NAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GENDER
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_NAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_PICTURE
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_SELF_PR
+import com.naram.party_project.util.Const.Companion.UPDATE_USER_LIST
 import com.naram.party_project.viewmodel.SearchPartyViewModel
 import kotlinx.coroutines.runBlocking
 
-class SearchPartyFragment : Fragment() {
+class SearchPartyFragment : BaseViewDataFragment<FragmentSearchpartyBinding>(
+    R.layout.fragment_searchparty
+) {
 
     private val TAG = "Searchparty"
 
@@ -45,33 +44,21 @@ class SearchPartyFragment : Fragment() {
 
     private var firebaseList = mutableListOf<PartyFirebase>()
 
-    private var _binding: FragmentSearchpartyBinding? = null
-    private val binding get() = _binding!!
-
     lateinit var searchPartyViewModel: SearchPartyViewModel
 
-    lateinit var user : UserFirebase
+    lateinit var user: UserFirebase
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentSearchpartyBinding.inflate(inflater, container, false)
-        val view = binding.root
-
-        Log.d(TAG, "onCreateView")
+    override fun init() {
 
         setViewModel()
         setPartyUserListFromFirebase()
         showSampleData(true)
 
-        return view
     }
 
     override fun onStart() {
@@ -83,6 +70,15 @@ class SearchPartyFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        if (UPDATE_USER_LIST) {
+            showSampleData(true)
+            Log.d(TAG, "UPDATE USER LIST")
+            searchPartyViewModel.currentList.value.let {
+                firebaseList.clear()
+                setPartyUserListFromFirebase()
+            }
+        }
+
         Log.d(TAG, "onResume")
 
     }
@@ -90,15 +86,15 @@ class SearchPartyFragment : Fragment() {
     override fun onPause() {
         super.onPause()
 
-        mainActivity.disappearFragment()
-
         Log.d(TAG, "onPause")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
-        _binding = null
+        firebaseList.clear()
+
+        Log.d(TAG, "onDestroyView")
     }
 
     private fun setViewModel() {
@@ -144,9 +140,9 @@ class SearchPartyFragment : Fragment() {
             mDatabaseReference.get()
                 .addOnSuccessListener { dataSnapshot ->
                     dataSnapshot.children.forEach {
-                        if (!it.key.equals(uid)) {
-
-                            Log.d(TAG, "firebase add ${it.key}")
+                        if (!it.key.equals(uid)
+                            && !FIREBASE_TABLE_NAMES.contains(it.key)
+                        ) {
 
                             val mUserDB = it.child(Const.FIREBASE_USER)
 
@@ -161,16 +157,17 @@ class SearchPartyFragment : Fragment() {
                     }
 
                     searchPartyViewModel.updateList(firebaseList)
-                    showSampleData(false)
+                    if (binding.slPartyShimmer.visibility == View.VISIBLE)
+                        showSampleData(false)
 
                 }.addOnFailureListener {
-                    Log.d(TAG, "로그인 실패")
+                    Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
         }
 
     }
 
-    private fun addFirebaseList(dataSnapshot : DataSnapshot) {
+    private fun addFirebaseList(dataSnapshot: DataSnapshot) {
         val mUserDB = dataSnapshot.child(Const.FIREBASE_USER)
         val mGameDB = dataSnapshot.child(Const.FIREBASE_GAME)
 
@@ -191,9 +188,9 @@ class SearchPartyFragment : Fragment() {
                 mUserDB.child(FIREBASE_USER_EMAIL).value.toString(),
                 mUserDB.child(FIREBASE_USER_NAME).value.toString(),
                 mUserDB.child(FIREBASE_USER_GENDER).value.toString(),
-                if(mUserDB.hasChild(FIREBASE_USER_GAME_NAME)) mUserDB.child(FIREBASE_USER_GAME_NAME).value.toString() else null,
-                if(mUserDB.hasChild(FIREBASE_USER_SELF_PR)) mUserDB.child(FIREBASE_USER_SELF_PR).value.toString() else null,
-                if(mUserDB.hasChild(FIREBASE_USER_PICTURE)) mUserDB.child(FIREBASE_USER_PICTURE).value.toString() else null,
+                if (mUserDB.hasChild(FIREBASE_USER_GAME_NAME)) mUserDB.child(FIREBASE_USER_GAME_NAME).value.toString() else null,
+                if (mUserDB.hasChild(FIREBASE_USER_SELF_PR)) mUserDB.child(FIREBASE_USER_SELF_PR).value.toString() else null,
+                if (mUserDB.hasChild(FIREBASE_USER_PICTURE)) mUserDB.child(FIREBASE_USER_PICTURE).value.toString() else null,
                 mGameDB.child(FIREBASE_GAME_0_LOL).value.toString(),
                 mGameDB.child(FIREBASE_GAME_1_OVER_WATCH).value.toString(),
                 mGameDB.child(FIREBASE_GAME_2_BATTLE_GROUND).value.toString(),
@@ -209,7 +206,6 @@ class SearchPartyFragment : Fragment() {
     }
 
     fun appearUserProfile(party: PartyFirebase) {
-        MainActivity().appearFragment()
 
         val mDatabaseReference = FirebaseDatabase.getInstance().reference
 
@@ -239,23 +235,21 @@ class SearchPartyFragment : Fragment() {
                             party.game9,
                             mTendencyDB.child(Const.FIREBASE_TENDENCY_PURPOSE).toString(),
                             mTendencyDB.child(Const.FIREBASE_TENDENCY_VOICE).toString(),
-                            mTendencyDB.child(Const.FIREBASE_TENDENCY_PREFERRED_GENDER_WOMEN).toString(),
-                            mTendencyDB.child(Const.FIREBASE_TENDENCY_PREFERRED_GENDER_MEN).toString(),
+                            mTendencyDB.child(Const.FIREBASE_TENDENCY_PREFERRED_GENDER_WOMEN)
+                                .toString(),
+                            mTendencyDB.child(Const.FIREBASE_TENDENCY_PREFERRED_GENDER_MEN)
+                                .toString(),
                             mTendencyDB.child(Const.FIREBASE_TENDENCY_GAME_MODE).toString()
                         )
 
+                        Log.d(TAG, "$user")
+
                     }
+
                 }
+
             }
 
-    }
-
-    fun disappearUserProfile() {
-        MainActivity().disappearFragment()
-    }
-
-    fun getUserProfile(): UserFirebase? {
-        return user
     }
 
 }
