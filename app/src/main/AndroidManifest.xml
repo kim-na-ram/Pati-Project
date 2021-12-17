@@ -16,6 +16,9 @@
         android:theme="@style/Theme.PartyProject"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ChattingActivity"
+            android:exported="true" />
+        <activity
             android:name=".ModifyProfileActivity"
             android:exported="true" />
         <activity

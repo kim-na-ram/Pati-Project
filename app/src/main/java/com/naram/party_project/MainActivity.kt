@@ -1,29 +1,9 @@
 package com.naram.party_project
 
-import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.room.Room
-import androidx.viewpager2.widget.ViewPager2
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
-import com.naram.party_project.adapter.MainViewPagerAdapter
 import com.naram.party_project.base.BaseActivity
-import com.naram.party_project.callback.Party
-import com.naram.party_project.callback.PartyFirebase
-import com.naram.party_project.callback.User
 import com.naram.party_project.databinding.ActivityMainBinding
-import com.naram.party_project.dialog.ShowProfileDialog
-import kotlinx.coroutines.runBlocking
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainActivity : BaseActivity<ActivityMainBinding> ({
     ActivityMainBinding.inflate(it)
@@ -40,7 +20,7 @@ class MainActivity : BaseActivity<ActivityMainBinding> ({
     }
 
     private val chattingFragment by lazy {
-        ChattingFragment()
+        ChattingListFragment()
     }
 
     private val friendsFragment by lazy {

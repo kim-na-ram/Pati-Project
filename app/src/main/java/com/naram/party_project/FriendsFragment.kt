@@ -1,37 +1,24 @@
 package com.naram.party_project
 
-import android.content.Context
-import android.graphics.BitmapFactory
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import com.google.firebase.database.*
 import com.naram.party_project.adapter.FriendListAdapter
 import com.naram.party_project.adapter.RequestedPartyListAdapter
 import com.naram.party_project.base.BaseFragment
-import com.naram.party_project.callback.Friend
 import com.naram.party_project.callback.FriendFirebase
-import com.naram.party_project.callback.PartyFirebase
 import com.naram.party_project.databinding.FragmentFriendsBinding
 import com.naram.party_project.util.Const.Companion.FIREBASE_FRIEND
 import com.naram.party_project.util.Const.Companion.FIREBASE_FRIEND_YES
 import com.naram.party_project.util.Const.Companion.FIREBASE_PARTY
-import com.naram.party_project.util.Const.Companion.FIREBASE_PARTY_WAIT
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_EMAIL
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_NAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_PICTURE
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 
@@ -46,8 +33,6 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
     private val friendList: MutableList<FriendFirebase> = mutableListOf()
 
     private val uid = FirebaseAuth.getInstance().uid
-
-    private var changeRequestedPartyFlag = false
 
 //    private val request_list: MutableList<Friend> = mutableListOf()
 //    private val friend_list: MutableList<Friend> = mutableListOf()
@@ -145,10 +130,8 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
             ) { it, flag ->
 
                 if (flag) {
-                    // TODO it.email 에게 메시지 보내기
-                    // sendMessage()
+                    sendMessage(uid!!, it.uid, it.user_name)
                 } else {
-                    // TODO 친구 삭제하기
                     removeFirebaseFriend(it)
 
 //                    removeFriend(email!!, friend_email)
@@ -166,23 +149,23 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 
         val mDatabaseReference = FirebaseDatabase.getInstance().reference
 
-        mDatabaseReference.get()
-            .addOnSuccessListener { dataSnapshot ->
-                dataSnapshot.child(FIREBASE_PARTY).child(uid!!).children.forEach {
-                    if (it.exists()) {
-                        if (it.value!! == FIREBASE_PARTY_WAIT
-                            && !requestUidList.contains(it.key.toString())
-                        ) {
+        mDatabaseReference.child(FIREBASE_PARTY).child(uid!!)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach {
+                        if (!requestUidList.contains(it.key.toString())) {
                             requestUidList.add(it.key!!)
                         }
                     }
+
+                    addFirebasePartyList(mDatabaseReference)
                 }
 
-                addFirebasePartyList(mDatabaseReference)
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                }
 
-            }.addOnFailureListener {
-                Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-            }
+            })
 
     }
 
@@ -192,31 +175,37 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         var tmpName = ""
         var tmpPicture: String? = null
 
-        Log.d(TAG, "requestUidList size is ${requestUidList.size}")
+        if(requestUidList.size > 0) {
 
-        requestUidList.forEach {
-            mDatabaseReference.child(it).child(FIREBASE_USER).get()
-                .addOnSuccessListener { ds ->
-                    requestList.add(
-                        FriendFirebase(
-                            it,
-                            ds.child(FIREBASE_USER_EMAIL).value.toString(),
-                            ds.child(FIREBASE_USER_NAME).value.toString(),
-                            ds.child(FIREBASE_USER_PICTURE).value.toString()
+            binding.tvInformParty.visibility = View.GONE
+
+            requestUidList.forEach {
+                mDatabaseReference.child(it).child(FIREBASE_USER).get()
+                    .addOnSuccessListener { ds ->
+                        requestList.add(
+                            FriendFirebase(
+                                it,
+                                ds.child(FIREBASE_USER_EMAIL).value.toString(),
+                                ds.child(FIREBASE_USER_NAME).value.toString(),
+                                ds.child(FIREBASE_USER_PICTURE).value.toString()
+                            )
                         )
-                    )
-                    requestedPartyListAdapter.submitList(requestList)
-                    if (binding.slRequestedPartyShimmer.visibility == View.VISIBLE)
-                        requestedPartyShowSampleData(false)
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(
-                        requireContext(),
-                        "요청받은 파티 리스트를 가져오는 것에 실패하였습니다.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Log.d(TAG, e.stackTraceToString())
-                }
+                        requestedPartyListAdapter.submitList(requestList)
+                        if (binding.slRequestedPartyShimmer.visibility == View.VISIBLE)
+                            requestedPartyShowSampleData(false)
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(
+                            requireContext(),
+                            "요청받은 파티 리스트를 가져오는 것에 실패하였습니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.d(TAG, e.stackTraceToString())
+                    }
+            }
+        } else {
+            binding.tvInformParty.visibility = View.VISIBLE
+            requestedPartyShowSampleData(false)
         }
 
     }
@@ -242,23 +231,39 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 
         val mDatabaseReference = FirebaseDatabase.getInstance().reference
 
-        mDatabaseReference.get()
-            .addOnSuccessListener { dataSnapshot ->
-                dataSnapshot.child(FIREBASE_FRIEND).child(uid!!).children.forEach {
-                    if (it.exists()) {
-                        if (it.value!! == FIREBASE_FRIEND_YES
-                            && !friendUidList.contains(it.key.toString())
-                        ) {
+        mDatabaseReference.child(FIREBASE_FRIEND).child(uid!!)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    snapshot.children.forEach {
+                        if (!friendUidList.contains(it.key.toString())) {
                             friendUidList.add(it.key!!)
                         }
                     }
+                    addFirebaseFriendList(mDatabaseReference)
                 }
 
-                addFirebaseFriendList(mDatabaseReference)
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
 
-            }.addOnFailureListener {
-                Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
-            }
+//        mDatabaseReference.get()
+//            .addOnSuccessListener { dataSnapshot ->
+//                dataSnapshot.child(FIREBASE_FRIEND).child(uid!!).children.forEach {
+//                    if (it.exists()) {
+//                        if (it.value!! == FIREBASE_FRIEND_YES
+//                            && !friendUidList.contains(it.key.toString())
+//                        ) {
+//                            friendUidList.add(it.key!!)
+//                        }
+//                    }
+//                }
+//
+//                addFirebaseFriendList(mDatabaseReference)
+//
+//            }.addOnFailureListener {
+//                Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+//            }
     }
 
     private fun addFirebaseFriendList(mDatabaseReference: DatabaseReference) {
@@ -267,28 +272,38 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         var tmpName = ""
         var tmpPicture: String? = null
 
-        Log.d(TAG, "friendUidList size is ${friendUidList.size}")
+        if(friendUidList.size > 0) {
 
-        friendUidList.forEach {
-            mDatabaseReference.child(it).child(FIREBASE_USER).get()
-                .addOnSuccessListener { ds ->
-                    friendList.add(
-                        FriendFirebase(
-                            it,
-                            ds.child(FIREBASE_USER_EMAIL).value.toString(),
-                            ds.child(FIREBASE_USER_NAME).value.toString(),
-                            ds.child(FIREBASE_USER_PICTURE).value.toString()
+            binding.tvInformFriend.visibility = View.GONE
+
+            friendUidList.forEach {
+                mDatabaseReference.child(it).child(FIREBASE_USER).get()
+                    .addOnSuccessListener { ds ->
+                        friendList.add(
+                            FriendFirebase(
+                                it,
+                                ds.child(FIREBASE_USER_EMAIL).value.toString(),
+                                ds.child(FIREBASE_USER_NAME).value.toString(),
+                                ds.child(FIREBASE_USER_PICTURE).value.toString()
+                            )
                         )
-                    )
-                    friendListAdapter.submitList(friendList)
-                    if (binding.slFriendShimmer.visibility == View.VISIBLE)
-                        friendsShowSampleData(false)
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "친구 리스트를 가져오는 것에 실패하였습니다.", Toast.LENGTH_SHORT)
-                        .show()
-                    Log.d(TAG, e.stackTraceToString())
-                }
+                        friendListAdapter.submitList(friendList)
+                        if (binding.slFriendShimmer.visibility == View.VISIBLE)
+                            friendsShowSampleData(false)
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(
+                            requireContext(),
+                            "친구 리스트를 가져오는 것에 실패하였습니다.",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                        Log.d(TAG, e.stackTraceToString())
+                    }
+            }
+        } else {
+            binding.tvInformFriend.visibility = View.VISIBLE
+            friendsShowSampleData(false)
         }
 
     }
@@ -300,10 +315,13 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         mDatabaseReference.child(FIREBASE_PARTY).child(uid!!).child(partyFirebase.uid)
             .removeValue()
             .addOnFailureListener {
-            Log.d(TAG, it.stackTraceToString())
-        }
+                Log.d(TAG, it.stackTraceToString())
+            }
 
         mDatabaseReference.child(FIREBASE_FRIEND).child(uid!!).child(partyFirebase.uid)
+            .setValue(FIREBASE_FRIEND_YES)
+
+        mDatabaseReference.child(FIREBASE_FRIEND).child(partyFirebase.uid).child(uid!!)
             .setValue(FIREBASE_FRIEND_YES)
 
         friendUidList.add(partyFirebase.uid)
@@ -311,6 +329,8 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 
         requestUidList.remove(partyFirebase.uid)
         requestList.remove(partyFirebase)
+
+        binding.tvInformFriend.visibility = View.GONE
 
         requestedPartyListAdapter.submitList(requestList)
         friendListAdapter.submitList(friendList)
@@ -322,6 +342,12 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         val mDatabaseReference = FirebaseDatabase.getInstance().reference
 
         mDatabaseReference.child(FIREBASE_FRIEND).child(uid!!).child(friendFirebase.uid)
+            .removeValue()
+            .addOnFailureListener {
+                Log.d(TAG, it.stackTraceToString())
+            }
+
+        mDatabaseReference.child(FIREBASE_FRIEND).child(friendFirebase.uid).child(uid!!)
             .removeValue()
             .addOnFailureListener {
                 Log.d(TAG, it.stackTraceToString())
@@ -561,6 +587,15 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 //            }
 //        })
 
+    }
+
+    private fun sendMessage(myUID: String, othersUID: String, chattingRoomName: String) {
+        val intent = Intent(activity, ChattingActivity::class.java)
+        intent.putExtra("myUID", myUID)
+        intent.putExtra("othersUID", othersUID)
+        intent.putExtra("chattingRoomName", chattingRoomName)
+
+        startActivity(intent)
     }
 
 }

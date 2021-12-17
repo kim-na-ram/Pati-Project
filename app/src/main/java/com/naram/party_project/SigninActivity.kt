@@ -43,9 +43,11 @@ import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PREFERRED_
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PURPOSE
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_VOICE
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_EMAIL
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GAME_NAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GENDER
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_NAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_PICTURE
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_SELF_PR
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -65,8 +67,10 @@ class SigninActivity : AppCompatActivity() {
 
     private var tmpEmail : String? = null
     private var tmpName : String? = null
+    private var tmpGameName : String? = null
     private var tmpGender : String? = null
     private var tmpPicture : String? = null
+    private var tmpSelfPR : String? = null
     private var tmpPurpose : String? = null
     private var tmpVoice : String? = null
     private var tmpMen : String? = null
@@ -178,6 +182,8 @@ class SigninActivity : AppCompatActivity() {
                     FIREBASE_USER_NAME -> tmpName = it.value.toString()
                     FIREBASE_USER_GENDER -> tmpGender = it.value.toString()
                     FIREBASE_USER_PICTURE -> tmpPicture = it.value.toString()
+                    FIREBASE_USER_GAME_NAME -> tmpGameName = it.value.toString()
+                    FIREBASE_USER_SELF_PR -> tmpSelfPR = it.value.toString()
                 }
             }
         }.addOnFailureListener {
@@ -202,9 +208,7 @@ class SigninActivity : AppCompatActivity() {
         mDatabaseReference.child(FIREBASE_GAME).get().addOnSuccessListener { dataSnapshot ->
             dataSnapshot.children.forEach {
                 when(it.key) {
-                    FIREBASE_GAME_0_LOL -> {
-                        tmpGame0 = it.value.toString()
-                    }
+                    FIREBASE_GAME_0_LOL -> tmpGame0 = it.value.toString()
                     FIREBASE_GAME_1_OVER_WATCH -> tmpGame1 = it.value.toString()
                     FIREBASE_GAME_2_BATTLE_GROUND -> tmpGame2 = it.value.toString()
                     FIREBASE_GAME_3_SUDDEN_ATTACK -> tmpGame3 = it.value.toString()
@@ -257,9 +261,9 @@ class SigninActivity : AppCompatActivity() {
             tmpEmail!!,
             tmpPicture,
             tmpName!!,
-            null,
+            if(tmpGameName.isNullOrEmpty()) null else tmpGameName,
             tmpGender!!,
-            null,
+            if(tmpSelfPR.isNullOrEmpty()) null else tmpSelfPR,
             tendency,
             games,
             IntGameList

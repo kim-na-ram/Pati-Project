@@ -14,6 +14,7 @@ import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -66,6 +67,10 @@ class ModifyProfileActivity : BaseActivity<ActivityModifyProfileBinding> ({
         setSupportActionBar(binding.layoutTop.toolbar)
         val ab = supportActionBar!!
         ab.setDisplayShowTitleEnabled(false)
+        ab.setDisplayShowCustomEnabled(true)
+
+        binding.layoutTop.tvTextToolbar.text = "프로필 수정"
+        binding.layoutTop.tvTextToolbar.textSize = 23F
 
         // Detail User Info
         TendencyRadioList = listOf(

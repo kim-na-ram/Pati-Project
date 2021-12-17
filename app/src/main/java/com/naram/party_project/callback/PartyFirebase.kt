@@ -1,7 +1,5 @@
 package com.naram.party_project.callback
 
-import android.graphics.drawable.Drawable
-
 data class PartyFirebase(
     val uid : String,
     val email : String,

@@ -7,7 +7,7 @@
     <font
         android:font="@font/nanumsquareextrabold"
         android:fontStyle="normal"
-        android:fontWeight="700" />
+        android:fontWeight="800" />
     <font
         android:font="@font/nanumbarungothicbold"
         android:fontStyle="normal"
