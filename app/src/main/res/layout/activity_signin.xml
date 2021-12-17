@@ -107,13 +107,14 @@
 
     <TextView
         android:id="@+id/tv_findAccount"
-        android:layout_width="@dimen/button_width"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/nanumsquarebold"
         android:gravity="end"
-        android:text="계정 찾기"
+        android:text="비밀번호 찾기"
         android:textColor="@color/white"
+        android:paddingStart="20dp"
         android:textSize="@dimen/edittext_userinfo_text_size"
         app:layout_constraintEnd_toEndOf="@id/btn_userSignin"
         app:layout_constraintStart_toEndOf="@id/v_divider"
@@ -131,12 +132,13 @@
 
     <TextView
         android:id="@+id/tv_userSignup"
-        android:layout_width="@dimen/button_width"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/nanumsquarebold"
         android:gravity="start"
         android:text="회원가입"
+        android:paddingEnd="20dp"
         android:textColor="@color/white"
         android:textSize="@dimen/edittext_userinfo_text_size"
         app:layout_constraintEnd_toStartOf="@id/v_divider"

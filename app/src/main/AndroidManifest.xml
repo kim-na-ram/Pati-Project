@@ -25,6 +25,9 @@
             android:name=".SignupActivity"
             android:exported="true" />
         <activity
+            android:name=".FindAccountActivity"
+            android:exported="true" />
+        <activity
             android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>

@@ -22,15 +22,15 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.naram.party_project.base.BaseActivity
-import com.naram.party_project.databinding.ActivityModifyProfileBinding
+import com.naram.party_project.databinding.ActivityModifyprofileBinding
 import com.naram.party_project.util.Const
 import com.naram.party_project.util.Const.Companion.MODIFY_USER_PROFILE
 import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 
-class ModifyProfileActivity : BaseActivity<ActivityModifyProfileBinding> ({
-    ActivityModifyProfileBinding.inflate(it)
+class ModifyProfileActivity : BaseActivity<ActivityModifyprofileBinding> ({
+    ActivityModifyprofileBinding.inflate(it)
 }) {
 
     private val TAG = "ModifyProfile"

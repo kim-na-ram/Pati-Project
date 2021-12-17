@@ -11,7 +11,9 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import com.naram.party_project.util.Const.Companion.FIREBASE_GAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER
@@ -125,7 +127,8 @@ class SigninActivity : AppCompatActivity() {
         }
 
         binding.tvFindAccount.setOnClickListener {
-            // TODO firebase 비밀번호 찾기
+            val intent = Intent(this, FindAccountActivity::class.java)
+            startActivity(intent)
         }
 
         binding.tvUserSignup.setOnClickListener {
