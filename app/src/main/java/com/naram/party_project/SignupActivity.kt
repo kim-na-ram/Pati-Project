@@ -108,7 +108,7 @@ class SignupActivity : AppCompatActivity() {
                         .addOnCompleteListener(this) { _ ->
                             if(bitmap == null) saveUserInfoToDB()
                             else {
-                                uploadImageToFirebase(bitmap!!)
+                                saveUserInfoToDB()
                                 uploadImageToCloud(bitmap!!)
                             }
                             Toast.makeText(this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()

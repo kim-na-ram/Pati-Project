@@ -4,7 +4,7 @@
     <data>
         <variable
             name="chatting"
-            type="com.naram.party_project.firebaseModel.ChattingList" />
+            type="com.naram.party_project.chattingModel.ChattingList" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,12 +12,13 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="15dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ivReceivedPicture"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -46,14 +47,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="4.5"
                     android:fontFamily="@font/nanumsquareextrabold"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
+                    android:text="@{chatting.receivedName}"
                     tools:text="Sender" />
 
                 <TextView
                     android:id="@+id/tvLastMessageTime"
                     android:layout_width="50dp"
-                    android:layout_height="14dp"
+                    android:layout_height="15dp"
                     android:layout_marginStart="5dp"
                     android:layout_weight="0.5"
                     android:fontFamily="@font/nanumsquarebold"
@@ -66,13 +68,16 @@
             <TextView
                 android:id="@+id/tvLastMessage"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="17dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/nanumsquarebold"
                 android:gravity="left|center_vertical"
                 android:maxHeight="30dp"
                 android:textSize="14sp"
+                android:singleLine="true"
+                android:text="@{chatting.lastMessage}"
+                android:ellipsize="end"
                 tools:text="이렇게 보여집니다." />
 
         </LinearLayout>

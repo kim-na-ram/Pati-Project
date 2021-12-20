@@ -1,16 +1,18 @@
 package com.naram.party_project
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.InputMethodManager
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
 import com.naram.party_project.adapter.ChattingAdapter
 import com.naram.party_project.base.BaseActivity
-import com.naram.party_project.firebaseModel.ChatModel
+import com.naram.party_project.chattingModel.Chatting
+import com.naram.party_project.chattingModel.Message
 import com.naram.party_project.databinding.ActivityChattingBinding
 import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING
 import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING_MESSAGE
@@ -25,28 +27,46 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
 
     private val TAG = "Chatting"
 
-    private lateinit var chatModel: ChatModel
+    private lateinit var chatting: Chatting
     private var chatRoomUID: String? = null
     private lateinit var myUID: String
     private lateinit var othersUID: String
     private lateinit var myName: String
     private lateinit var myPicture: String
+    private lateinit var othersName: String
+    private lateinit var othersPicture: String
     private lateinit var chattingRoomName: String
 
     private lateinit var chattingAdapter: ChattingAdapter
 
     private val firebaseDatabase = FirebaseDatabase.getInstance()
 
-//    private val messageList = mutableListOf<ChatModel.Message>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        showProgressbar(true)
         getUserInformation()
         setRecyclerView()
-        checkChattingRoom()
         initViews()
+        Handler(Looper.getMainLooper()).postDelayed({
+            checkChattingRoom()
+            showProgressbar(false)
+        }, 2000)
+
+    }
+
+    private fun showProgressbar(flag : Boolean) {
+
+        if(flag) {
+            binding.pbShowChattingProgress.visibility = View.VISIBLE
+            val rotateAnimation =
+                AnimationUtils.loadAnimation(baseContext, R.anim.animation_progressbar)
+            binding.pbShowChattingProgress.startAnimation(rotateAnimation)
+        } else {
+            binding.pbShowChattingProgress.clearAnimation()
+            binding.pbShowChattingProgress.visibility = View.GONE
+        }
 
     }
 
@@ -71,10 +91,23 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    Log.e(TAG, error.message)
                 }
 
             })
 
+        firebaseDatabase.reference.child(othersUID).child(FIREBASE_USER)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    othersName = snapshot.child(FIREBASE_USER_NAME).value.toString()
+                    othersPicture = snapshot.child(FIREBASE_USER_PICTURE).value.toString()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e(TAG, error.message)
+                }
+
+            })
 
     }
 
@@ -116,16 +149,27 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
 
     private fun sendMessage() {
 
-        chatModel = ChatModel()
-        chatModel.users[myUID] = true
-        chatModel.users[othersUID] = true
+        val myInfo = Chatting.UserInfo()
+        val othersInfo = Chatting.UserInfo()
+
+        myInfo.name = myName
+        myInfo.picture = myPicture
+
+        othersInfo.name = othersName
+        othersInfo.picture = othersPicture
+
+        chatting = Chatting()
+        chatting.users[myUID] = myInfo
+        chatting.users[othersUID] = othersInfo
+
+        Log.d(TAG, "chatRoomUID : $chatRoomUID")
 
         if (chatRoomUID == null) {
-            firebaseDatabase.reference.child(FIREBASE_CHATTING).push().setValue(chatModel)
+            firebaseDatabase.reference.child(FIREBASE_CHATTING).push().setValue(chatting)
                 .addOnSuccessListener {
                     checkChattingRoom()
                 }.addOnFailureListener {
-
+                    Log.e(TAG, it.stackTraceToString())
                 }
         } else {
             sendMessageToDB()
@@ -135,14 +179,14 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
     private fun checkChattingRoom() {
         firebaseDatabase.reference.child(FIREBASE_CHATTING)
             .orderByChild("$FIREBASE_CHATTING_USERS/$myUID")
-            .equalTo(true)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach {
-                        val chatModel = it.getValue<ChatModel>()
+                        val chatModel = it.getValue<Chatting>()
 
                         chatModel?.let { chat ->
-                            if (chat.users.containsKey(othersUID)) {
+                            if (chat.users.containsKey(myUID)
+                                && chat.users.containsKey(othersUID)) {
                                 chatRoomUID = it.key!!
                                 if (binding.etMessage.text.toString().isNotEmpty())
                                     sendMessageToDB()
@@ -156,7 +200,7 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.e(TAG, error.message)
                 }
 
             })
@@ -182,10 +226,8 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
 
     private fun sendMessageToDB() {
 
-        val message = ChatModel.Message()
+        val message = Chatting.Message()
         message.uid = myUID
-        message.name = myName
-        message.picture = myPicture
         message.message = binding.etMessage.text.toString()
         message.timestamp = System.currentTimeMillis()
 
@@ -207,8 +249,8 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
                 override fun onDataChange(snapshot: DataSnapshot) {
                     chattingAdapter.messageList.clear()
                     snapshot.children.forEach { data ->
-                        data.getValue<ChatModel.Message>()?.let {
-                            chattingAdapter.messageList.add(it)
+                        data.getValue<Chatting.Message>()?.let {
+                            chattingAdapter.messageList.add(Message(it.uid, othersName, othersPicture, it.message, it.timestamp))
                         }
 
                     }

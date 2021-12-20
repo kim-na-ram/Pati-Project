@@ -11,9 +11,8 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
+import com.naram.party_project.callback.Profile
 import com.naram.party_project.util.Const.Companion.FIREBASE_GAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER
@@ -57,11 +56,11 @@ import retrofit2.Response
 
 class SigninActivity : AppCompatActivity() {
 
-    private val TAG = "SigninActivity"
+    private val TAG = "Sign In"
 
     private lateinit var db: AppDatabase
 
-    private var userProfile: UserProfile? = null
+    private var profile: Profile? = null
 
     private var firebaseAuth: FirebaseAuth? = null
 
@@ -175,7 +174,6 @@ class SigninActivity : AppCompatActivity() {
         val mDatabaseReference = FirebaseDatabase.getInstance().reference.child(uid)
 
         mDatabaseReference.child(FIREBASE_USER).get().addOnSuccessListener { dataSnapshot ->
-            Log.d(TAG, "user uid : ${dataSnapshot.key}")
             dataSnapshot.children.forEach {
                 when(it.key) {
                     FIREBASE_USER_EMAIL -> {
@@ -190,7 +188,7 @@ class SigninActivity : AppCompatActivity() {
                 }
             }
         }.addOnFailureListener {
-            Log.d(TAG, "로그인 실패")
+            Log.d(TAG, "로그인 실패 : ${it.printStackTrace()}")
         }
 
         mDatabaseReference.child(FIREBASE_TENDENCY).get().addOnSuccessListener { dataSnapshot ->
@@ -220,7 +218,10 @@ class SigninActivity : AppCompatActivity() {
                     FIREBASE_GAME_6_MAPLE_STORY -> tmpGame6 = it.value.toString()
                     FIREBASE_GAME_7_CYPHERS -> tmpGame7 = it.value.toString()
                     FIREBASE_GAME_8_STAR_CRAFT -> tmpGame8 = it.value.toString()
-                    FIREBASE_GAME_9_DUNGEON_AND_FIGHTER -> tmpGame9 = it.value.toString()
+                    FIREBASE_GAME_9_DUNGEON_AND_FIGHTER -> {
+                        tmpGame9 = it.value.toString()
+                        Log.d(TAG, "game9 is $tmpGame9")
+                    }
                 }
             }
         }
@@ -229,7 +230,6 @@ class SigninActivity : AppCompatActivity() {
 
     private fun showResult() {
         val TendencyMap = mutableMapOf<String, String>().apply {
-            Log.d(TAG, "purpose is $tmpPurpose")
             this[TAG_TENDENCY_PURPOSE] = tmpPurpose!!
             this[TAG_TENDENCY_VOICE] = tmpVoice!!
             this[TAG_TENDENCY_PREFERRED_GENDER_WOMEN] = tmpWomen!!
@@ -260,7 +260,7 @@ class SigninActivity : AppCompatActivity() {
             else games.add(false)
         }
 
-        userProfile = UserProfile(
+        profile = Profile(
             tmpEmail!!,
             tmpPicture,
             tmpName!!,
@@ -355,7 +355,7 @@ class SigninActivity : AppCompatActivity() {
 
         val games = mutableListOf<Boolean>()
 
-        userProfile = UserProfile(
+        profile = Profile(
             response!!.email,
             response!!.picture,
             response!!.user_name,
@@ -373,42 +373,42 @@ class SigninActivity : AppCompatActivity() {
 
     private fun saveInfoToRoom() {
         val thread = Thread(Runnable {
-            userProfile?.let {
+            profile?.let {
                 db.userDAO().insertUserInfo(
                     User(
-                        userProfile!!._userEmail,
-                        userProfile!!._userPicture,
+                        profile!!.email,
+                        profile!!.picture,
                         null,
-                        userProfile!!._userNickName,
-                        userProfile!!._userGameName,
-                        userProfile!!._userGender,
-                        userProfile!!._userPR
+                        profile!!.nickName,
+                        profile!!.gameName,
+                        profile!!.gender,
+                        profile!!.selfPR
                     )
                 )
 
                 db.tendencyDAO().insertTendencyInfo(
                     Tendency(
-                        userProfile!!._userEmail,
-                        userProfile!!._userGameTendency[0],
-                        userProfile!!._userGameTendency[1],
-                        userProfile!!._userGameTendency[2],
-                        userProfile!!._userGameTendency[3]
+                        profile!!.email,
+                        profile!!.gameTendency[0],
+                        profile!!.gameTendency[1],
+                        profile!!.gameTendency[2],
+                        profile!!.gameTendency[3]
                     )
                 )
 
                 db.gameDAO().insertGameInfo(
                     Game(
-                        userProfile!!._userEmail,
-                        userProfile!!._userGameNamesInt!!.get(0),
-                        userProfile!!._userGameNamesInt!!.get(1),
-                        userProfile!!._userGameNamesInt!!.get(2),
-                        userProfile!!._userGameNamesInt!!.get(3),
-                        userProfile!!._userGameNamesInt!!.get(4),
-                        userProfile!!._userGameNamesInt!!.get(5),
-                        userProfile!!._userGameNamesInt!!.get(6),
-                        userProfile!!._userGameNamesInt!!.get(7),
-                        userProfile!!._userGameNamesInt!!.get(8),
-                        userProfile!!._userGameNamesInt!!.get(9)
+                        profile!!.email,
+                        profile!!.gameNamesInt!![0],
+                        profile!!.gameNamesInt!![1],
+                        profile!!.gameNamesInt!![2],
+                        profile!!.gameNamesInt!![3],
+                        profile!!.gameNamesInt!![4],
+                        profile!!.gameNamesInt!![5],
+                        profile!!.gameNamesInt!![6],
+                        profile!!.gameNamesInt!![7],
+                        profile!!.gameNamesInt!![8],
+                        profile!!.gameNamesInt!![9]
                     )
                 )
 

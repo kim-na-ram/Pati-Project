@@ -1,5 +1,6 @@
 package com.naram.party_project.adapter
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,22 +13,24 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.naram.party_project.R
 import com.naram.party_project.databinding.ItemChattingListBinding
-import com.naram.party_project.firebaseModel.ChattingList
+import com.naram.party_project.chattingModel.ChattingList
 import com.naram.party_project.mChattingListDiffCallback
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ChattingListAdapter(
-    val itemClick: (ChattingList) -> Unit
+    val itemClick: (ChattingList, Context) -> Unit
 ) : RecyclerView.Adapter<ChattingListAdapter.ViewHolder>() {
 
     var chattingList = mutableListOf<ChattingList>()
 
     private val differ = AsyncListDiffer(this, mChattingListDiffCallback)
 
-    inner class ViewHolder(val binding: ItemChattingListBinding, itemClick: (ChattingList) -> Unit) :
+    inner class ViewHolder(val binding: ItemChattingListBinding, itemClick: (ChattingList, Context) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ChattingList) {
+
+            binding.chatting = item
 
             Log.e("Adapter", "$item")
 
@@ -35,12 +38,11 @@ class ChattingListAdapter(
                 uploadImageFromCloud(it, itemView, binding)
             }
 
-            binding.tvReceivedName.text = item.receivedName
-            binding.tvLastMessage.text = item.lastMessage
+//            binding.tvLastMessage.text = item.lastMessage
             binding.tvLastMessageTime.text = getDateTime(item.timeStamp)
 
             itemView.setOnClickListener {
-                itemClick(item)
+                itemClick(item, it.context)
             }
 
         }
@@ -107,6 +109,12 @@ class ChattingListAdapter(
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
+    }
+
+    fun notifyList(list: MutableList<ChattingList>) {
+        chattingList.clear()
+        chattingList.addAll(list)
+        notifyDataSetChanged()
     }
 
     fun submitList() {

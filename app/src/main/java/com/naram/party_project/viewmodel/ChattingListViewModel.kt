@@ -1,9 +1,10 @@
 package com.naram.party_project.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.naram.party_project.firebaseModel.ChattingList
+import com.naram.party_project.chattingModel.ChattingList
 
 class ChattingListViewModel : ViewModel() {
     private val _currentList = MutableLiveData<ArrayList<ChattingList>>()
@@ -19,5 +20,4 @@ class ChattingListViewModel : ViewModel() {
     fun updateList(list : MutableList<ChattingList>) {
         _currentList.value = list as ArrayList<ChattingList>
     }
-
 }

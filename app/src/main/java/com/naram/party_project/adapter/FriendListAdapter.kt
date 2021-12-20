@@ -116,9 +116,10 @@ import com.naram.party_project.mFriendFirebaseDiffCallback
 //}
 
 class FriendListAdapter(
-    val list: MutableList<FriendFirebase>,
     val itemClick: (FriendFirebase, Boolean) -> Unit
 ) : RecyclerView.Adapter<FriendListAdapter.ViewHolder>() {
+
+    val friendsList = mutableListOf<FriendFirebase>()
 
     private val mDiffer = AsyncListDiffer(this, mFriendFirebaseDiffCallback)
 
@@ -128,6 +129,8 @@ class FriendListAdapter(
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FriendFirebase) {
+
+            Log.e("FriendListAdapter", "$item")
 
             item.picture?.let {
                 uploadImageFromCloud(it)
@@ -176,16 +179,16 @@ class FriendListAdapter(
         return ViewHolder(binding, itemClick)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mDiffer.currentList[position]
-        holder.bind(item)
-    }
-
-    override fun getItemCount(): Int = mDiffer.currentList.size
-
-    override fun getItemId(position: Int): Long {
-        return mDiffer.currentList[position].hashCode().toLong()
-    }
+//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+//        val item = mDiffer.currentList[position]
+//        holder.bind(item)
+//    }
+//
+//    override fun getItemCount(): Int = mDiffer.currentList.size
+//
+//    override fun getItemId(position: Int): Long {
+//        return mDiffer.currentList[position].hashCode().toLong()
+//    }
 
     fun submitList(newList: MutableList<FriendFirebase>) {
         if(mDiffer.currentList == newList) return
@@ -196,5 +199,11 @@ class FriendListAdapter(
             }
         }
     }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        return holder.bind(friendsList[position])
+    }
+
+    override fun getItemCount() = friendsList.size
 
 }

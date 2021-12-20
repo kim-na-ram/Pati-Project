@@ -14,7 +14,6 @@ import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -122,6 +121,7 @@ class ModifyProfileActivity : BaseActivity<ActivityModifyprofileBinding> ({
                     email = it.email
 
                     it.picture?.let {
+                        picturePath = it
                         uploadImageFromCloud(it)
                     }
 
@@ -405,7 +405,7 @@ class ModifyProfileActivity : BaseActivity<ActivityModifyprofileBinding> ({
                     picturePath = "$email/profile.jpg"
             } else {
                 if(binding.ivUserPicture.drawable == null)
-                    picturePath = "$email/profile.jpg"
+                    picturePath = null
             }
 
             if (email.isNotEmpty() && binding.etUserNickName.text.isNotEmpty()) {

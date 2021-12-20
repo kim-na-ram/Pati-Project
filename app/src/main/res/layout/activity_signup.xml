@@ -89,23 +89,24 @@
     <RadioGroup
         android:id="@+id/radio_userGender"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/edittext_userinfo_height"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginStart="3dp"
         app:layout_constraintBottom_toTopOf="@id/tv_userEmail"
-        app:layout_constraintEnd_toEndOf="@id/ll_signupUserEmailContainer"
+        app:layout_constraintStart_toEndOf="@id/ll_signupUserNameContainer"
         app:layout_constraintTop_toBottomOf="@id/tv_userGender">
 
         <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radiobutton_userFemale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:button="@drawable/radiobutton_selected_custom"
             android:fontFamily="@font/nanumsquarebold"
             android:paddingStart="3dp"
             android:text="여성"
             android:textColor="@color/white"
-            android:textSize="17sp" />
+            android:textSize="16sp" />
 
         <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radiobutton_userMale"
@@ -116,7 +117,7 @@
             android:paddingStart="3dp"
             android:text="남성"
             android:textColor="@color/white"
-            android:textSize="17sp" />
+            android:textSize="16sp" />
 
     </RadioGroup>
 

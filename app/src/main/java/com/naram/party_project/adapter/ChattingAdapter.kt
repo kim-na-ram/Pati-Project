@@ -12,7 +12,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.naram.party_project.R
 import com.naram.party_project.databinding.ItemChatBinding
-import com.naram.party_project.firebaseModel.ChatModel
+import com.naram.party_project.chattingModel.Chatting
+import com.naram.party_project.chattingModel.Message
 import com.naram.party_project.mChattingDiffCallback
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +25,7 @@ class ChattingAdapter(
 
     private val mDiffer = AsyncListDiffer(this, mChattingDiffCallback)
 
-    val messageList = mutableListOf<ChatModel.Message>()
+    val messageList = mutableListOf<Message>()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -41,7 +42,7 @@ class ChattingAdapter(
     ) :
         RecyclerView.ViewHolder(binding.root)
     {
-        fun bind(item: ChatModel.Message)
+        fun bind(item: Message)
         {
 
             if(item.uid.equals(myUID))
@@ -56,7 +57,7 @@ class ChattingAdapter(
                 binding.tvReceivedMessage.text = item.message
                 binding.tvReceivedTime.text = getDateTime(item.timestamp)
                 item.picture?.let {
-                    uploadImageFromCloud(item.picture, itemView, binding)
+                    uploadImageFromCloud(item.picture!!, itemView, binding)
                 }
             }
         }
@@ -125,26 +126,13 @@ class ChattingAdapter(
 
     }
 
-    fun updateList(newList: ArrayList<ChatModel.Message>)
-    {
-        messageList.clear()
-        messageList.addAll(newList)
-        notifyDataSetChanged()
-    }
-
-    fun updateItem(newItem: ChatModel.Message)
-    {
-        messageList.add(newItem)
-        notifyDataSetChanged()
-    } // 성공
-
-    fun submitList(newList: MutableList<ChatModel.Message>)
+    fun submitList(newList: MutableList<Message>)
     {
         if (mDiffer.currentList == newList) return
         else {
             Log.d("ChattingAdapter", "submitList")
             newList?.let {
-                mDiffer.submitList(ArrayList<ChatModel.Message>(newList))
+                mDiffer.submitList(ArrayList<Message>(newList))
             }
         }
     }

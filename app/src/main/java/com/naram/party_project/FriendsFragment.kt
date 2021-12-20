@@ -28,9 +28,7 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
     private lateinit var friendListAdapter: FriendListAdapter
 
     private val requestUidList: MutableList<String> = mutableListOf()
-    private val requestList: MutableList<FriendFirebase> = mutableListOf()
     private val friendUidList: MutableList<String> = mutableListOf()
-    private val friendList: MutableList<FriendFirebase> = mutableListOf()
 
     private val uid = FirebaseAuth.getInstance().uid
 
@@ -62,11 +60,7 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         super.onDestroyView()
 
         requestUidList.clear()
-        requestList.clear()
-
         friendUidList.clear()
-        friendList.clear()
-
     }
 
     private fun requestedPartyShowSampleData(isLoading: Boolean) {
@@ -96,9 +90,7 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
     private fun setPartyRecyclerView() {
 
         requestedPartyListAdapter =
-            RequestedPartyListAdapter(
-                mutableListOf()
-            ) { it, flag ->
+            RequestedPartyListAdapter() { it, flag ->
 
                 if (flag) {
                     addFirebaseFriend(it)
@@ -125,9 +117,7 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
     private fun setFriendRecyclerView() {
 
         friendListAdapter =
-            FriendListAdapter(
-                mutableListOf()
-            ) { it, flag ->
+            FriendListAdapter() { it, flag ->
 
                 if (flag) {
                     sendMessage(uid!!, it.uid, it.user_name)
@@ -152,6 +142,7 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         mDatabaseReference.child(FIREBASE_PARTY).child(uid!!)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    requestedPartyListAdapter.requestedPartyList.clear()
                     snapshot.children.forEach {
                         if (!requestUidList.contains(it.key.toString())) {
                             requestUidList.add(it.key!!)
@@ -175,22 +166,25 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         var tmpName = ""
         var tmpPicture: String? = null
 
-        if(requestUidList.size > 0) {
+        if (requestUidList.size > 0) {
 
             binding.tvInformParty.visibility = View.GONE
 
             requestUidList.forEach {
                 mDatabaseReference.child(it).child(FIREBASE_USER).get()
                     .addOnSuccessListener { ds ->
-                        requestList.add(
+                        requestedPartyListAdapter.requestedPartyList.add(
+//                        requestList.add(
                             FriendFirebase(
                                 it,
                                 ds.child(FIREBASE_USER_EMAIL).value.toString(),
                                 ds.child(FIREBASE_USER_NAME).value.toString(),
                                 ds.child(FIREBASE_USER_PICTURE).value.toString()
+//                            )
                             )
                         )
-                        requestedPartyListAdapter.submitList(requestList)
+                        requestedPartyListAdapter.notifyDataSetChanged()
+//                        requestedPartyListAdapter.submitList(requestList)
                         if (binding.slRequestedPartyShimmer.visibility == View.VISIBLE)
                             requestedPartyShowSampleData(false)
                     }
@@ -221,9 +215,9 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
             }
 
         requestUidList.remove(partyFirebase.uid)
-        requestList.remove(partyFirebase)
+        requestedPartyListAdapter.requestedPartyList.remove(partyFirebase)
 
-        requestedPartyListAdapter.submitList(requestList)
+        requestedPartyListAdapter.notifyDataSetChanged()
 
     }
 
@@ -234,6 +228,7 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         mDatabaseReference.child(FIREBASE_FRIEND).child(uid!!)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    friendListAdapter.friendsList.clear()
                     snapshot.children.forEach {
                         if (!friendUidList.contains(it.key.toString())) {
                             friendUidList.add(it.key!!)
@@ -272,22 +267,29 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         var tmpName = ""
         var tmpPicture: String? = null
 
-        if(friendUidList.size > 0) {
+        if (friendUidList.size > 0) {
 
             binding.tvInformFriend.visibility = View.GONE
 
             friendUidList.forEach {
                 mDatabaseReference.child(it).child(FIREBASE_USER).get()
                     .addOnSuccessListener { ds ->
-                        friendList.add(
+                        val friendFirebase =
                             FriendFirebase(
                                 it,
                                 ds.child(FIREBASE_USER_EMAIL).value.toString(),
                                 ds.child(FIREBASE_USER_NAME).value.toString(),
                                 ds.child(FIREBASE_USER_PICTURE).value.toString()
                             )
+                        friendListAdapter.friendsList.add(
+//                        friendList.add(
+                            friendFirebase
+//                        )
                         )
-                        friendListAdapter.submitList(friendList)
+                        requestedPartyListAdapter.requestedPartyList.remove(friendFirebase)
+                        requestedPartyListAdapter.notifyDataSetChanged()
+                        friendListAdapter.notifyDataSetChanged()
+//                        friendListAdapter.submitList(friendList)
                         if (binding.slFriendShimmer.visibility == View.VISIBLE)
                             friendsShowSampleData(false)
                     }
@@ -324,16 +326,7 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         mDatabaseReference.child(FIREBASE_FRIEND).child(partyFirebase.uid).child(uid!!)
             .setValue(FIREBASE_FRIEND_YES)
 
-        friendUidList.add(partyFirebase.uid)
-        friendList.add(partyFirebase)
-
-        requestUidList.remove(partyFirebase.uid)
-        requestList.remove(partyFirebase)
-
         binding.tvInformFriend.visibility = View.GONE
-
-        requestedPartyListAdapter.submitList(requestList)
-        friendListAdapter.submitList(friendList)
 
     }
 
@@ -354,9 +347,9 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
             }
 
         friendUidList.remove(friendFirebase.uid)
-        friendList.remove(friendFirebase)
+        friendListAdapter.friendsList.remove(friendFirebase)
 
-        friendListAdapter.submitList(friendList)
+        friendListAdapter.notifyDataSetChanged()
 
     }
 

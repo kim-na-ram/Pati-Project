@@ -167,16 +167,16 @@ class UserListAdapter( // MVVM, LiveData
 
             val gameList = mutableListOf<TextView>()
 
-            if (item.game0?.toInt() == 1) gameList.add(binding.tvPartyGame0)
-            if (item.game1?.toInt() == 1) gameList.add(binding.tvPartyGame1)
-            if (item.game2?.toInt() == 1) gameList.add(binding.tvPartyGame2)
-            if (item.game3?.toInt() == 1) gameList.add(binding.tvPartyGame3)
-            if (item.game4?.toInt() == 1) gameList.add(binding.tvPartyGame4)
-            if (item.game5?.toInt() == 1) gameList.add(binding.tvPartyGame5)
-            if (item.game6?.toInt() == 1) gameList.add(binding.tvPartyGame6)
-            if (item.game7?.toInt() == 1) gameList.add(binding.tvPartyGame7)
-            if (item.game8?.toInt() == 1) gameList.add(binding.tvPartyGame8)
-            if (item.game9?.toInt() == 1) gameList.add(binding.tvPartyGame9)
+            if (item.game0.toInt() == 1) gameList.add(binding.tvPartyGame0)
+            if (item.game1.toInt() == 1) gameList.add(binding.tvPartyGame1)
+            if (item.game2.toInt() == 1) gameList.add(binding.tvPartyGame2)
+            if (item.game3.toInt() == 1) gameList.add(binding.tvPartyGame3)
+            if (item.game4.toInt() == 1) gameList.add(binding.tvPartyGame4)
+            if (item.game5.toInt() == 1) gameList.add(binding.tvPartyGame5)
+            if (item.game6.toInt() == 1) gameList.add(binding.tvPartyGame6)
+            if (item.game7.toInt() == 1) gameList.add(binding.tvPartyGame7)
+            if (item.game8.toInt() == 1) gameList.add(binding.tvPartyGame8)
+            if (item.game9.toInt() == 1) gameList.add(binding.tvPartyGame9)
 
             if (gameList.size <= 6) {
                 gameList.forEach {

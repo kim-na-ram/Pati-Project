@@ -41,8 +41,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/edittext_rounded_background_white_chatting"
+            android:ellipsize="end"
             android:fontFamily="@font/nanumsquarebold"
+            android:maxWidth="220dp"
+            android:maxHeight="150dp"
+            android:maxLines="7"
             android:paddingHorizontal="10dp"
             android:paddingVertical="6dp"
             android:textColor="@color/color_dark_blue"
@@ -51,7 +56,6 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/ivReceivedPicture"
             app:layout_constraintTop_toBottomOf="@id/tvReceivedName"
-            android:layout_marginTop="5dp"
             tools:text="상대방이 보낸 채팅입니다." />
 
         <TextView
@@ -92,7 +96,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_rounded_background_white_chatting"
+            android:ellipsize="end"
             android:fontFamily="@font/nanumsquarebold"
+            android:maxWidth="220dp"
+            android:maxHeight="150dp"
+            android:maxLines="7"
             android:paddingHorizontal="10dp"
             android:paddingVertical="6dp"
             android:textColor="@color/color_dark_blue"

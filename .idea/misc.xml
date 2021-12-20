@@ -72,6 +72,7 @@
         <entry key="app/src/main/res/layout/activity_findaccount.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1703125" />
         <entry key="app/src/main/res/layout/activity_modify_profile.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_modifyprofile.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_signin.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_signup.xml" value="0.33" />
         <entry key="app/src/main/res/layout/dialog_showprofile.xml" value="0.25" />

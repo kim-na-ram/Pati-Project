@@ -2,8 +2,9 @@ package com.naram.party_project
 
 import androidx.recyclerview.widget.DiffUtil
 import com.naram.party_project.callback.*
-import com.naram.party_project.firebaseModel.ChatModel
-import com.naram.party_project.firebaseModel.ChattingList
+import com.naram.party_project.chattingModel.Chatting
+import com.naram.party_project.chattingModel.ChattingList
+import com.naram.party_project.chattingModel.Message
 
 val mPartyFirebaseDiffCallback = object : DiffUtil.ItemCallback<PartyFirebase>() {
     override fun areItemsTheSame(oldItem: PartyFirebase, newItem: PartyFirebase): Boolean {
@@ -47,7 +48,7 @@ val mFriendDiffCallback = object : DiffUtil.ItemCallback<Friend>() {
 
 val mChattingListDiffCallback = object : DiffUtil.ItemCallback<ChattingList>() {
     override fun areItemsTheSame(oldItem: ChattingList, newItem: ChattingList): Boolean {
-        return oldItem.chatRoomUID == newItem.chatRoomUID
+        return (oldItem.lastMessage == newItem.lastMessage)
     }
 
     override fun areContentsTheSame(oldItem: ChattingList, newItem: ChattingList): Boolean {
@@ -55,12 +56,22 @@ val mChattingListDiffCallback = object : DiffUtil.ItemCallback<ChattingList>() {
     }
 }
 
-val mChattingDiffCallback = object : DiffUtil.ItemCallback<ChatModel.Message>() {
-    override fun areItemsTheSame(oldItem: ChatModel.Message, newItem: ChatModel.Message): Boolean {
+//val mChattingDiffCallback = object : DiffUtil.ItemCallback<Chatting.Message>() {
+//    override fun areItemsTheSame(oldItem: Chatting.Message, newItem: Chatting.Message): Boolean {
+//        return (oldItem.uid == newItem.uid && oldItem.message == newItem.message)
+//    }
+//
+//    override fun areContentsTheSame(oldItem: Chatting.Message, newItem: Chatting.Message): Boolean {
+//        return oldItem == newItem
+//    }
+//}
+
+val mChattingDiffCallback = object : DiffUtil.ItemCallback<Message>() {
+    override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
         return (oldItem.uid == newItem.uid && oldItem.message == newItem.message)
     }
 
-    override fun areContentsTheSame(oldItem: ChatModel.Message, newItem: ChatModel.Message): Boolean {
+    override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
         return oldItem == newItem
     }
 }

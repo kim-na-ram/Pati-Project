@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.naram.party_project.base.BaseActivity
 import com.naram.party_project.base.BaseFragment
 
 import com.naram.party_project.databinding.FragmentMyprofileBinding

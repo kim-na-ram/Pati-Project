@@ -104,9 +104,10 @@ import com.naram.party_project.mFriendFirebaseDiffCallback
 //}
 
 class RequestedPartyListAdapter(
-    val list: MutableList<FriendFirebase>,
     val itemClick: (FriendFirebase, Boolean) -> Unit
 ) : RecyclerView.Adapter<RequestedPartyListAdapter.ViewHolder>() {
+
+    val requestedPartyList = mutableListOf<FriendFirebase>()
 
     private val mDiffer = AsyncListDiffer(this, mFriendFirebaseDiffCallback)
 
@@ -164,16 +165,16 @@ class RequestedPartyListAdapter(
         return ViewHolder(binding, itemClick)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mDiffer.currentList[position]
-        holder.bind(item)
-    }
-
-    override fun getItemCount(): Int = mDiffer.currentList.size
-
-    override fun getItemId(position: Int): Long {
-        return mDiffer.currentList[position].hashCode().toLong()
-    }
+//    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+//        val item = mDiffer.currentList[position]
+//        holder.bind(item)
+//    }
+//
+//    override fun getItemCount(): Int = mDiffer.currentList.size
+//
+//    override fun getItemId(position: Int): Long {
+//        return mDiffer.currentList[position].hashCode().toLong()
+//    }
 
     fun submitList(newList: MutableList<FriendFirebase>) {
         if(mDiffer.currentList == newList) return
@@ -184,5 +185,11 @@ class RequestedPartyListAdapter(
             }
         }
     }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        return holder.bind(requestedPartyList[position])
+    }
+
+    override fun getItemCount() = requestedPartyList.size
 
 }
