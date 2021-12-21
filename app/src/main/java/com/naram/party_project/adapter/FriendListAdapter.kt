@@ -139,12 +139,10 @@ class FriendListAdapter(
             binding.tvFriendsName.text = item.user_name
 
             binding.btnSendMessage.setOnClickListener {
-                // TODO 메세지 보내기
                 itemClick(item, true)
             }
 
             binding.btnRemoveFriends.setOnClickListener {
-                // TODO 친구 삭제
                 itemClick(item, false)
             }
 

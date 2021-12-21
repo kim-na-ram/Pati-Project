@@ -22,9 +22,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginBottom="5dp"
         android:fontFamily="@font/nanumsquareextrabold"
         android:textColor="@color/color_activated_blue"
-        android:textSize="29sp"
+        android:textSize="26sp"
         app:layout_constraintStart_toEndOf="@id/iv_party_userPicture"
         app:layout_constraintTop_toTopOf="@id/iv_party_userPicture"
         tools:text="한우" />
@@ -36,7 +37,7 @@
         android:layout_marginVertical="5dp"
         android:text="&quot;"
         android:textColor="@color/color_inactivated_blue"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tv_party_userPR"
         app:layout_constraintEnd_toStartOf="@id/tv_party_userPR"
@@ -55,7 +56,7 @@
         android:fontFamily="@font/nanumsquarebold"
         android:maxLines="1"
         android:textColor="@color/color_inactivated_blue"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/fl_party_showTendency"
         app:layout_constraintEnd_toStartOf="@id/tv_party_rightQuote"
@@ -72,7 +73,7 @@
         android:layout_marginVertical="5dp"
         android:text="&quot;"
         android:textColor="@color/color_inactivated_blue"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tv_party_userPR"
         app:layout_constraintHorizontal_chainStyle="packed"
@@ -97,7 +98,7 @@
         android:id="@+id/fl_party_showGameNames"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +116,7 @@
             android:paddingVertical="1dp"
             android:text="LOL"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -131,7 +132,7 @@
             android:paddingVertical="1dp"
             android:text="오버워치"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -147,7 +148,7 @@
             android:paddingVertical="1dp"
             android:text="배틀 그라운드"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -163,7 +164,7 @@
             android:paddingVertical="1dp"
             android:text="서든어택"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -179,7 +180,7 @@
             android:paddingVertical="1dp"
             android:text="피파 온라인4"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -195,7 +196,7 @@
             android:paddingVertical="1dp"
             android:text="로스트아크"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -211,7 +212,7 @@
             android:paddingVertical="1dp"
             android:text="메이플 스토리"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -227,7 +228,7 @@
             android:paddingVertical="1dp"
             android:text="사이퍼즈"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -243,7 +244,7 @@
             android:paddingVertical="1dp"
             android:text="스타크래프트"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -259,7 +260,7 @@
             android:paddingVertical="1dp"
             android:text="던전 앤 파이터"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -273,7 +274,9 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fl_party_showGameNames">
+        app:layout_constraintTop_toBottomOf="@id/fl_party_showGameNames"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="1">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_sendMessage"

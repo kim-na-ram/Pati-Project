@@ -178,15 +178,8 @@ class UserListAdapter( // MVVM, LiveData
             if (item.game8.toInt() == 1) gameList.add(binding.tvPartyGame8)
             if (item.game9.toInt() == 1) gameList.add(binding.tvPartyGame9)
 
-            if (gameList.size <= 6) {
-                gameList.forEach {
-                    it.visibility = View.VISIBLE
-                }
-            } else {
-                gameList.forEachIndexed { index, textView ->
-                    if (index > 5) binding.tvPartyGame10.visibility = View.VISIBLE
-                    else textView.visibility = View.VISIBLE
-                }
+            gameList.forEach {
+                it.visibility = View.VISIBLE
             }
 
             itemView.setOnClickListener {

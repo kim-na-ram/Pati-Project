@@ -1,8 +1,11 @@
 package com.naram.party_project
 
 import android.os.Bundle
+import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.naram.party_project.base.BaseActivity
+import com.naram.party_project.callback.UserFirebase
 import com.naram.party_project.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity<ActivityMainBinding> ({
@@ -245,11 +248,7 @@ class MainActivity : BaseActivity<ActivityMainBinding> ({
 //            }
 //        })
 //    }
-//
-//    fun getProfile(): User? {
-//        return user
-//    }
-//
+
     private fun changeFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
@@ -268,42 +267,10 @@ class MainActivity : BaseActivity<ActivityMainBinding> ({
 //        }
 
     }
-//
-//    fun removeFragment() {
-//        fragments.remove(modifyProfileFragment)
-//    }
-
-    fun appearFragment() {
-//        val dialog = ShowProfileDialog()
-//            .show(supportFragmentManager, "dialog")
-
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.flShowPartyProfile, ShowProfileFragment())
-            .commit()
-
-//        binding.flShowPartyProfile.visibility = View.VISIBLE
-//
-//        val fragment = ShowProfileFragment()
-//        val fragmentManager = supportFragmentManager
-//        val fragmentTransaction = fragmentManager.beginTransaction()
-//        fragmentTransaction.add(R.id.fl_showPartyProfile, fragment)
-//        fragmentTransaction.addToBackStack(null)
-//        fragmentTransaction.commit()
-    }
-
-//    fun disappearFragment() {
-//        supportFragmentManager.popBackStack()
-//        binding.flShowPartyProfile.visibility = View.GONE
-//    }
 
 //    override fun onBackPressed() {
-//        if (binding.flShowPartyProfile.isVisible) {
-////            disappearFragment()
-//        } else when (binding.vpShowView.currentItem) {
-//            fragments.indexOf(modifyProfileFragment) -> {
-//                binding.vpShowView.currentItem = fragments.indexOf(MyProfileFragment())
-//                fragments.remove(modifyProfileFragment)
-//            }
+//        when(searchPartyFragment.binding.flShowPartyProfile.isVisible) {
+//            true -> searchPartyFragment.disappearFragment()
 //            else -> super.onBackPressed()
 //        }
 //    }

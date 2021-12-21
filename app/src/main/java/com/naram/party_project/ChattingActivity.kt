@@ -30,12 +30,12 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
     private lateinit var chatting: Chatting
     private var chatRoomUID: String? = null
     private lateinit var myUID: String
-    private lateinit var othersUID: String
+    private var othersUID: String? = null
     private lateinit var myName: String
     private lateinit var myPicture: String
     private lateinit var othersName: String
     private lateinit var othersPicture: String
-    private lateinit var chattingRoomName: String
+    private lateinit var chatRoomName: String
 
     private lateinit var chattingAdapter: ChattingAdapter
 
@@ -56,9 +56,9 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
 
     }
 
-    private fun showProgressbar(flag : Boolean) {
+    private fun showProgressbar(flag: Boolean) {
 
-        if(flag) {
+        if (flag) {
             binding.pbShowChattingProgress.visibility = View.VISIBLE
             val rotateAnimation =
                 AnimationUtils.loadAnimation(baseContext, R.anim.animation_progressbar)
@@ -77,37 +77,74 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
         if (intent.hasExtra("othersUID"))
             othersUID = intent.getStringExtra("othersUID")!!
 
-        if (intent.hasExtra("chattingRoomName"))
-            chattingRoomName = intent.getStringExtra("chattingRoomName")!!
+        if (intent.hasExtra("chatRoomName"))
+            chatRoomName = intent.getStringExtra("chatRoomName")!!
 
         if (intent.hasExtra("chatRoomUID"))
             chatRoomUID = intent.getStringExtra("chatRoomUID")!!
 
-        firebaseDatabase.reference.child(myUID).child(FIREBASE_USER)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    myName = snapshot.child(FIREBASE_USER_NAME).value.toString()
-                    myPicture = snapshot.child(FIREBASE_USER_PICTURE).value.toString()
-                }
+        when (chatRoomUID) {
+            null -> {
+                firebaseDatabase.reference.child(myUID).child(FIREBASE_USER)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            myName = snapshot.child(FIREBASE_USER_NAME).value.toString()
+                            myPicture = snapshot.child(FIREBASE_USER_PICTURE).value.toString()
+                        }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(TAG, error.message)
-                }
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e(TAG, error.message)
+                        }
 
-            })
+                    })
 
-        firebaseDatabase.reference.child(othersUID).child(FIREBASE_USER)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    othersName = snapshot.child(FIREBASE_USER_NAME).value.toString()
-                    othersPicture = snapshot.child(FIREBASE_USER_PICTURE).value.toString()
-                }
+                firebaseDatabase.reference.child(othersUID!!).child(FIREBASE_USER)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            othersName = snapshot.child(FIREBASE_USER_NAME).value.toString()
+                            othersPicture = snapshot.child(FIREBASE_USER_PICTURE).value.toString()
+                        }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(TAG, error.message)
-                }
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e(TAG, error.message)
+                        }
 
-            })
+                    })
+            }
+            else -> {
+
+                firebaseDatabase.reference.child(FIREBASE_CHATTING).child(chatRoomUID!!)
+                    .child(FIREBASE_CHATTING_USERS)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            snapshot.children.forEach { ds ->
+                                val userInfo = ds.getValue<Chatting.UserInfo>()
+                                Log.d(TAG, "$userInfo")
+                                when (ds.key) {
+                                    myUID -> {
+                                        userInfo?.let {
+                                            myName = it.name
+                                            myPicture = it.picture
+                                        }
+                                    }
+                                    else -> {
+                                        othersUID = ds.key
+                                        userInfo?.let {
+                                            othersName = it.name
+                                            othersPicture = it.picture
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e(TAG, error.message)
+                        }
+
+                    })
+            }
+        }
 
     }
 
@@ -117,7 +154,7 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
         val ab = supportActionBar!!
         ab.setDisplayShowTitleEnabled(false)
 
-        binding.layoutTop.tvTextToolbar.text = chattingRoomName
+        binding.layoutTop.tvTextToolbar.text = chatRoomName
         binding.layoutTop.tvTextToolbar.textSize = 23F
 
         // 엔터키 이벤트 처리
@@ -186,7 +223,8 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
 
                         chatModel?.let { chat ->
                             if (chat.users.containsKey(myUID)
-                                && chat.users.containsKey(othersUID)) {
+                                && chat.users.containsKey(othersUID)
+                            ) {
                                 chatRoomUID = it.key!!
                                 if (binding.etMessage.text.toString().isNotEmpty())
                                     sendMessageToDB()
@@ -250,7 +288,15 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
                     chattingAdapter.messageList.clear()
                     snapshot.children.forEach { data ->
                         data.getValue<Chatting.Message>()?.let {
-                            chattingAdapter.messageList.add(Message(it.uid, othersName, othersPicture, it.message, it.timestamp))
+                            chattingAdapter.messageList.add(
+                                Message(
+                                    it.uid,
+                                    othersName,
+                                    othersPicture,
+                                    it.message,
+                                    it.timestamp
+                                )
+                            )
                         }
 
                     }

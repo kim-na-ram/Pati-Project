@@ -14,12 +14,8 @@ object ChattingListBindingAdapter {
     fun setItems(recyclerView: RecyclerView, items: ArrayList<ChattingList>) {
 
         if (recyclerView.adapter == null) {
-            val adapter = ChattingListAdapter { chattingList, context ->
-                val intent = Intent(context, ChattingActivity::class.java)
-                intent.putExtra("chatRoomUID", chattingList.chatRoomUID)
-                intent.putExtra("myUID", chattingList.myUID)
+            val adapter = ChattingListAdapter {
 
-//                ChattingListFragment().startActivity(intent)
             }
             adapter.setHasStableIds(true)
             recyclerView.adapter = adapter

@@ -1,5 +1,6 @@
 package com.naram.party_project
 
+import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +35,7 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
     override fun init() {
 
         setViewModel()
-        initViews()
+        setRecyclerView()
 //        getChatRoomUIDList()
 
     }
@@ -58,7 +59,18 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
 
     }
 
-    private fun initViews() {
+    private fun setRecyclerView() {
+        val adapter = ChattingListAdapter { chattingList ->
+            val intent = Intent(activity, ChattingActivity::class.java)
+            intent.putExtra("chatRoomUID", chattingList.chatRoomUID)
+            intent.putExtra("chatRoomName", chattingList.receivedName)
+            intent.putExtra("myUID", chattingList.myUID)
+
+            startActivity(intent)
+        }
+
+        adapter.setHasStableIds(true)
+        binding.rvChattingList.adapter = adapter
     }
 
     private fun getChatRoomUIDList() {
@@ -73,8 +85,9 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
                     snapshot.children.forEach {
                         val ds = it.child(FIREBASE_CHATTING_USERS)
                         ds.children.forEach { dds ->
-                            if(dds.key != myUID && ds.hasChild(myUID))
-                                chatRoomList[it.key.toString()] = dds.getValue<Chatting.UserInfo>()!!
+                            if (dds.key != myUID && ds.hasChild(myUID))
+                                chatRoomList[it.key.toString()] =
+                                    dds.getValue<Chatting.UserInfo>()!!
                         }
                     }
                     getChattingList()
@@ -108,7 +121,7 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
                                         it.message,
                                         it.timestamp.toString()
                                     )
-                                    if(!chattingList.contains(cl)) {
+                                    if (!chattingList.contains(cl)) {
                                         Log.d(TAG, "${userInfo.name} : ${it.message}")
                                         chattingList.add(cl)
                                     }

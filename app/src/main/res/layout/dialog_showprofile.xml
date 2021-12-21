@@ -1,308 +1,332 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/clShowProfile"
-    android:background="@color/color_opacity90_gray"
-    android:padding="10dp">
+<layout>
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/iv_party_userPicture"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:civ_border_color="@color/color_activated_blue"
-        app:civ_border_width="2dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_party_userName"
-        android:layout_width="wrap_content"
+        <variable
+            name="dialog"
+            type="com.naram.party_project.dialog.ShowProfileDialog" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/clShowProfile"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:fontFamily="@font/nanumsquareextrabold"
-        android:textColor="@color/color_activated_blue"
-        android:textSize="29sp"
-        app:layout_constraintStart_toEndOf="@id/iv_party_userPicture"
-        app:layout_constraintTop_toTopOf="@id/iv_party_userPicture"
-        tools:text="한우" />
+        android:background="@color/color_opacity90_gray"
+        android:padding="10dp">
 
-    <TextView
-        android:id="@+id/tv_party_leftQuote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="5dp"
-        android:text="&quot;"
-        android:textColor="@color/color_inactivated_blue"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/tv_party_userPR"
-        app:layout_constraintEnd_toStartOf="@id/tv_party_userPR"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@id/tv_party_userName"
-        app:layout_constraintTop_toTopOf="@id/tv_party_userPR"
-        tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:background="@drawable/button_rounded_basic"
+            android:src="@drawable/ic_close"
+            android:onClick="@{(v) -> dialog.onClick(v)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_party_userPR"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="2dp"
-        android:layout_marginVertical="5dp"
-        android:ellipsize="end"
-        android:fontFamily="@font/nanumsquarebold"
-        android:maxLines="1"
-        android:textColor="@color/color_inactivated_blue"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/fl_party_showTendency"
-        app:layout_constraintEnd_toStartOf="@id/tv_party_rightQuote"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@id/tv_party_leftQuote"
-        app:layout_constraintTop_toBottomOf="@id/tv_party_userName"
-        tools:text="그 무엇보다 사이퍼즈를 원해."
-        tools:visibility="visible" />
-
-    <TextView
-        android:id="@+id/tv_party_rightQuote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="5dp"
-        android:text="&quot;"
-        android:textColor="@color/color_inactivated_blue"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/tv_party_userPR"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@id/tv_party_userPR"
-        app:layout_constraintTop_toTopOf="@id/tv_party_userPR"
-        tools:visibility="visible" />
-
-    <com.nex3z.flowlayout.FlowLayout
-        android:id="@+id/fl_party_showTendency"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@id/iv_party_userPicture"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/iv_party_userPicture"
-        app:layout_constraintTop_toBottomOf="@id/tv_party_userPR">
-
-    </com.nex3z.flowlayout.FlowLayout>
-
-    <com.nex3z.flowlayout.FlowLayout
-        android:id="@+id/fl_party_showGameNames"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_party_userPicture">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_party_userPicture"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:civ_border_color="@color/color_activated_blue"
+            app:civ_border_width="2dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game0"
+            android:id="@+id/tv_party_userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="3dp"
-            android:paddingVertical="1dp"
-            android:text="LOL"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="3dp"
-            android:paddingVertical="1dp"
-            android:text="오버워치"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="3dp"
-            android:paddingVertical="1dp"
-            android:text="배틀 그라운드"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="3dp"
-            android:paddingVertical="1dp"
-            android:text="서든어택"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="3dp"
-            android:paddingVertical="1dp"
-            android:text="피파 온라인4"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="3dp"
-            android:paddingVertical="1dp"
-            android:text="로스트아크"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="3dp"
-            android:paddingVertical="1dp"
-            android:text="메이플 스토리"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="3dp"
-            android:paddingVertical="1dp"
-            android:text="사이퍼즈"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="3dp"
-            android:paddingVertical="1dp"
-            android:text="스타크래프트"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_party_game9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/textview_rounded_activated"
-            android:fontFamily="@font/nanumsquarebold"
-            android:paddingHorizontal="3dp"
-            android:paddingVertical="1dp"
-            android:text="던전 앤 파이터"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-    </com.nex3z.flowlayout.FlowLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_buttonLayout"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/button_height"
-        android:background="@drawable/layout_rounded_background_white"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fl_party_showGameNames">
-
-        <!--        <androidx.appcompat.widget.AppCompatButton-->
-        <!--            android:id="@+id/btn_sendMessage"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="@dimen/button_height"-->
-        <!--            android:layout_weight="1"-->
-        <!--            android:background="@null"-->
-        <!--            android:fontFamily="@font/nanumsquareextrabold"-->
-        <!--            android:text="메세지 보내기"-->
-        <!--            android:textColor="@color/color_activated_blue"-->
-        <!--            android:textSize="@dimen/button_text_size" />-->
-
-        <!--        <View-->
-        <!--            android:layout_width="2dp"-->
-        <!--            android:layout_height="@dimen/button_text_size"-->
-        <!--            android:layout_gravity="center"-->
-        <!--            android:background="@color/color_activated_blue" />-->
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_requestParty"
-            android:layout_width="@dimen/button_width"
-            android:layout_height="@dimen/button_height"
-            android:layout_weight="1"
-            android:background="@null"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="3dp"
             android:fontFamily="@font/nanumsquareextrabold"
-            android:text="파티 요청"
             android:textColor="@color/color_activated_blue"
-            android:textSize="@dimen/button_text_size" />
+            android:textSize="23sp"
+            app:layout_constraintStart_toEndOf="@id/iv_party_userPicture"
+            app:layout_constraintTop_toTopOf="@id/iv_party_userPicture"
+            tools:text="한우" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_party_leftQuote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:text="&quot;"
+            android:textColor="@color/color_inactivated_blue"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tv_party_userPR"
+            app:layout_constraintEnd_toStartOf="@id/tv_party_userPR"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/tv_party_userName"
+            app:layout_constraintTop_toTopOf="@id/tv_party_userPR"
+            tools:visibility="visible" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_party_userPR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="2dp"
+            android:layout_marginVertical="5dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/nanumsquarebold"
+            android:maxLines="1"
+            android:textColor="@color/color_inactivated_blue"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/fl_party_showTendency"
+            app:layout_constraintEnd_toStartOf="@id/tv_party_rightQuote"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/tv_party_leftQuote"
+            app:layout_constraintTop_toBottomOf="@id/tv_party_userName"
+            tools:text="그 무엇보다 사이퍼즈를 원해."
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_party_rightQuote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:text="&quot;"
+            android:textColor="@color/color_inactivated_blue"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tv_party_userPR"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/tv_party_userPR"
+            app:layout_constraintTop_toTopOf="@id/tv_party_userPR"
+            tools:visibility="visible" />
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:id="@+id/fl_party_showTendency"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/iv_party_userPicture"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_party_userPicture"
+            app:layout_constraintTop_toBottomOf="@id/tv_party_userPR">
+
+        </com.nex3z.flowlayout.FlowLayout>
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:id="@+id/fl_party_showGameNames"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_party_userPicture">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_party_game0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/textview_rounded_activated"
+                android:fontFamily="@font/nanumsquarebold"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="1dp"
+                android:text="LOL"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_party_game1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/textview_rounded_activated"
+                android:fontFamily="@font/nanumsquarebold"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="1dp"
+                android:text="오버워치"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_party_game2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/textview_rounded_activated"
+                android:fontFamily="@font/nanumsquarebold"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="1dp"
+                android:text="배틀 그라운드"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_party_game3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/textview_rounded_activated"
+                android:fontFamily="@font/nanumsquarebold"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="1dp"
+                android:text="서든어택"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_party_game4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/textview_rounded_activated"
+                android:fontFamily="@font/nanumsquarebold"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="1dp"
+                android:text="피파 온라인4"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_party_game5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/textview_rounded_activated"
+                android:fontFamily="@font/nanumsquarebold"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="1dp"
+                android:text="로스트아크"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_party_game6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/textview_rounded_activated"
+                android:fontFamily="@font/nanumsquarebold"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="1dp"
+                android:text="메이플 스토리"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_party_game7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/textview_rounded_activated"
+                android:fontFamily="@font/nanumsquarebold"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="1dp"
+                android:text="사이퍼즈"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_party_game8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/textview_rounded_activated"
+                android:fontFamily="@font/nanumsquarebold"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="1dp"
+                android:text="스타크래프트"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_party_game9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/textview_rounded_activated"
+                android:fontFamily="@font/nanumsquarebold"
+                android:paddingHorizontal="3dp"
+                android:paddingVertical="1dp"
+                android:text="던전 앤 파이터"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </com.nex3z.flowlayout.FlowLayout>
+
+        <LinearLayout
+            android:id="@+id/llButtonLayout"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/layout_rounded_background_white"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fl_party_showGameNames">
+
+            <!--        <androidx.appcompat.widget.AppCompatButton-->
+            <!--            android:id="@+id/btn_sendMessage"-->
+            <!--            android:layout_width="0dp"-->
+            <!--            android:layout_height="@dimen/button_height"-->
+            <!--            android:layout_weight="1"-->
+            <!--            android:background="@null"-->
+            <!--            android:fontFamily="@font/nanumsquareextrabold"-->
+            <!--            android:text="메세지 보내기"-->
+            <!--            android:textColor="@color/color_activated_blue"-->
+            <!--            android:textSize="@dimen/button_text_size" />-->
+
+            <!--        <View-->
+            <!--            android:layout_width="2dp"-->
+            <!--            android:layout_height="@dimen/button_text_size"-->
+            <!--            android:layout_gravity="center"-->
+            <!--            android:background="@color/color_activated_blue" />-->
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnRequestParty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:fontFamily="@font/nanumsquareextrabold"
+                android:text="파티 요청"
+                android:onClick="@{(v) -> dialog.onClick(v)}"
+                android:textColor="@color/color_activated_blue"
+                android:textSize="@dimen/button_text_size" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

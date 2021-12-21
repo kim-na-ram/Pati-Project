@@ -1,6 +1,7 @@
 package com.naram.party_project.callback
 
 data class UserFirebase(
+    val uid : String,
     val email : String,
     val user_name : String,
     val gender : String,

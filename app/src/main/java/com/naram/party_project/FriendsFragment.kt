@@ -464,8 +464,8 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 //
 //    }
 
-    private fun addFriend(email: String, friend_email: String) {
-
+//    private fun addFriend(email: String, friend_email: String) {
+//
 //        request_list.forEachIndexed { index, friend ->
 //            if (friend.email == friend_email) {
 //                friend_list.add(friend)
@@ -496,11 +496,11 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 //                }
 //            }
 //        })
+//
+//    }
 
-    }
-
-    private fun removeRequestedParty(receive_email: String, request_email: String) {
-
+//    private fun removeRequestedParty(receive_email: String, request_email: String) {
+//
 //        if (request_list.size > 1) {
 //            var idx = 0
 //            request_list.forEachIndexed { index, it ->
@@ -536,11 +536,11 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 //                }
 //            }
 //        })
+//
+//    }
 
-    }
-
-    private fun removeFriend(email: String, friend_email: String) {
-
+//    private fun removeFriend(email: String, friend_email: String) {
+//
 //        val retrofit = RetrofitClient.getInstance()
 //
 //        val server = retrofit.create(UserAPI::class.java)
@@ -579,14 +579,14 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 //                }
 //            }
 //        })
+//
+//    }
 
-    }
-
-    private fun sendMessage(myUID: String, othersUID: String, chattingRoomName: String) {
+    private fun sendMessage(myUID: String, othersUID: String, chatRoomName: String) {
         val intent = Intent(activity, ChattingActivity::class.java)
         intent.putExtra("myUID", myUID)
         intent.putExtra("othersUID", othersUID)
-        intent.putExtra("chattingRoomName", chattingRoomName)
+        intent.putExtra("chatRoomName", chatRoomName)
 
         startActivity(intent)
     }
