@@ -43,7 +43,7 @@
             android:id="@+id/et_signinUserEmail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/nanumbarungothicbold"
+            android:fontFamily="@font/nanumbarungothic"
             android:hint="이메일"
             android:background="@android:color/transparent"
             android:inputType="textWebEmailAddress"
@@ -73,13 +73,13 @@
             android:src="@drawable/ic_signin_lock_120"
             android:padding="10dp"/>
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <EditText
             android:id="@+id/et_signinUserPW"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/nanumbarungothicbold"
+            android:fontFamily="@font/nanumbarungothic"
             android:hint="비밀번호"
-            android:background="@android:color/transparent"
+            android:background="@null"
             android:inputType="textPassword"
             android:paddingHorizontal="8dp"
             android:textColor="@color/color_activated_blue"

@@ -3,6 +3,8 @@ package com.naram.party_project
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -18,6 +20,7 @@ import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING
 import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING_MESSAGE
 import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING_USERS
 import com.naram.party_project.viewmodel.ChattingListViewModel
+import kotlinx.coroutines.runBlocking
 
 class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
     R.layout.fragment_chattinglist
@@ -36,18 +39,13 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
 
         setViewModel()
         setRecyclerView()
-//        getChatRoomUIDList()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        chattingListViewModel.currentList.value.let {
-            chatRoomList.clear()
-            chattingList.clear()
-            getChatRoomUIDList()
-        }
+        getChatRoomUIDList()
+//        chattingListViewModel.currentList.value.let {
+//            Log.d(TAG, "chattingListViewModel is Changed")
+//            chatRoomList.clear()
+//            chattingList.clear()
+//            getChatRoomUIDList()
+//        }
 
     }
 
@@ -70,6 +68,8 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
         }
 
         adapter.setHasStableIds(true)
+//        val customDecoration = DividerItemDecoration(context, VERTICAL)
+//        binding.rvChattingList.addItemDecoration(customDecoration)
         binding.rvChattingList.adapter = adapter
     }
 
@@ -112,7 +112,7 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
                                 && index == snapshot.childrenCount.toInt() - 1
                             ) {
                                 dataSnapshot.getValue<Chatting.Message>()?.let {
-                                    val cl = ChattingList(
+                                    val newChattingList = ChattingList(
                                         chatRoomUID,
                                         FirebaseAuth.getInstance().uid!!,
                                         othersUID = null,
@@ -121,9 +121,30 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
                                         it.message,
                                         it.timestamp.toString()
                                     )
-                                    if (!chattingList.contains(cl)) {
-                                        Log.d(TAG, "${userInfo.name} : ${it.message}")
-                                        chattingList.add(cl)
+                                    if (!chattingList.contains(newChattingList)) {
+                                        var flag = false
+                                        chattingList.forEachIndexed { index, oldChattingList ->
+                                            if ((oldChattingList.chatRoomUID == newChattingList.chatRoomUID)
+                                                && oldChattingList.lastMessage != newChattingList.lastMessage
+                                            ) {
+                                                Log.e(TAG, "changed : $newChattingList")
+                                                flag = true
+                                                chattingList[index] = newChattingList
+                                            }
+                                        }
+                                        if(!flag) {
+                                            Log.e(TAG, "new : $newChattingList")
+                                            chattingList.add(newChattingList)
+                                        }
+                                    } else {
+                                        chattingList.forEachIndexed { index, oldChattingList ->
+                                            if ((oldChattingList.chatRoomUID == newChattingList.chatRoomUID)
+                                                && oldChattingList.lastMessage != newChattingList.lastMessage
+                                            ) {
+                                                Log.e(TAG, "changed : $newChattingList")
+                                                chattingList[index] = newChattingList
+                                            }
+                                        }
                                     }
                                 }
                             }

@@ -168,7 +168,8 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 
         if (requestUidList.size > 0) {
 
-            binding.tvInformParty.visibility = View.GONE
+            if (binding != null)
+                binding.tvInformParty.visibility = View.GONE
 
             requestUidList.forEach {
                 mDatabaseReference.child(it).child(FIREBASE_USER).get()
@@ -269,7 +270,8 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 
         if (friendUidList.size > 0) {
 
-            binding.tvInformFriend.visibility = View.GONE
+            if (binding != null)
+                binding.tvInformFriend.visibility = View.GONE
 
             friendUidList.forEach {
                 mDatabaseReference.child(it).child(FIREBASE_USER).get()
@@ -326,7 +328,8 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
         mDatabaseReference.child(FIREBASE_FRIEND).child(partyFirebase.uid).child(uid!!)
             .setValue(FIREBASE_FRIEND_YES)
 
-        binding.tvInformFriend.visibility = View.GONE
+        if (binding != null)
+            binding.tvInformFriend.visibility = View.GONE
 
     }
 

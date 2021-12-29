@@ -103,9 +103,9 @@ class MyProfileFragment : BaseFragment<FragmentMyprofileBinding>() {
             binding.tvGameNamesDungeonandFighter
         )
 
-        binding.btnModifyUserInfo.setOnClickListener {
-            startActivity(Intent(requireContext(), ModifyProfileActivity::class.java))
-        }
+//        binding.btnModifyUserInfo.setOnClickListener {
+//            startActivity(Intent(requireContext(), ModifyProfileActivity::class.java))
+//        }
     }
 
     private fun getRoom() {

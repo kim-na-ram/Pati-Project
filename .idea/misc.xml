@@ -68,7 +68,7 @@
         <entry key="app/src/main/res/drawable/selector_tendency_radio.xml" value="0.209" />
         <entry key="app/src/main/res/drawable/selector_tendency_radio_text.xml" value="0.209" />
         <entry key="app/src/main/res/font/font.xml" value="0.36041666666666666" />
-        <entry key="app/src/main/res/layout/activity_chatting.xml" value="0.3302083333333333" />
+        <entry key="app/src/main/res/layout/activity_chatting.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_findaccount.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1703125" />
         <entry key="app/src/main/res/layout/activity_modify_profile.xml" value="0.33" />
@@ -81,7 +81,7 @@
         <entry key="app/src/main/res/layout/fragment_modifyprofile.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_myprofile.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_searchparty.xml" value="0.21614583333333334" />
-        <entry key="app/src/main/res/layout/fragment_setting.xml" value="0.31979166666666664" />
+        <entry key="app/src/main/res/layout/fragment_setting.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_show_profile_dialog.xml" value="0.12604166666666666" />
         <entry key="app/src/main/res/layout/fragment_showprofile.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_chat.xml" value="0.33" />

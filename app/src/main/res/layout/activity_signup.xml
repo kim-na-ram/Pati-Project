@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
-            android:fontFamily="@font/nanumbarungothicbold"
+            android:fontFamily="@font/nanumbarungothic"
             android:inputType="textPersonName"
             android:paddingHorizontal="8dp"
             android:textColor="@color/color_activated_blue"
@@ -157,7 +157,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
-            android:fontFamily="@font/nanumbarungothicbold"
+            android:fontFamily="@font/nanumbarungothic"
             android:inputType="textWebEmailAddress"
             android:paddingHorizontal="8dp"
             android:textColor="@color/color_activated_blue"
@@ -202,6 +202,7 @@
             android:background="@android:color/transparent"
             android:inputType="textPassword"
             android:paddingHorizontal="8dp"
+            android:fontFamily="@font/nanumbarungothic"
             android:textColor="@color/color_activated_blue"
             android:textSize="@dimen/edittext_userinfo_text_size" />
 

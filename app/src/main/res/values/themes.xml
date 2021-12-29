@@ -14,7 +14,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
 
-        <item name="fontFamily">@font/nanumsquarebold</item>
+<!--        <item name="fontFamily">@font/nanumsquarebold</item>-->
     </style>
 
     <style name="Theme.PartyProject.NoActionBar">

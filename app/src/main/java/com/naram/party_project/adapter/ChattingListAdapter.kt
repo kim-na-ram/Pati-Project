@@ -29,7 +29,6 @@ class ChattingListAdapter(
     private val differ = AsyncListDiffer(this, mChattingListDiffCallback)
 
         inner class ViewHolder(val binding: ItemChattingListBinding, itemClick: (ChattingList) -> Unit) :
-//    inner class ViewHolder(val binding: ItemChattingListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ChattingList) {
 
@@ -47,23 +46,6 @@ class ChattingListAdapter(
             itemView.setOnClickListener {
                 itemClick(item)
             }
-
-//            itemView.setOnClickListener {
-//                val intent =
-//                    Intent(MainActivity().applicationContext, ChattingActivity::class.java)
-//                intent.putExtra("chatRoomUID", item.chatRoomUID)
-//                intent.putExtra("myUID", item.myUID)
-//
-//                ChattingListFragment().startActivity(intent)
-//            }
-
-//            itemView.setOnLongClickListener {
-//                val mFirebaseDatabase = FirebaseDatabase.getInstance().reference
-//
-//                mFirebaseDatabase.child(FIREBASE_CHATTING).child(chatRoomUID)
-//                            .removeValue()
-//
-//            }
 
         }
 
@@ -121,7 +103,6 @@ class ChattingListAdapter(
         val binding =
             ItemChattingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding, itemClick)
-//        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -136,14 +117,8 @@ class ChattingListAdapter(
         return position.toLong()
     }
 
-    fun notifyList(list: MutableList<ChattingList>) {
-        chattingList.clear()
-        chattingList.addAll(list)
-        notifyDataSetChanged()
-    }
-
     fun submitList() {
-        Log.d("adapter", "submitList")
+        Log.d("Adapter", "submitList")
         differ.submitList(chattingList)
     }
 

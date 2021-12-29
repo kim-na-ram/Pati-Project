@@ -1,10 +1,8 @@
 package com.naram.party_project.adapter
 
-import android.content.Intent
+import android.util.Log
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.naram.party_project.ChattingActivity
-import com.naram.party_project.ChattingListFragment
 import com.naram.party_project.chattingModel.ChattingList
 
 object ChattingListBindingAdapter {
@@ -24,7 +22,9 @@ object ChattingListBindingAdapter {
         val chattingListAdapter = recyclerView.adapter as ChattingListAdapter
 
         chattingListAdapter.chattingList = items
+        Log.e("BindingAdapter", "$items")
         chattingListAdapter.submitList()
+        chattingListAdapter.notifyDataSetChanged()
     }
 
 }

@@ -108,7 +108,7 @@ class SignupActivity : AppCompatActivity() {
                         .addOnCompleteListener(this) { _ ->
                             if(bitmap == null) saveUserInfoToDB()
                             else {
-                                saveUserInfoToDB()
+
                                 uploadImageToCloud(bitmap!!)
                             }
                             Toast.makeText(this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
@@ -323,8 +323,7 @@ class SignupActivity : AppCompatActivity() {
                 _userPassword,
                 _userNickName,
                 _userGender,
-                _userPicture,
-                _userBitPicture
+                _userPicture
             )
         }
 
@@ -337,7 +336,7 @@ class SignupActivity : AppCompatActivity() {
 
     }
 
-    private fun insertFirebase(uid : String, email : String, password : String, name : String, gender : String, picture: String?, bitPicture: String?) {
+    private fun insertFirebase(uid : String, email : String, password : String, name : String, gender : String, picture: String?) {
         ref = FirebaseDatabase.getInstance().reference
         val mDatabaseReference = ref.database.getReference("$uid")
 
@@ -373,7 +372,7 @@ class SignupActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Default).launch {
             val email: String? = params[0]
             val password: String? = params[1]
-            val user_name: String? = params[2]
+            val name: String? = params[2]
             val gender: String? = params[3]
             val picture: String? = params[4]
 
@@ -381,7 +380,7 @@ class SignupActivity : AppCompatActivity() {
             val retrofit = RetrofitClient.getInstance()
 
             val server = retrofit.create(UserAPI::class.java)
-            val call : Call<String> = server.putUser(email!!, password!!, user_name!!, gender!!, picture)
+            val call : Call<String> = server.putUser(email!!, password!!, name!!, gender!!, picture)
             call.enqueue(object : Callback<String> {
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     Log.d(TAG,"실패 : "+t.localizedMessage)

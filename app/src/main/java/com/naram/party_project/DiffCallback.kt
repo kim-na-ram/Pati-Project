@@ -48,7 +48,8 @@ val mFriendDiffCallback = object : DiffUtil.ItemCallback<Friend>() {
 
 val mChattingListDiffCallback = object : DiffUtil.ItemCallback<ChattingList>() {
     override fun areItemsTheSame(oldItem: ChattingList, newItem: ChattingList): Boolean {
-        return (oldItem.lastMessage == newItem.lastMessage)
+        return (oldItem.chatRoomUID == newItem.chatRoomUID
+                && oldItem.lastMessage == newItem.lastMessage)
     }
 
     override fun areContentsTheSame(oldItem: ChattingList, newItem: ChattingList): Boolean {
