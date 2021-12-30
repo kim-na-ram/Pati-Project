@@ -135,7 +135,7 @@
                 android:paddingHorizontal="3dp"
                 android:paddingVertical="1dp"
                 android:text="LOL"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -151,7 +151,7 @@
                 android:paddingHorizontal="3dp"
                 android:paddingVertical="1dp"
                 android:text="오버워치"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -167,7 +167,7 @@
                 android:paddingHorizontal="3dp"
                 android:paddingVertical="1dp"
                 android:text="배틀 그라운드"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -183,7 +183,7 @@
                 android:paddingHorizontal="3dp"
                 android:paddingVertical="1dp"
                 android:text="서든어택"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -199,7 +199,7 @@
                 android:paddingHorizontal="3dp"
                 android:paddingVertical="1dp"
                 android:text="피파 온라인4"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -215,7 +215,7 @@
                 android:paddingHorizontal="3dp"
                 android:paddingVertical="1dp"
                 android:text="로스트아크"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -231,7 +231,7 @@
                 android:paddingHorizontal="3dp"
                 android:paddingVertical="1dp"
                 android:text="메이플 스토리"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -247,7 +247,7 @@
                 android:paddingHorizontal="3dp"
                 android:paddingVertical="1dp"
                 android:text="사이퍼즈"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -263,7 +263,7 @@
                 android:paddingHorizontal="3dp"
                 android:paddingVertical="1dp"
                 android:text="스타크래프트"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -279,7 +279,7 @@
                 android:paddingHorizontal="3dp"
                 android:paddingVertical="1dp"
                 android:text="던전 앤 파이터"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="16sp"
                 android:visibility="gone"
                 tools:visibility="visible" />

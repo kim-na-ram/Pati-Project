@@ -25,7 +25,7 @@
         android:background="@color/color_activated_blue"
         android:fontFamily="@font/nanumsquarebold"
         android:text="등록하기"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@id/iv_signupUserPic"
         app:layout_constraintEnd_toEndOf="@id/iv_signupUserPic"
@@ -38,7 +38,7 @@
         android:layout_marginTop="15dp"
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="유저 닉네임"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/ll_signupUserNameContainer"
         app:layout_constraintStart_toStartOf="@id/ll_signupUserEmailContainer"
@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="성별"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/radio_userGender"
         app:layout_constraintTop_toTopOf="@id/tv_userName" />
@@ -105,7 +105,7 @@
             android:fontFamily="@font/nanumsquarebold"
             android:paddingStart="3dp"
             android:text="여성"
-            android:textColor="@color/white"
+            android:textColor="@color/color_white"
             android:textSize="16sp" />
 
         <androidx.appcompat.widget.AppCompatRadioButton
@@ -116,7 +116,7 @@
             android:fontFamily="@font/nanumsquarebold"
             android:paddingStart="3dp"
             android:text="남성"
-            android:textColor="@color/white"
+            android:textColor="@color/color_white"
             android:textSize="16sp" />
 
     </RadioGroup>
@@ -127,7 +127,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="이메일"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/ll_signupUserEmailContainer"
         app:layout_constraintStart_toStartOf="@id/ll_signupUserEmailContainer"
@@ -171,7 +171,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="비밀번호"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/ll_signupUserPWContainer"
         app:layout_constraintStart_toStartOf="@id/ll_signupUserPWContainer"

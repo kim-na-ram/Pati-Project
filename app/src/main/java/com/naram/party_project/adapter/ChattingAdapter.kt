@@ -45,7 +45,7 @@ class ChattingAdapter(
         fun bind(item: Message)
         {
 
-            if(item.uid.equals(myUID))
+            if(item.uid == myUID)
             {
                 binding.clSendContainer.visibility = View.VISIBLE
                 binding.tvSendTime.text = getDateTime(item.timestamp)

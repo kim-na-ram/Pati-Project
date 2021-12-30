@@ -15,9 +15,11 @@ import com.naram.party_project.chattingModel.Chatting
 import com.naram.party_project.chattingModel.Message
 import com.naram.party_project.databinding.ActivityChattingBinding
 import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING
+import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING_ISREAD
 import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING_MESSAGE
 import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING_USERS
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER
+import com.naram.party_project.util.Const.Companion.FIREBASE_USERS
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_NAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_PICTURE
 
@@ -32,9 +34,9 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
     private lateinit var myUID: String
     private var othersUID: String? = null
     private lateinit var myName: String
-    private lateinit var myPicture: String
+    private var myPicture: String? = null
     private lateinit var othersName: String
-    private lateinit var othersPicture: String
+    private var othersPicture: String? = null
     private lateinit var chatRoomName: String
 
     private lateinit var chattingAdapter: ChattingAdapter
@@ -53,6 +55,16 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
             checkChattingRoom()
             showProgressbar(false)
         }, 2000)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        Log.d(TAG, "onDestroy")
+
+        firebaseDatabase.reference.child(FIREBASE_CHATTING).child(chatRoomUID!!)
+            .child(FIREBASE_CHATTING_USERS).child(myUID).child(FIREBASE_CHATTING_ISREAD).setValue(true)
 
     }
 
@@ -85,11 +97,14 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
 
         when (chatRoomUID) {
             null -> {
-                firebaseDatabase.reference.child(myUID).child(FIREBASE_USER)
+                firebaseDatabase.reference.child(FIREBASE_USERS).child(myUID).child(FIREBASE_USER)
                     .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             myName = snapshot.child(FIREBASE_USER_NAME).value.toString()
-                            myPicture = snapshot.child(FIREBASE_USER_PICTURE).value.toString()
+                            myPicture =
+                                if (snapshot.child(FIREBASE_USER_PICTURE).exists()) snapshot.child(
+                                    FIREBASE_USER_PICTURE
+                                ).value.toString() else null
                         }
 
                         override fun onCancelled(error: DatabaseError) {
@@ -98,11 +113,14 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
 
                     })
 
-                firebaseDatabase.reference.child(othersUID!!).child(FIREBASE_USER)
+                firebaseDatabase.reference.child(FIREBASE_USERS).child(othersUID!!)
+                    .child(FIREBASE_USER)
                     .addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             othersName = snapshot.child(FIREBASE_USER_NAME).value.toString()
-                            othersPicture = snapshot.child(FIREBASE_USER_PICTURE).value.toString()
+                            othersPicture = if (snapshot.child(FIREBASE_USER_PICTURE).exists()) snapshot.child(
+                                FIREBASE_USER_PICTURE
+                            ).value.toString() else null
                         }
 
                         override fun onCancelled(error: DatabaseError) {
@@ -270,10 +288,11 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
         message.timestamp = System.currentTimeMillis()
 
         firebaseDatabase.reference.child(FIREBASE_CHATTING).child(chatRoomUID!!)
+            .child(FIREBASE_CHATTING_USERS).child(othersUID!!).child(FIREBASE_CHATTING_ISREAD)
+            .setValue(false)
+
+        firebaseDatabase.reference.child(FIREBASE_CHATTING).child(chatRoomUID!!)
             .child(FIREBASE_CHATTING_MESSAGE).push().setValue(message).addOnSuccessListener {
-//                chattingAdapter.updateItem(message)
-//                messageList.add(message)
-//                chattingAdapter.submitList(messageList)
                 binding.etMessage.setText("")
             }.addOnFailureListener {
                 it.printStackTrace()
@@ -281,12 +300,17 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
     }
 
     private fun getMessageList() {
+
+        firebaseDatabase.reference.child(FIREBASE_CHATTING).child(chatRoomUID!!)
+            .child(FIREBASE_CHATTING_USERS).child(myUID).child(FIREBASE_CHATTING_ISREAD).setValue(true)
+
         firebaseDatabase.reference.child(FIREBASE_CHATTING).child(chatRoomUID!!)
             .child(FIREBASE_CHATTING_MESSAGE).orderByChild("timestamp")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     chattingAdapter.messageList.clear()
                     snapshot.children.forEach { data ->
+
                         data.getValue<Chatting.Message>()?.let {
                             chattingAdapter.messageList.add(
                                 Message(

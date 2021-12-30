@@ -20,10 +20,7 @@ interface UserDAO {
     @Query("DELETE FROM user")
     fun deleteAll()
 
-    @Query("UPDATE user SET picture_uri=:picture where email like :email")
-    fun updatePicture(email : String, picture : String)
-
-    @Query("UPDATE user SET picture=:picture, picture_uri=:picture_uri, user_name=:user_name, game_name=:game_name, self_pr=:self_pr where email like :email")
-    fun updateUserInfo(email : String, picture: String?, picture_uri: String?, user_name : String, game_name : String?, self_pr : String?)
+    @Query("UPDATE user SET picture=:picture, user_name=:user_name, game_name=:game_name, self_pr=:self_pr where email like :email")
+    fun updateUserInfo(email : String, picture: String?, user_name : String, game_name : String?, self_pr : String?)
 
 }

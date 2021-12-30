@@ -210,7 +210,7 @@ class MyProfileFragment : BaseFragment<FragmentMyprofileBinding>() {
     private fun setTextView(list: List<Games>) {
         list.forEach {
             if (it.flag) {
-                it.textView.setTextColor(resources.getColor(R.color.white, null))
+                it.textView.setTextColor(resources.getColor(R.color.color_white, null))
                 it.textView.setBackgroundDrawable(resources.getDrawable(R.drawable.textview_rounded_activated, null))
             } else {
                 it.textView.setTextColor(resources.getColor(R.color.color_inactivated_blue, null))

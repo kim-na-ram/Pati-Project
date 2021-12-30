@@ -155,6 +155,8 @@ class UserListAdapter( // MVVM, LiveData
         fun bind(item: PartyFirebase) {
             binding.user = item
 
+            Log.d("Adapter", "item.picture is ${item.picture}?")
+
             item.picture?.let {
                 uploadImageFromCloud(it)
             }

@@ -25,6 +25,7 @@ import com.naram.party_project.callback.UserFirebase
 import com.naram.party_project.databinding.DialogShowprofileBinding
 import com.naram.party_project.util.Const
 import com.naram.party_project.util.Const.Companion.FIREBASE_PARTY
+import com.naram.party_project.util.Const.Companion.FIREBASE_USERS
 import com.nex3z.flowlayout.FlowLayout
 
 class ShowProfileDialog(
@@ -63,7 +64,7 @@ class ShowProfileDialog(
 
         val mDatabaseReference = FirebaseDatabase.getInstance().reference
 
-        mDatabaseReference.child(othersUID)
+        mDatabaseReference.child(FIREBASE_USERS).child(othersUID)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val mUserDB = snapshot.child(Const.FIREBASE_USER)
@@ -75,9 +76,9 @@ class ShowProfileDialog(
                         mUserDB.child(Const.FIREBASE_USER_EMAIL).value.toString(),
                         othersName,
                         mUserDB.child(Const.FIREBASE_USER_GENDER).value.toString(),
-                        mUserDB.child(Const.FIREBASE_USER_GAME_NAME).value.toString(),
-                        mUserDB.child(Const.FIREBASE_USER_SELF_PR).value.toString(),
-                        mUserDB.child(Const.FIREBASE_USER_PICTURE).value.toString(),
+                        if(mUserDB.child(Const.FIREBASE_USER_GAME_NAME).exists()) mUserDB.child(Const.FIREBASE_USER_GAME_NAME).value.toString() else null,
+                        if(mUserDB.child(Const.FIREBASE_USER_SELF_PR).exists()) mUserDB.child(Const.FIREBASE_USER_SELF_PR).value.toString() else null,
+                        if(mUserDB.child(Const.FIREBASE_USER_PICTURE).exists()) mUserDB.child(Const.FIREBASE_USER_PICTURE).value.toString() else null,
                         mGameDB.child(Const.FIREBASE_GAME_0_LOL).value.toString(),
                         mGameDB.child(Const.FIREBASE_GAME_1_OVER_WATCH).value.toString(),
                         mGameDB.child(Const.FIREBASE_GAME_2_BATTLE_GROUND).value.toString(),
@@ -189,7 +190,7 @@ class ShowProfileDialog(
     private fun makeTextView(text: String, layout: FlowLayout) {
         val gameTextView = TextView(context)
         gameTextView.text = text
-        gameTextView.setTextColor(context.resources.getColor(R.color.white, null))
+        gameTextView.setTextColor(context.resources.getColor(R.color.color_white, null))
         gameTextView.background = context.resources.getDrawable(R.drawable.textview_rounded_activated, null)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             gameTextView.typeface = context.resources.getFont(R.font.nanumsquarebold)

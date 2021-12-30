@@ -49,7 +49,9 @@
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/menu/bnb_menubar.xml" value="0.1" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/xml/network_security_config.xml" value="0.2604166666666667" />
         <entry key="..\:/Users/naram/class/PartyProject/app/src/main/res/xml/preferences.xml" value="0.536" />
+        <entry key="app/src/main/res/drawable/button_rounded_background_red.xml" value="0.274" />
         <entry key="app/src/main/res/drawable/button_rounded_basic.xml" value="0.2205" />
+        <entry key="app/src/main/res/drawable/button_rounded_shimmer.xml" value="0.274" />
         <entry key="app/src/main/res/drawable/button_rounded_special.xml" value="0.2205" />
         <entry key="app/src/main/res/drawable/button_rounded_white.xml" value="0.129" />
         <entry key="app/src/main/res/drawable/edittext_chatting_background_rounded_white.xml" value="0.278" />
@@ -57,16 +59,22 @@
         <entry key="app/src/main/res/drawable/edittext_rounded_background_white.xml" value="0.2335" />
         <entry key="app/src/main/res/drawable/edittext_rounded_background_white_chatting.xml" value="0.278" />
         <entry key="app/src/main/res/drawable/ic_background_oval.xml" value="0.1955" />
+        <entry key="app/src/main/res/drawable/ic_background_rounded_rectangle.xml" value="0.274" />
+        <entry key="app/src/main/res/drawable/ic_close.xml" value="0.274" />
         <entry key="app/src/main/res/drawable/ic_close_background_oval.xml" value="0.1955" />
         <entry key="app/src/main/res/drawable/ic_shape_edittext.xml" value="0.2205" />
         <entry key="app/src/main/res/drawable/ic_thumbnail_background.xml" value="0.178" />
         <entry key="app/src/main/res/drawable/ic_user_email_100.xml" value="0.2205" />
         <entry key="app/src/main/res/drawable/ic_user_email_24.xml" value="0.1955" />
         <entry key="app/src/main/res/drawable/imageview_rounded_background.xml" value="0.2205" />
+        <entry key="app/src/main/res/drawable/layout_rounded_background_activated_blue.xml" value="0.274" />
+        <entry key="app/src/main/res/drawable/layout_rounded_background_gray.xml" value="0.274" />
         <entry key="app/src/main/res/drawable/layout_rounded_background_white.xml" value="0.144" />
         <entry key="app/src/main/res/drawable/radiobutton_selected_custom.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/selector_tendency_radio.xml" value="0.209" />
         <entry key="app/src/main/res/drawable/selector_tendency_radio_text.xml" value="0.209" />
+        <entry key="app/src/main/res/drawable/textview_rounded_activated.xml" value="0.274" />
+        <entry key="app/src/main/res/drawable/textview_rounded_inactivated.xml" value="0.274" />
         <entry key="app/src/main/res/font/font.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_chatting.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_findaccount.xml" value="0.28229166666666666" />
@@ -75,6 +83,7 @@
         <entry key="app/src/main/res/layout/activity_modifyprofile.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_signin.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_signup.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/dialog_showprofile.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_chattinglist.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/fragment_friends.xml" value="0.25" />
@@ -85,7 +94,7 @@
         <entry key="app/src/main/res/layout/fragment_show_profile_dialog.xml" value="0.12604166666666666" />
         <entry key="app/src/main/res/layout/fragment_showprofile.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_chat.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/item_chatting_list.xml" value="0.3302083333333333" />
+        <entry key="app/src/main/res/layout/item_chatting_list.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_friends.xml" value="0.20885416666666667" />
         <entry key="app/src/main/res/layout/item_friends_shimmer.xml" value="0.21614583333333334" />
         <entry key="app/src/main/res/layout/item_my_chat.xml" value="0.33" />

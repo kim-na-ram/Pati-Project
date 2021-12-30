@@ -12,7 +12,9 @@ import android.widget.Toast
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.naram.party_project.base.BaseActivity
 import com.naram.party_project.callback.Profile
+import com.naram.party_project.databinding.ActivityMainBinding
 import com.naram.party_project.util.Const.Companion.FIREBASE_GAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER
@@ -43,6 +45,7 @@ import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PREFERRED_
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PREFERRED_GENDER_WOMEN
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PURPOSE
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_VOICE
+import com.naram.party_project.util.Const.Companion.FIREBASE_USERS
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_EMAIL
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GAME_NAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GENDER
@@ -54,17 +57,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SigninActivity : AppCompatActivity() {
+class SigninActivity : BaseActivity<ActivitySigninBinding>({
+    ActivitySigninBinding.inflate(it)
+}) {
 
     private val TAG = "Sign In"
-
-    private lateinit var db: AppDatabase
 
     private var profile: Profile? = null
 
     private var firebaseAuth: FirebaseAuth? = null
-
-    private lateinit var binding: ActivitySigninBinding
 
     private var tmpEmail : String? = null
     private var tmpName : String? = null
@@ -94,22 +95,9 @@ class SigninActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySigninBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
 
-        createDB()
         initViews()
 
-    }
-
-    private fun createDB() {
-        db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "userDB"
-        )
-            .build()
     }
 
     private fun initViews() {
@@ -171,7 +159,7 @@ class SigninActivity : AppCompatActivity() {
 
     private fun getFirebaseData(uid : String) {
 
-        val mDatabaseReference = FirebaseDatabase.getInstance().reference.child(uid)
+        val mDatabaseReference = FirebaseDatabase.getInstance().reference.child(FIREBASE_USERS).child(uid)
 
         mDatabaseReference.child(FIREBASE_USER).get().addOnSuccessListener { dataSnapshot ->
             dataSnapshot.children.forEach {
@@ -229,7 +217,7 @@ class SigninActivity : AppCompatActivity() {
     }
 
     private fun showResult() {
-        val TendencyMap = mutableMapOf<String, String>().apply {
+        val tendencyMap = mutableMapOf<String, String>().apply {
             this[TAG_TENDENCY_PURPOSE] = tmpPurpose!!
             this[TAG_TENDENCY_VOICE] = tmpVoice!!
             this[TAG_TENDENCY_PREFERRED_GENDER_WOMEN] = tmpWomen!!
@@ -237,9 +225,9 @@ class SigninActivity : AppCompatActivity() {
             this[TAG_TENDENCY_GAME_MODE] = tmpGameMode!!
         }
 
-        val tendency = processingTendency(TendencyMap)
+        val tendency = processingTendency(tendencyMap)
 
-        val IntGameList = listOf(
+        val intGameList = listOf(
             tmpGame0!!.toInt(),
             tmpGame1!!.toInt(),
             tmpGame2!!.toInt(),
@@ -254,7 +242,7 @@ class SigninActivity : AppCompatActivity() {
 
         val games = mutableListOf<Boolean>()
 
-        IntGameList.forEach {
+        intGameList.forEach {
             if(it == 1)
                 games.add(true)
             else games.add(false)
@@ -269,7 +257,7 @@ class SigninActivity : AppCompatActivity() {
             if(tmpSelfPR.isNullOrEmpty()) null else tmpSelfPR,
             tendency,
             games,
-            IntGameList
+            intGameList
         )
 
         saveInfoToRoom()
@@ -378,7 +366,6 @@ class SigninActivity : AppCompatActivity() {
                     User(
                         profile!!.email,
                         profile!!.picture,
-                        null,
                         profile!!.nickName,
                         profile!!.gameName,
                         profile!!.gender,

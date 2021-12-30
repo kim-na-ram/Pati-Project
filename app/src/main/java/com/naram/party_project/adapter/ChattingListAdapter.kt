@@ -36,6 +36,12 @@ class ChattingListAdapter(
 
             Log.e("Adapter", "$item")
 
+            if(!item.isRead) {
+                binding.tvNewMessage.visibility = View.VISIBLE
+            } else {
+                binding.tvNewMessage.visibility = View.GONE
+            }
+
             item.receivedPicture?.let {
                 uploadImageFromCloud(it, itemView, binding)
             }

@@ -1,18 +1,13 @@
 package com.naram.party_project
 
 import android.os.Bundle
-import android.view.View
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.naram.party_project.base.BaseActivity
-import com.naram.party_project.callback.UserFirebase
 import com.naram.party_project.databinding.ActivityMainBinding
 
 class MainActivity : BaseActivity<ActivityMainBinding> ({
     ActivityMainBinding.inflate(it)
 }) {
-
-    private val TAG = "Main"
 
     private val myProfileFragment by lazy {
         MyProfileFragment()

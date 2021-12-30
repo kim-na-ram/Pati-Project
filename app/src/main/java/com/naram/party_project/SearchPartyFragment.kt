@@ -33,6 +33,7 @@ import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_8_STAR_CRAFT
 import com.naram.party_project.util.Const.Companion.FIREBASE_GAME_9_DUNGEON_AND_FIGHTER
 import com.naram.party_project.util.Const.Companion.FIREBASE_TABLE_NAMES
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER
+import com.naram.party_project.util.Const.Companion.FIREBASE_USERS
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_EMAIL
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GAME_NAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GENDER
@@ -207,11 +208,10 @@ class SearchPartyFragment : BaseViewDataFragment<FragmentSearchpartyBinding>(
     }
 
     private fun showUserList(uid : String, gender : String) {
-        mDatabaseReference.addValueEventListener(object : ValueEventListener {
+        mDatabaseReference.child(FIREBASE_USERS).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach {
                     if (!it.key.equals(uid)
-                        && !FIREBASE_TABLE_NAMES.contains(it.key)
                         && !friendList.contains(it.key)
                     ) {
 

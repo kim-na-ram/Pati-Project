@@ -17,6 +17,7 @@ import com.naram.party_project.databinding.FragmentChattinglistBinding
 import com.naram.party_project.chattingModel.Chatting
 import com.naram.party_project.chattingModel.ChattingList
 import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING
+import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING_ISREAD
 import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING_MESSAGE
 import com.naram.party_project.util.Const.Companion.FIREBASE_CHATTING_USERS
 import com.naram.party_project.viewmodel.ChattingListViewModel
@@ -85,9 +86,11 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
                     snapshot.children.forEach {
                         val ds = it.child(FIREBASE_CHATTING_USERS)
                         ds.children.forEach { dds ->
-                            if (dds.key != myUID && ds.hasChild(myUID))
-                                chatRoomList[it.key.toString()] =
-                                    dds.getValue<Chatting.UserInfo>()!!
+                            if (dds.key != myUID && ds.hasChild(myUID)) {
+                                val userInfo = dds.getValue<Chatting.UserInfo>()!!
+                                userInfo.isRead = ds.child(myUID).child(FIREBASE_CHATTING_ISREAD).value.toString().toBoolean()
+                                chatRoomList[it.key.toString()] = userInfo
+                            }
                         }
                     }
                     getChattingList()
@@ -119,15 +122,17 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
                                         userInfo.name,
                                         userInfo.picture,
                                         it.message,
-                                        it.timestamp.toString()
+                                        it.timestamp.toString(),
+                                        userInfo.isRead
                                     )
                                     if (!chattingList.contains(newChattingList)) {
                                         var flag = false
                                         chattingList.forEachIndexed { index, oldChattingList ->
                                             if ((oldChattingList.chatRoomUID == newChattingList.chatRoomUID)
-                                                && oldChattingList.lastMessage != newChattingList.lastMessage
+                                                && (oldChattingList.lastMessage != newChattingList.lastMessage
+                                                        || oldChattingList.isRead != newChattingList.isRead)
                                             ) {
-                                                Log.e(TAG, "changed : $newChattingList")
+                                                Log.e(TAG, "origin changed : $newChattingList")
                                                 flag = true
                                                 chattingList[index] = newChattingList
                                             }
@@ -139,7 +144,8 @@ class ChattingListFragment : BaseViewDataFragment<FragmentChattinglistBinding>(
                                     } else {
                                         chattingList.forEachIndexed { index, oldChattingList ->
                                             if ((oldChattingList.chatRoomUID == newChattingList.chatRoomUID)
-                                                && oldChattingList.lastMessage != newChattingList.lastMessage
+                                                && (oldChattingList.lastMessage != newChattingList.lastMessage
+                                                        || oldChattingList.isRead != newChattingList.isRead)
                                             ) {
                                                 Log.e(TAG, "changed : $newChattingList")
                                                 chattingList[index] = newChattingList

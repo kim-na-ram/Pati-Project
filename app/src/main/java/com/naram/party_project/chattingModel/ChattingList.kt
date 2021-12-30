@@ -7,5 +7,6 @@ data class ChattingList(
     val receivedName: String?,
     val receivedPicture: String?,
     var lastMessage: String,
-    var timeStamp: String
+    var timeStamp: String,
+    var isRead: Boolean
 )

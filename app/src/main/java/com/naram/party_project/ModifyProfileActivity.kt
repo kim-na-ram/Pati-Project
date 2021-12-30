@@ -23,6 +23,7 @@ import com.google.firebase.storage.ktx.storage
 import com.naram.party_project.base.BaseActivity
 import com.naram.party_project.databinding.ActivityModifyprofileBinding
 import com.naram.party_project.util.Const
+import com.naram.party_project.util.Const.Companion.FIREBASE_USERS
 import com.naram.party_project.util.Const.Companion.MODIFY_USER_PROFILE
 import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
@@ -242,7 +243,7 @@ class ModifyProfileActivity : BaseActivity<ActivityModifyprofileBinding> ({
     private fun setTextView(list: List<Games>?) {
         list?.forEach {
             if (it.flag) {
-                it.textView.setTextColor(resources.getColor(R.color.white, null))
+                it.textView.setTextColor(resources.getColor(R.color.color_white, null))
                 it.textView.background =
                     resources.getDrawable(R.drawable.textview_rounded_activated, null)
             } else {
@@ -255,7 +256,7 @@ class ModifyProfileActivity : BaseActivity<ActivityModifyprofileBinding> ({
 
     private fun setTextView(textView: TextView, flag: Boolean) {
         if (flag) {
-            textView.setTextColor(resources.getColor(R.color.white, null))
+            textView.setTextColor(resources.getColor(R.color.color_white, null))
             textView.background = resources.getDrawable(R.drawable.textview_rounded_activated, null)
         } else {
             textView.setTextColor(resources.getColor(R.color.color_inactivated_blue, null))
@@ -505,7 +506,7 @@ class ModifyProfileActivity : BaseActivity<ActivityModifyprofileBinding> ({
         val game_name: String? = params[4]
         val self_pr: String? = params[5]
 
-        val mDatabaseReference = FirebaseDatabase.getInstance().reference.child("$uid")
+        val mDatabaseReference = FirebaseDatabase.getInstance().reference.child(FIREBASE_USERS).child("$uid")
 
         val childUpdates = hashMapOf<String, Any>(
             "${Const.FIREBASE_USER}/name" to "$user_name"
@@ -611,7 +612,6 @@ class ModifyProfileActivity : BaseActivity<ActivityModifyprofileBinding> ({
                     db.userDAO().updateUserInfo(
                         email,
                         picturePath,
-                        null,
                         user_name,
                         game_name,
                         self_pr
@@ -620,7 +620,6 @@ class ModifyProfileActivity : BaseActivity<ActivityModifyprofileBinding> ({
                     db.userDAO().updateUserInfo(
                         email,
                         picturePath,
-                        null,
                         user_name,
                         game_name,
                         self_pr

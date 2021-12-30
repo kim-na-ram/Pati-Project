@@ -20,6 +20,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.naram.party_project.base.BaseActivity
+import com.naram.party_project.databinding.ActivityMainBinding
 import com.naram.party_project.util.Const.Companion.FIREBASE_GAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER
@@ -30,6 +32,7 @@ import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PREFERRED_
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PREFERRED_GENDER_WOMEN
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PURPOSE
 import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_VOICE
+import com.naram.party_project.util.Const.Companion.FIREBASE_USERS
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_EMAIL
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GENDER
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_NAME
@@ -41,18 +44,17 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.*
 
-class SignupActivity : AppCompatActivity() {
+class SignupActivity : BaseActivity<ActivitySignupBinding>({
+    ActivitySignupBinding.inflate(it)
+}) {
 
     companion object {
         private const val REQUEST_GALLERY = 1000
         private const val REQUEST_SUCCESS = 1001
     }
 
-    private val TAG = "SignupActivity"
+    private val TAG = "Sign Up"
 
-    private lateinit var binding: ActivitySignupBinding
-
-    private lateinit var db : AppDatabase
     private lateinit var ref: DatabaseReference
 
     private var _userPicture: String? = null
@@ -66,11 +68,7 @@ class SignupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySignupBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
 
-        createDB()
         initViews()
 
     }
@@ -79,15 +77,6 @@ class SignupActivity : AppCompatActivity() {
         super.onBackPressed()
 
         finish()
-    }
-
-    private fun createDB() {
-        db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "userDB"
-        )
-            .build()
     }
 
     private fun initViews() {
@@ -338,7 +327,7 @@ class SignupActivity : AppCompatActivity() {
 
     private fun insertFirebase(uid : String, email : String, password : String, name : String, gender : String, picture: String?) {
         ref = FirebaseDatabase.getInstance().reference
-        val mDatabaseReference = ref.database.getReference("$uid")
+        val mDatabaseReference = ref.database.getReference("$FIREBASE_USERS/$uid")
 
         mDatabaseReference.child(FIREBASE_USER).child(FIREBASE_USER_EMAIL).setValue(email).addOnCompleteListener {
             Log.d(TAG, "회원가입 성공")
@@ -409,7 +398,6 @@ class SignupActivity : AppCompatActivity() {
                 User(
                     email,
                     picture,
-                    null,
                     user_name,
                     null,
                     gender,

@@ -24,7 +24,7 @@
         android:background="@color/color_activated_blue"
         android:fontFamily="@font/nanumsquarebold"
         android:text="닉네임"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/tv_userNickName"
         app:layout_constraintHorizontal_chainStyle="spread"
@@ -51,7 +51,7 @@
         android:background="@color/color_activated_blue"
         android:fontFamily="@font/nanumsquarebold"
         android:text="게임 닉네임"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/tv_gameUserName"
         app:layout_constraintStart_toStartOf="@id/tv_userName"
@@ -102,7 +102,7 @@
         android:background="@color/color_inactivated_blue"
         android:fontFamily="@font/nanumsquarebold"
         android:padding="5dp"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="18sp"
         android:visibility="gone"
         tools:visibility="visible"
@@ -416,7 +416,7 @@
 <!--        android:background="@drawable/button_rounded_basic"-->
 <!--        android:fontFamily="@font/nanumsquareextrabold"-->
 <!--        android:text="수정"-->
-<!--        android:textColor="@color/white"-->
+<!--        android:textColor="@color/color_white"-->
 <!--        android:textSize="@dimen/button_text_size"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintTop_toBottomOf="@id/fl_showGameNames" />-->

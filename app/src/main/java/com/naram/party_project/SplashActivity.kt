@@ -23,6 +23,11 @@ class SplashActivity : AppCompatActivity() {
             if(!flag) {
                 startActivity(Intent(this, SigninActivity::class.java))
             } else {
+                // when) Database Migration
+//                FirebaseAuth.getInstance().signOut()
+//                startActivity(Intent(this, SigninActivity::class.java))
+
+                // Origin Code
                 startActivity(Intent(this, MainActivity::class.java))
             }
 

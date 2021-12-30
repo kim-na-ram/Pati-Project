@@ -16,5 +16,6 @@ public class Chatting {
     public static class UserInfo {
         public String name;
         public String picture;
+        public boolean isRead;
     }
 }

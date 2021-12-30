@@ -276,7 +276,7 @@ class ShowProfileFragment : BaseFragment<FragmentShowprofileBinding>() {
     private fun makeTextView(text: String, layout: FlowLayout) {
         val gameTextView = TextView(this.requireContext())
         gameTextView.text = text
-        gameTextView.setTextColor(resources.getColor(R.color.white, null))
+        gameTextView.setTextColor(resources.getColor(R.color.color_white, null))
         gameTextView.background = resources.getDrawable(R.drawable.textview_rounded_activated, null)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             gameTextView.typeface = resources.getFont(R.font.nanumsquarebold)

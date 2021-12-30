@@ -51,7 +51,7 @@
                     android:background="@color/color_activated_blue"
                     android:fontFamily="@font/nanumsquarebold"
                     android:text="프로필 사진 변경"
-                    android:textColor="@color/white"
+                    android:textColor="@color/color_white"
                     android:textSize="@dimen/button_text_size"
                     app:layout_constraintBottom_toBottomOf="@id/iv_userPicture"
                     app:layout_constraintEnd_toEndOf="@id/iv_userPicture"
@@ -66,7 +66,7 @@
                     android:background="@color/color_activated_blue"
                     android:fontFamily="@font/nanumsquarebold"
                     android:text="유저 닉네임"
-                    android:textColor="@color/white"
+                    android:textColor="@color/color_white"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@id/et_userNickName"
                     app:layout_constraintHorizontal_chainStyle="spread"
@@ -105,7 +105,7 @@
                     android:background="@color/color_activated_blue"
                     android:fontFamily="@font/nanumsquarebold"
                     android:text="게임 닉네임"
-                    android:textColor="@color/white"
+                    android:textColor="@color/color_white"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@id/et_gameUserName"
                     app:layout_constraintStart_toStartOf="@id/tv_userName"
@@ -647,7 +647,7 @@
                 android:layout_marginVertical="10dp"
                 android:background="@drawable/button_rounded_basic"
                 android:text="저장하기"
-                android:textColor="@color/white"
+                android:textColor="@color/color_white"
                 android:textSize="@dimen/button_text_size" />
 
         </LinearLayout>

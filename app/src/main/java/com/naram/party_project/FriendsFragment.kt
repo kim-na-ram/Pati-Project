@@ -16,6 +16,7 @@ import com.naram.party_project.util.Const.Companion.FIREBASE_FRIEND
 import com.naram.party_project.util.Const.Companion.FIREBASE_FRIEND_YES
 import com.naram.party_project.util.Const.Companion.FIREBASE_PARTY
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER
+import com.naram.party_project.util.Const.Companion.FIREBASE_USERS
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_EMAIL
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_NAME
 import com.naram.party_project.util.Const.Companion.FIREBASE_USER_PICTURE
@@ -168,11 +169,10 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 
         if (requestUidList.size > 0) {
 
-            if (binding != null)
-                binding.tvInformParty.visibility = View.GONE
+            binding?.let { binding.tvInformParty.visibility = View.GONE }
 
             requestUidList.forEach {
-                mDatabaseReference.child(it).child(FIREBASE_USER).get()
+                mDatabaseReference.child(FIREBASE_USERS).child(it).child(FIREBASE_USER).get()
                     .addOnSuccessListener { ds ->
                         requestedPartyListAdapter.requestedPartyList.add(
 //                        requestList.add(
@@ -270,11 +270,10 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 
         if (friendUidList.size > 0) {
 
-            if (binding != null)
-                binding.tvInformFriend.visibility = View.GONE
+            binding?.let { binding.tvInformFriend.visibility = View.GONE }
 
             friendUidList.forEach {
-                mDatabaseReference.child(it).child(FIREBASE_USER).get()
+                mDatabaseReference.child(FIREBASE_USERS).child(it).child(FIREBASE_USER).get()
                     .addOnSuccessListener { ds ->
                         val friendFirebase =
                             FriendFirebase(
