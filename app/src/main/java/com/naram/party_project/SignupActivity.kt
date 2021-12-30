@@ -9,36 +9,56 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.naram.party_project.base.BaseActivity
+import com.naram.party_project.databinding.ActivityMainBinding
+import com.naram.party_project.util.Const.Companion.FIREBASE_GAME
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER
 import com.naram.party_project.databinding.ActivitySignupBinding
 import com.naram.party_project.model.User
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_GAME_MODE
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PREFERRED_GENDER_MEN
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PREFERRED_GENDER_WOMEN
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_PURPOSE
+import com.naram.party_project.util.Const.Companion.FIREBASE_TENDENCY_VOICE
+import com.naram.party_project.util.Const.Companion.FIREBASE_USERS
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_EMAIL
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_GENDER
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_NAME
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_PASSWORD
+import com.naram.party_project.util.Const.Companion.FIREBASE_USER_PICTURE
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.*
 
-class SignupActivity : AppCompatActivity() {
+class SignupActivity : BaseActivity<ActivitySignupBinding>({
+    ActivitySignupBinding.inflate(it)
+}) {
 
     companion object {
         private const val REQUEST_GALLERY = 1000
         private const val REQUEST_SUCCESS = 1001
     }
 
-    private val TAG = "SignupActivity"
+    private val TAG = "Sign Up"
 
-    private lateinit var binding: ActivitySignupBinding
-
-    private lateinit var db : AppDatabase
+    private lateinit var ref: DatabaseReference
 
     private var _userPicture: String? = null
+    private var _userBitPicture: String? = null
     private lateinit var _userEmail: String
     private lateinit var _userPassword: String
     private lateinit var _userNickName: String
@@ -48,22 +68,15 @@ class SignupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySignupBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
 
-        createDB()
         initViews()
 
     }
 
-    private fun createDB() {
-        db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "userDB"
-        )
-            .build()
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        finish()
     }
 
     private fun initViews() {
@@ -73,22 +86,24 @@ class SignupActivity : AppCompatActivity() {
         }
 
         binding.btnUserSignup.setOnClickListener {
-            val flag = editTextNullCheck()
 
-            when (flag) {
+            when (editTextNullCheck()) {
                 true -> {
                     val auth = FirebaseAuth.getInstance()
                     auth.createUserWithEmailAndPassword(
                         binding.etSignupUserEmail.toStringFromText(),
                         binding.etSignupUserPW.toStringFromText()
                     )
-                        .addOnCompleteListener(this) { task ->
-                            if (task.isSuccessful) {
-                                if(bitmap == null) saveUserInfoToDB()
-                                else uploadImageToCloud(bitmap!!)
-                            } else {
-                                Toast.makeText(this, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        .addOnCompleteListener(this) { _ ->
+                            if(bitmap == null) saveUserInfoToDB()
+                            else {
+
+                                uploadImageToCloud(bitmap!!)
                             }
+                            Toast.makeText(this, "회원가입에 성공했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show()
                         }
                 }
                 else -> {
@@ -125,13 +140,13 @@ class SignupActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("권한 요청")
             .setMessage("앱에서 사진을 불러오기 위해 권한이 필요합니다.")
-            .setPositiveButton("동의", { _, _ ->
+            .setPositiveButton("동의") { _, _ ->
                 requestPermissions(
                     arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
                     REQUEST_GALLERY
                 )
-            })
-            .setNegativeButton("취소", { _, _ -> })
+            }
+            .setNegativeButton("취소") { _, _ -> }
             .create()
             .show()
     }
@@ -241,6 +256,15 @@ class SignupActivity : AppCompatActivity() {
 
     }
 
+    private fun uploadImageToFirebase(bitmap: Bitmap) {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        val imgArray = stream.toByteArray()
+
+        _userBitPicture = Base64.encodeToString(imgArray, Base64.DEFAULT)
+
+    }
+
     private fun uploadImageToCloud(bitmap: Bitmap) {
         val storage = Firebase.storage
         var storageRef = storage.reference
@@ -271,8 +295,19 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun saveUserInfoToDB() {
+//        runBlocking {
+//            insertData(
+//                _userEmail,
+//                _userPassword,
+//                _userNickName,
+//                _userGender,
+//                _userPicture
+//            )
+//        }
+
         runBlocking {
-            insertData(
+            insertFirebase(
+                FirebaseAuth.getInstance().currentUser!!.uid,
                 _userEmail,
                 _userPassword,
                 _userNickName,
@@ -290,11 +325,43 @@ class SignupActivity : AppCompatActivity() {
 
     }
 
+    private fun insertFirebase(uid : String, email : String, password : String, name : String, gender : String, picture: String?) {
+        ref = FirebaseDatabase.getInstance().reference
+        val mDatabaseReference = ref.database.getReference("$FIREBASE_USERS/$uid")
+
+        mDatabaseReference.child(FIREBASE_USER).child(FIREBASE_USER_EMAIL).setValue(email).addOnCompleteListener {
+            Log.d(TAG, "회원가입 성공")
+        }.addOnFailureListener {
+            Log.d(TAG, "회원가입 실패 : ${it.localizedMessage}")
+        }
+        mDatabaseReference.child(FIREBASE_USER).child(FIREBASE_USER_PASSWORD).setValue(password)
+        mDatabaseReference.child(FIREBASE_USER).child(FIREBASE_USER_NAME).setValue(name)
+        mDatabaseReference.child(FIREBASE_USER).child(FIREBASE_USER_GENDER).setValue(gender)
+        picture?.let {
+            mDatabaseReference.child(FIREBASE_USER).child(FIREBASE_USER_PICTURE).setValue(picture)
+        }
+
+//        val mTendencyDatabaseReference = ref.database.getReference("$FIREBASE_TENDENCY")
+
+        mDatabaseReference.child(FIREBASE_TENDENCY).child(FIREBASE_TENDENCY_PURPOSE).setValue("0")
+        mDatabaseReference.child(FIREBASE_TENDENCY).child(FIREBASE_TENDENCY_VOICE).setValue("0")
+        mDatabaseReference.child(FIREBASE_TENDENCY).child(FIREBASE_TENDENCY_PREFERRED_GENDER_MEN).setValue("1")
+        mDatabaseReference.child(FIREBASE_TENDENCY).child(FIREBASE_TENDENCY_PREFERRED_GENDER_WOMEN).setValue("1")
+        mDatabaseReference.child(FIREBASE_TENDENCY).child(FIREBASE_TENDENCY_GAME_MODE).setValue("1")
+
+//        val mGameDatabaseReference = ref.database.getReference("$FIREBASE_GAME")
+
+        for(i in 0..9) {
+            mDatabaseReference.child(FIREBASE_GAME).child("game$i").setValue("0", i)
+        }
+
+    }
+
     private fun insertData(vararg params: String?) {
         CoroutineScope(Dispatchers.Default).launch {
             val email: String? = params[0]
             val password: String? = params[1]
-            val user_name: String? = params[2]
+            val name: String? = params[2]
             val gender: String? = params[3]
             val picture: String? = params[4]
 
@@ -302,7 +369,7 @@ class SignupActivity : AppCompatActivity() {
             val retrofit = RetrofitClient.getInstance()
 
             val server = retrofit.create(UserAPI::class.java)
-            val call : Call<String> = server.putUser(email!!, password!!, user_name!!, gender!!, picture)
+            val call : Call<String> = server.putUser(email!!, password!!, name!!, gender!!, picture)
             call.enqueue(object : Callback<String> {
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     Log.d(TAG,"실패 : "+t.localizedMessage)
@@ -331,7 +398,6 @@ class SignupActivity : AppCompatActivity() {
                 User(
                     email,
                     picture,
-                    null,
                     user_name,
                     null,
                     gender,

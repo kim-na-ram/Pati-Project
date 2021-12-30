@@ -2,7 +2,7 @@ package com.naram.party_project
 
 import com.naram.party_project.callback.Friend
 import com.naram.party_project.callback.Party
-import com.naram.party_project.callback.Profile
+import com.naram.party_project.callback.User
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -13,7 +13,7 @@ interface UserAPI {
     @POST("retrofitUserSelect.php")
     fun getUser(
         @Field("email") email: String
-    ): Call<Profile>
+    ): Call<User>
 
     @FormUrlEncoded
     @POST("retrofitUserInsert.php")

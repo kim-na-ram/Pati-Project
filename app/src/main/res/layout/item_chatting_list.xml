@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="chatting"
+            type="com.naram.party_project.chattingModel.ChattingList" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivReceivedPicture"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0" />
+
+        <LinearLayout
+            android:id="@+id/llReceivedMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivReceivedPicture"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <TextView
+                    android:id="@+id/tvReceivedName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4.5"
+                    android:fontFamily="@font/nanumsquareextrabold"
+                    android:text="@{chatting.receivedName}"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="Sender" />
+
+                <TextView
+                    android:id="@+id/tvLastMessageTime"
+                    android:layout_width="50dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="right|bottom"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="0.5"
+                    android:fontFamily="@font/nanumsquarebold"
+                    android:gravity="right|center_vertical"
+                    android:textSize="12sp"
+                    tools:text="오전 12:37" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tvLastMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="17dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/nanumsquarebold"
+                    android:gravity="left|center_vertical"
+                    android:singleLine="true"
+                    android:text="@{chatting.lastMessage}"
+                    android:textSize="14sp"
+                    tools:text="이렇게 보여집니다." />
+
+<!--                <ImageView-->
+<!--                    android:layout_width="10dp"-->
+<!--                    android:layout_height="10dp"-->
+<!--                    android:src="@drawable/ic_new_message_24" />-->
+
+                <TextView
+                    android:id="@+id/tvNewMessage"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/button_rounded_background_red"
+                    android:text="N"
+                    android:textSize="9sp"
+                    android:gravity="center"
+                    android:textColor="@color/color_white"
+                    android:fontFamily="@font/nanumsquareextrabold"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -1,4 +1,4 @@
-package com.naram.party_project
+package com.naram.party_project.adapter
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment

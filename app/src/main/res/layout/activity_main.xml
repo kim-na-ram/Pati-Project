@@ -6,42 +6,38 @@
     android:layout_height="match_parent"
     tools:context="com.naram.party_project.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="@dimen/toolbar_size"-->
+<!--        android:background="@color/color_inactivated_blue"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/sv_viewpagerContainer"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        tools:ignore="MissingConstraints">-->
+
+    <include
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_size"
-        android:background="@color/color_inactivated_blue"
+        layout="@layout/layout_toolbar"
         app:layout_constraintBottom_toTopOf="@id/sv_viewpagerContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_textToolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/toolbar_size"
-            android:fontFamily="@font/nanumsquareextrabold"
-            android:gravity="center_vertical"
-            android:text="@string/app_name"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/toolbar_text_size" />
-
-    </androidx.appcompat.widget.Toolbar>
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bnb_menuBar">
+<!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+<!--        android:id="@+id/swipeRefreshLayout"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/toolbar"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/bnb_menuBar">-->
 
         <ScrollView
             android:id="@+id/sv_viewpagerContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:fillViewport="true"
             android:scrollbars="none"
             app:layout_constraintBottom_toTopOf="@+id/bnb_menuBar"
@@ -53,16 +49,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/vp_showView"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:id="@+id/flMainContainer" />
+
+<!--                <androidx.viewpager2.widget.ViewPager2-->
+<!--                    android:id="@+id/vp_showView"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent" />-->
 
                 <FrameLayout
-                    android:id="@+id/fl_showPartyProfile"
+                    android:id="@+id/flShowPartyProfile"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:layout_marginHorizontal="30dp"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -72,15 +74,15 @@
 
         </ScrollView>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+<!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bnb_menuBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:itemBackground="@color/color_inactivated_blue"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/color_white"
+        app:itemTextColor="@color/color_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sv_viewpagerContainer"

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChattingActivity">
+
+    <include
+        android:id="@+id/layoutTop"
+        layout="@layout/layout_toolbar"
+        app:layout_constraintBottom_toTopOf="@id/rvChatting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvChatting"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutTop"
+        app:layout_constraintBottom_toTopOf="@id/llSendMessage"
+        android:padding="15dp"/>
+
+    <LinearLayout
+        android:id="@+id/llSendMessage"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center_vertical"
+        android:background="@color/color_activated_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvChatting">
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/edittext_rounded_background_white_chatting"
+            android:fontFamily="@font/nanumsquarebold"
+            android:textSize="15sp"
+            android:textColor="@color/color_opacity65_dark_blue"
+            android:hint="상대방에게 메시지를 보내보세요."
+            android:inputType="textImeMultiLine"
+            android:textColorHint="@color/color_dark_blue"
+            android:layout_marginVertical="4dp"
+            android:layout_marginHorizontal="4dp"
+            android:paddingHorizontal="7dp"
+            android:layout_weight="1"
+            android:paddingVertical="2dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/btnSendMessage"
+            android:text="보내기"
+            android:textColor="@color/color_dark_blue"
+            android:fontFamily="@font/nanumsquarebold"
+            android:background="@null"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_showChattingProgress"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:indeterminateTint="@color/color_activated_blue"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/layoutTop"
+        app:layout_constraintBottom_toTopOf="@id/llSendMessage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

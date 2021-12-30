@@ -6,12 +6,25 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <!-- blue -->
     <color name="color_inactivated_blue">#D4E0F9</color>
     <color name="color_activated_blue">#B4C7E7</color>
+    <color name="color_dark_blue">#525A69</color>
     <color name="color_opacity65_activated_blue">#A6B4C7E7</color>
     <color name="color_opacity65_inactivated_blue">#A6D4E0F9</color>
+    <color name="color_opacity65_dark_blue">#A6525A69</color>
+
+    <!-- gray -->
+    <color name="color_gray">#F4F4F4</color>
     <color name="color_opacity80_gray">#CCF4F4F4</color>
     <color name="color_opacity90_gray">#E6F4F4F4</color>
+
+    <!-- white -->
+    <color name="color_white">#FFFFFFFF</color>
     <color name="color_opacity65_white">#A6FFFFFF</color>
+    <color name="color_opacity80_white">#CCFFFFFF</color>
+
+    <!-- red -->
+    <color name="color_red">#FF4040</color>
 </resources>

@@ -11,7 +11,7 @@
         android:id="@+id/iv_signupUserPic"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:background="@drawable/signup_enter_user_picture_100"
+        android:background="@drawable/ic_signup_enter_picture_r_128"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,11 +21,11 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_enterUserPic"
         android:layout_width="120dp"
-        android:layout_height="28dp"
+        android:layout_height="35dp"
         android:background="@color/color_activated_blue"
         android:fontFamily="@font/nanumsquarebold"
         android:text="등록하기"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@id/iv_signupUserPic"
         app:layout_constraintEnd_toEndOf="@id/iv_signupUserPic"
@@ -38,26 +38,42 @@
         android:layout_marginTop="15dp"
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="유저 닉네임"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/et_signupUserName"
-        app:layout_constraintStart_toStartOf="@id/et_signupUserEmail"
+        app:layout_constraintBottom_toTopOf="@id/ll_signupUserNameContainer"
+        app:layout_constraintStart_toStartOf="@id/ll_signupUserEmailContainer"
         app:layout_constraintTop_toBottomOf="@id/iv_signupUserPic" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/et_signupUserName"
+    <LinearLayout
+        android:id="@+id/ll_signupUserNameContainer"
         android:layout_width="@dimen/edittext_short_userinfo_width"
         android:layout_height="@dimen/edittext_userinfo_height"
         android:layout_marginVertical="10dp"
         android:background="@drawable/edittext_rounded_background_white"
-        android:fontFamily="@font/nanumbarungothicbold"
-        android:inputType="textPersonName"
-        android:paddingHorizontal="8dp"
-        android:textColor="@color/white"
-        android:textSize="@dimen/edittext_userinfo_text_size"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/tv_userEmail"
-        app:layout_constraintStart_toStartOf="@id/et_signupUserEmail"
-        app:layout_constraintTop_toBottomOf="@id/tv_userName" />
+        app:layout_constraintStart_toStartOf="@id/ll_signupUserEmailContainer"
+        app:layout_constraintTop_toBottomOf="@id/tv_userName">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_shape_signin_edittext"
+            android:padding="10dp"
+            android:src="@drawable/ic_signup_user_100" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_signupUserName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/nanumbarungothic"
+            android:inputType="textPersonName"
+            android:paddingHorizontal="8dp"
+            android:textColor="@color/color_activated_blue"
+            android:textSize="@dimen/edittext_userinfo_text_size" />
+
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_userGender"
@@ -65,7 +81,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="성별"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/radio_userGender"
         app:layout_constraintTop_toTopOf="@id/tv_userName" />
@@ -73,23 +89,24 @@
     <RadioGroup
         android:id="@+id/radio_userGender"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/edittext_userinfo_height"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginStart="3dp"
         app:layout_constraintBottom_toTopOf="@id/tv_userEmail"
-        app:layout_constraintEnd_toEndOf="@id/et_signupUserEmail"
+        app:layout_constraintStart_toEndOf="@id/ll_signupUserNameContainer"
         app:layout_constraintTop_toBottomOf="@id/tv_userGender">
 
         <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radiobutton_userFemale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="8dp"
             android:button="@drawable/radiobutton_selected_custom"
             android:fontFamily="@font/nanumsquarebold"
             android:paddingStart="3dp"
             android:text="여성"
-            android:textColor="@color/white"
-            android:textSize="17sp" />
+            android:textColor="@color/color_white"
+            android:textSize="16sp" />
 
         <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radiobutton_userMale"
@@ -99,8 +116,8 @@
             android:fontFamily="@font/nanumsquarebold"
             android:paddingStart="3dp"
             android:text="남성"
-            android:textColor="@color/white"
-            android:textSize="17sp" />
+            android:textColor="@color/color_white"
+            android:textSize="16sp" />
 
     </RadioGroup>
 
@@ -110,27 +127,43 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="이메일"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/et_signupUserEmail"
-        app:layout_constraintStart_toStartOf="@id/et_signupUserEmail"
-        app:layout_constraintTop_toBottomOf="@id/et_signupUserName" />
+        app:layout_constraintBottom_toTopOf="@id/ll_signupUserEmailContainer"
+        app:layout_constraintStart_toStartOf="@id/ll_signupUserEmailContainer"
+        app:layout_constraintTop_toBottomOf="@id/ll_signupUserNameContainer" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/et_signupUserEmail"
+    <LinearLayout
+        android:id="@+id/ll_signupUserEmailContainer"
         android:layout_width="@dimen/edittext_userinfo_width"
         android:layout_height="@dimen/edittext_userinfo_height"
         android:layout_marginVertical="10dp"
         android:background="@drawable/edittext_rounded_background_white"
-        android:fontFamily="@font/nanumbarungothicbold"
-        android:inputType="textWebEmailAddress"
-        android:paddingHorizontal="8dp"
-        android:textColor="@color/white"
-        android:textSize="@dimen/edittext_userinfo_text_size"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/tv_userPW"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_userEmail" />
+        app:layout_constraintTop_toBottomOf="@id/tv_userEmail">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_shape_signin_edittext"
+            android:padding="10dp"
+            android:src="@drawable/ic_signin_email_100" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_signupUserEmail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/nanumbarungothic"
+            android:inputType="textWebEmailAddress"
+            android:paddingHorizontal="8dp"
+            android:textColor="@color/color_activated_blue"
+            android:textSize="@dimen/edittext_userinfo_text_size" />
+
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_userPW"
@@ -138,25 +171,43 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/nanumsquareextrabold"
         android:text="비밀번호"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/et_signupUserPW"
-        app:layout_constraintStart_toStartOf="@id/et_signupUserPW"
-        app:layout_constraintTop_toBottomOf="@id/et_signupUserEmail" />
+        app:layout_constraintBottom_toTopOf="@id/ll_signupUserPWContainer"
+        app:layout_constraintStart_toStartOf="@id/ll_signupUserPWContainer"
+        app:layout_constraintTop_toBottomOf="@id/ll_signupUserEmailContainer" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/et_signupUserPW"
+    <LinearLayout
+        android:id="@+id/ll_signupUserPWContainer"
         android:layout_width="@dimen/edittext_userinfo_width"
         android:layout_height="@dimen/edittext_userinfo_height"
         android:layout_marginVertical="10dp"
         android:background="@drawable/edittext_rounded_background_white"
-        android:inputType="textPassword"
-        android:paddingHorizontal="8dp"
-        android:textColor="@color/white"
-        android:textSize="@dimen/edittext_userinfo_text_size"
-        app:layout_constraintEnd_toEndOf="@id/et_signupUserEmail"
-        app:layout_constraintStart_toStartOf="@id/et_signupUserEmail"
-        app:layout_constraintTop_toBottomOf="@id/tv_userPW" />
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@id/ll_signupUserEmailContainer"
+        app:layout_constraintStart_toStartOf="@id/ll_signupUserEmailContainer"
+        app:layout_constraintTop_toBottomOf="@id/tv_userPW">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_shape_signin_edittext"
+            android:padding="10dp"
+            android:src="@drawable/ic_signin_lock_120" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_signupUserPW"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:inputType="textPassword"
+            android:paddingHorizontal="8dp"
+            android:fontFamily="@font/nanumbarungothic"
+            android:textColor="@color/color_activated_blue"
+            android:textSize="@dimen/edittext_userinfo_text_size" />
+
+    </LinearLayout>
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_userSignup"
@@ -164,11 +215,11 @@
         android:layout_height="@dimen/button_height"
         android:layout_marginVertical="15dp"
         android:background="@drawable/button_rounded_special"
-        android:text="회원가입"
-        android:textSize="@dimen/button_text_size"
         android:fontFamily="@font/nanumsquareextrabold"
-        android:textColor="@color/color_inactivated_blue"
-        app:layout_constraintEnd_toEndOf="@id/et_signupUserEmail"
-        app:layout_constraintTop_toBottomOf="@id/et_signupUserPW" />
+        android:text="회원가입"
+        android:textColor="@color/color_activated_blue"
+        android:textSize="@dimen/button_text_size"
+        app:layout_constraintEnd_toEndOf="@id/ll_signupUserEmailContainer"
+        app:layout_constraintTop_toBottomOf="@id/ll_signupUserPWContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
