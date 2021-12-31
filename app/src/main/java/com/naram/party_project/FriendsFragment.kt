@@ -163,13 +163,12 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 
     private fun addFirebasePartyList(mDatabaseReference: DatabaseReference) {
 
-        var tmpEmail = ""
-        var tmpName = ""
-        var tmpPicture: String? = null
-
         if (requestUidList.size > 0) {
 
-            binding?.let { binding.tvInformParty.visibility = View.GONE }
+            if (this.isVisible) {
+                Log.d(TAG, "this fragment is visible")
+                binding?.let { binding.tvInformParty.visibility = View.GONE }
+            }
 
             requestUidList.forEach {
                 mDatabaseReference.child(FIREBASE_USERS).child(it).child(FIREBASE_USER).get()
@@ -186,7 +185,7 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
                         )
                         requestedPartyListAdapter.notifyDataSetChanged()
 //                        requestedPartyListAdapter.submitList(requestList)
-                        if (binding.slRequestedPartyShimmer.visibility == View.VISIBLE)
+                        if (this.isVisible && binding.slRequestedPartyShimmer.visibility == View.VISIBLE)
                             requestedPartyShowSampleData(false)
                     }
                     .addOnFailureListener { e ->
@@ -199,8 +198,13 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
                     }
             }
         } else {
-            binding.tvInformParty.visibility = View.VISIBLE
-            requestedPartyShowSampleData(false)
+            if (this.isVisible) {
+                Log.d(TAG, "this fragment is visible")
+                binding?.let {
+                    binding.tvInformParty.visibility = View.VISIBLE
+                    requestedPartyShowSampleData(false)
+                }
+            }
         }
 
     }
@@ -270,7 +274,12 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
 
         if (friendUidList.size > 0) {
 
-            binding?.let { binding.tvInformFriend.visibility = View.GONE }
+            if (this.isVisible) {
+
+                Log.d(TAG, "this fragment is visible")
+                binding?.let { binding.tvInformFriend.visibility = View.GONE }
+
+            }
 
             friendUidList.forEach {
                 mDatabaseReference.child(FIREBASE_USERS).child(it).child(FIREBASE_USER).get()
@@ -291,7 +300,7 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
                         requestedPartyListAdapter.notifyDataSetChanged()
                         friendListAdapter.notifyDataSetChanged()
 //                        friendListAdapter.submitList(friendList)
-                        if (binding.slFriendShimmer.visibility == View.VISIBLE)
+                        if (this.isVisible && binding.slFriendShimmer.visibility == View.VISIBLE)
                             friendsShowSampleData(false)
                     }
                     .addOnFailureListener { e ->
@@ -305,8 +314,16 @@ class FriendsFragment : BaseFragment<FragmentFriendsBinding>() {
                     }
             }
         } else {
-            binding.tvInformFriend.visibility = View.VISIBLE
-            friendsShowSampleData(false)
+
+            if (this.isVisible) {
+
+                Log.d(TAG, "this fragment is visible")
+                binding?.let {
+                    binding.tvInformFriend.visibility = View.VISIBLE
+                    friendsShowSampleData(false)
+                }
+            }
+
         }
 
     }

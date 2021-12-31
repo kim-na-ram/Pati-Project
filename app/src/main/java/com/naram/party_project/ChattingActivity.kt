@@ -63,8 +63,10 @@ class ChattingActivity : BaseActivity<ActivityChattingBinding>({
 
         Log.d(TAG, "onDestroy")
 
-        firebaseDatabase.reference.child(FIREBASE_CHATTING).child(chatRoomUID!!)
-            .child(FIREBASE_CHATTING_USERS).child(myUID).child(FIREBASE_CHATTING_ISREAD).setValue(true)
+        chatRoomUID?.let {
+            firebaseDatabase.reference.child(FIREBASE_CHATTING).child(chatRoomUID!!)
+                .child(FIREBASE_CHATTING_USERS).child(myUID).child(FIREBASE_CHATTING_ISREAD).setValue(true)
+        }
 
     }
 

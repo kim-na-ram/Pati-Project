@@ -164,8 +164,9 @@ class SearchPartyFragment : BaseViewDataFragment<FragmentSearchpartyBinding>(
             mDatabaseReference.child(FIREBASE_FRIEND).child(uid!!)
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
+                        friendList.clear()
                         snapshot.children.forEach {
-                            friendList.add(it.key.toString())
+                                friendList.add(it.key.toString())
                         }
 
                         showUserList(uid, gender!!)
@@ -215,6 +216,8 @@ class SearchPartyFragment : BaseViewDataFragment<FragmentSearchpartyBinding>(
                         && !friendList.contains(it.key)
                     ) {
 
+                        Log.d(TAG, "showUserList : ${it.key}")
+
                         val mUserDB = it.child(FIREBASE_USER)
 
                         if (mUserDB.child("gender").value.toString() == gender) {
@@ -245,27 +248,30 @@ class SearchPartyFragment : BaseViewDataFragment<FragmentSearchpartyBinding>(
         val mUserDB = dataSnapshot.child(FIREBASE_USER)
         val mGameDB = dataSnapshot.child(FIREBASE_GAME)
 
-        userList.add(
-            PartyFirebase(
-                dataSnapshot.key.toString(),
-                mUserDB.child(FIREBASE_USER_EMAIL).value.toString(),
-                mUserDB.child(FIREBASE_USER_NAME).value.toString(),
-                mUserDB.child(FIREBASE_USER_GENDER).value.toString(),
-                if (mUserDB.hasChild(FIREBASE_USER_GAME_NAME)) mUserDB.child(FIREBASE_USER_GAME_NAME).value.toString() else null,
-                if (mUserDB.hasChild(FIREBASE_USER_SELF_PR)) mUserDB.child(FIREBASE_USER_SELF_PR).value.toString() else null,
-                if (mUserDB.hasChild(FIREBASE_USER_PICTURE)) mUserDB.child(FIREBASE_USER_PICTURE).value.toString() else null,
-                mGameDB.child(FIREBASE_GAME_0_LOL).value.toString(),
-                mGameDB.child(FIREBASE_GAME_1_OVER_WATCH).value.toString(),
-                mGameDB.child(FIREBASE_GAME_2_BATTLE_GROUND).value.toString(),
-                mGameDB.child(FIREBASE_GAME_3_SUDDEN_ATTACK).value.toString(),
-                mGameDB.child(FIREBASE_GAME_4_FIFA_ONLINE_4).value.toString(),
-                mGameDB.child(FIREBASE_GAME_5_LOST_ARK).value.toString(),
-                mGameDB.child(FIREBASE_GAME_6_MAPLE_STORY).value.toString(),
-                mGameDB.child(FIREBASE_GAME_7_CYPHERS).value.toString(),
-                mGameDB.child(FIREBASE_GAME_8_STAR_CRAFT).value.toString(),
-                mGameDB.child(FIREBASE_GAME_9_DUNGEON_AND_FIGHTER).value.toString()
-            )
+        val user = PartyFirebase(
+            dataSnapshot.key.toString(),
+            mUserDB.child(FIREBASE_USER_EMAIL).value.toString(),
+            mUserDB.child(FIREBASE_USER_NAME).value.toString(),
+            mUserDB.child(FIREBASE_USER_GENDER).value.toString(),
+            if (mUserDB.hasChild(FIREBASE_USER_GAME_NAME)) mUserDB.child(FIREBASE_USER_GAME_NAME).value.toString() else null,
+            if (mUserDB.hasChild(FIREBASE_USER_SELF_PR)) mUserDB.child(FIREBASE_USER_SELF_PR).value.toString() else null,
+            if (mUserDB.hasChild(FIREBASE_USER_PICTURE)) mUserDB.child(FIREBASE_USER_PICTURE).value.toString() else null,
+            mGameDB.child(FIREBASE_GAME_0_LOL).value.toString(),
+            mGameDB.child(FIREBASE_GAME_1_OVER_WATCH).value.toString(),
+            mGameDB.child(FIREBASE_GAME_2_BATTLE_GROUND).value.toString(),
+            mGameDB.child(FIREBASE_GAME_3_SUDDEN_ATTACK).value.toString(),
+            mGameDB.child(FIREBASE_GAME_4_FIFA_ONLINE_4).value.toString(),
+            mGameDB.child(FIREBASE_GAME_5_LOST_ARK).value.toString(),
+            mGameDB.child(FIREBASE_GAME_6_MAPLE_STORY).value.toString(),
+            mGameDB.child(FIREBASE_GAME_7_CYPHERS).value.toString(),
+            mGameDB.child(FIREBASE_GAME_8_STAR_CRAFT).value.toString(),
+            mGameDB.child(FIREBASE_GAME_9_DUNGEON_AND_FIGHTER).value.toString()
         )
+
+        if(!userList.contains(user)) {
+            Log.e(TAG, "addFirebaseList : $user")
+            userList.add(user)
+        }
     }
 
 //    private fun appearFragment(party: PartyFirebase) {
