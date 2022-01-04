@@ -29,8 +29,9 @@ mysql -u [account] -p [database] < backup.sql
 -->
 
 ## screenshot
-<p align="center">
-<img src="https://user-images.githubusercontent.com/32188154/147992303-018e2c24-4a58-4d69-9536-915befb4c90b.png" width="240px" height="480px" title="Splash" alt="Splash" margin="auto"></img></p>  
+<!-- <p align="center">
+<img src="https://user-images.githubusercontent.com/32188154/147992303-018e2c24-4a58-4d69-9536-915befb4c90b.png" width="240px" height="480px" title="Splash" alt="Splash" margin="auto"></img></p>   -->
+<img src="https://user-images.githubusercontent.com/32188154/147992303-018e2c24-4a58-4d69-9536-915befb4c90b.png" width="240px" height="480px" title="Splash" alt="Splash" margin="auto"></img>  
 
 <img src="https://user-images.githubusercontent.com/32188154/147992299-89e43468-30b4-4de9-808f-65e43d75617a.png" width="180px" height="360px" title="Sign Up" alt="Sign Up"></img>
 <img src="https://user-images.githubusercontent.com/32188154/147992551-4d8fb653-8432-466f-a803-8fea7577fe6f.png" width="180px" height="360px" title="Login" alt="Login"></img>
