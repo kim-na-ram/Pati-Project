@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.naram.party_project.R
-import com.naram.party_project.callback.UserFirebase
+import com.naram.party_project.data.remote.model.UserFirebase
 import com.naram.party_project.databinding.DialogShowprofileBinding
 import com.naram.party_project.util.Const
 import com.naram.party_project.util.Const.Companion.FIREBASE_PARTY

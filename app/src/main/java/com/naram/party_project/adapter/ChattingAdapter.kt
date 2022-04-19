@@ -12,8 +12,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.naram.party_project.R
 import com.naram.party_project.databinding.ItemChatBinding
-import com.naram.party_project.chattingModel.Chatting
-import com.naram.party_project.chattingModel.Message
+import com.naram.party_project.data.remote.model.Message
 import com.naram.party_project.mChattingDiffCallback
 import java.text.SimpleDateFormat
 import java.util.*

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.naram.party_project.viewmodel.SearchPartyViewModel" />
+            type="com.naram.party_project.ui.main.party.SearchPartyViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

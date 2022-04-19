@@ -4,7 +4,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.naram.party_project.viewmodel.ChattingListViewModel" />
+            type="com.naram.party_project.ui.main.chatting.ChattingListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

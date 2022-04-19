@@ -16,19 +16,19 @@
         android:theme="@style/Theme.PartyProject"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ChattingActivity"
+            android:name=".ui.chat.ChattingActivity"
             android:exported="true" />
         <activity
-            android:name=".ModifyProfileActivity"
+            android:name=".ui.modify.ModifyProfileActivity"
             android:exported="true" />
         <activity
-            android:name=".SignupActivity"
+            android:name=".ui.signup.SignupActivity"
             android:exported="true" />
         <activity
-            android:name=".FindAccountActivity"
+            android:name=".ui.account.FindAccountActivity"
             android:exported="true" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,10 +37,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SigninActivity"
+            android:name=".ui.signin.SigninActivity"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true" />
     </application>
 

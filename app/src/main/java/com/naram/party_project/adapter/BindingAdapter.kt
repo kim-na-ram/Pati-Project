@@ -2,9 +2,9 @@ package com.naram.party_project.adapter
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.naram.party_project.SearchPartyFragment
-import com.naram.party_project.callback.PartyFirebase
-import com.naram.party_project.callback.UserFirebase
+import com.naram.party_project.data.remote.model.PartyFirebase
+import com.naram.party_project.data.remote.model.UserFirebase
+import com.naram.party_project.ui.main.party.UserListAdapter
 
 object BindingAdapter {
 

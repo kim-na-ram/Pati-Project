@@ -7,7 +7,7 @@
 
         <variable
             name="user"
-            type="com.naram.party_project.callback.PartyFirebase" />
+            type="com.naram.party_project.data.remote.model.PartyFirebase" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

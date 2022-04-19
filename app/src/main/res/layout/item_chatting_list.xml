@@ -5,7 +5,7 @@
 
         <variable
             name="chatting"
-            type="com.naram.party_project.chattingModel.ChattingList" />
+            type="com.naram.party_project.data.remote.model.ChattingList" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
